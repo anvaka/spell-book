@@ -1,7 +1,7 @@
 ---
 name: process-book
 description: Transform a raw book text file into a multi-lens semantic-zoom exploration — a fresh, fully self-contained folder of interactive HTML pages, one per lens, plus an LLM-generated landing page. Use when the user wants to "process a book", "explore a book through lenses", or "build a semantic zoom for a book". Invoked with /process-book <path-to-book.txt>. Drop this skill on any machine and it works — no host project, no shared library, no external state.
-allowed-tools: Bash, Write, Edit, Read, Glob, Agent
+allowed-tools: Bash, Write, Edit, Read, Glob, Agent, WebSearch, WebFetch
 ---
 
 # /process-book — Multi-lens semantic zoom for any book
@@ -55,7 +55,8 @@ Read the whole file using the Read tool with `limit: 50000`, continuing with `of
       "description": "One sentence: what this lens reveals",
       "visualization": "What interactive approach to use (map, force graph, timeline, zoom-tree, etc.) and why",
       "depthLevels": "Describe 3–4 layers of progressively deeper detail specific to this lens, from high-level overview down to close reading",
-      "rationale": "Why this lens is particularly revealing for THIS book"
+      "rationale": "Why this lens is particularly revealing for THIS book",
+      "scope": "text OR beyond — see rules below"
     }
   ]
 }
@@ -68,6 +69,10 @@ Read the whole file using the Read tool with `limit: 50000`, continuing with `of
 - Always include one **"Narrative Structure"** lens (id: `narrative`) for chronological reading
 - The other lenses should reveal something non-obvious and interesting
 - Think creatively — what visualization would genuinely serve each lens best?
+- **Scope:** Each lens has a `scope` field:
+  - `"text"` — derived entirely from the book's content
+  - `"beyond"` — draws on knowledge and research outside the text itself. These lenses use web research to ground their claims in real sources.
+- Include 1-2 `"beyond"` lenses when the book warrants it. If there's nothing meaningful to explore beyond the text, suggest all `"text"` lenses instead.
 
 Output ONLY the JSON block, nothing else.
 
@@ -75,7 +80,7 @@ Output ONLY the JSON block, nothing else.
 
 ## Step 2: Present lenses to the user
 
-Parse the reader agent's JSON. Show the user a numbered list with each lens's name, description, and proposed visualization. Ask:
+Parse the reader agent's JSON. Show the user a numbered list with each lens's name, description, and proposed visualization. Mark `beyond` lenses with a tag like `[beyond the text]` so the user can see which ones require web research. Ask:
 
 > "Which lenses would you like me to build? (e.g. `1,3,5` or `all`)"
 
@@ -112,6 +117,7 @@ You are creating an interactive web page that lets someone explore a book throug
 **Lens description:** {lens_description}
 **Suggested visualization approach:** {visualization_approach}
 **Depth levels:** {depth_levels}
+**Scope:** {scope}
 
 **Output file (absolute path):** `{out}/lenses/{lens_id}/index.html`
 **Back link to the book's landing page (relative from your output file):** `../../index.html`
@@ -120,7 +126,8 @@ You are creating an interactive web page that lets someone explore a book throug
 ### Your task
 
 1. Read the ENTIRE book text from `{file_path}` using the Read tool with `limit: 50000`. If the file is longer, continue reading with `offset` increments until EOF.
-2. Create the directory if needed, then write the single self-contained `index.html` at the absolute output path above.
+2. **If scope is `beyond`:** use WebSearch and WebFetch to research the external context this lens needs (reception history, cultural impact, scholarly commentary, modern connections, etc.). Cite real sources — names, dates, publications. Do not fabricate references.
+3. Create the directory if needed, then write the single self-contained `index.html` at the absolute output path above.
 
 ### Design principles
 
