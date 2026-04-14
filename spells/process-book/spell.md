@@ -20,9 +20,9 @@ Everything is written under the **current working directory** in a single fresh 
 
 ```
 ./<book-id>/
-  index.html                  <- landing page, generated from scratch by an LLM each run
+  index.html                  ← landing page, generated from scratch by an LLM each run
   lenses/
-    <lens-id>/index.html      <- one self-contained page per lens
+    <lens-id>/index.html      ← one self-contained page per lens
     ...
 ```
 
@@ -90,6 +90,8 @@ Parse the reader agent's JSON. Show the user a numbered list with each lens's na
 
 ## Step 4: Build each lens (parallel builder agents)
 
+If any builder agent's lens might need web access (WebSearch/WebFetch), test one WebSearch call yourself first; if it is denied, inform the user before proceeding so they can grant tool access or adjust expectations.
+
 For each selected lens, spawn a builder agent via the Agent tool. **Spawn all builder agents in a single message** so they run in parallel. Run them in the background.
 
 Each builder agent writes one file: `<out>/lenses/<lens-id>/index.html`. From there, the back link to the landing page is always exactly `../../index.html` — both files live in the same self-contained `<out>` folder.
@@ -113,7 +115,7 @@ You are creating an interactive web page that lets someone explore a book throug
 
 **Output file (absolute path):** `{out}/lenses/{lens_id}/index.html`
 **Back link to the book's landing page (relative from your output file):** `../../index.html`
-  ^ This points to a sibling landing page that another agent is generating in the same self-contained folder. Do NOT link to anything outside this folder.
+  ↑ This points to a sibling landing page that another agent is generating in the same self-contained folder. Do NOT link to anything outside this folder.
 
 ### Your task
 
@@ -122,7 +124,7 @@ You are creating an interactive web page that lets someone explore a book throug
 
 ### Design principles
 
-- **Semantic zoom is the core metaphor.** The user should start at a high-level overview and progressively drill down to specific details and ultimately to the actual text or close analysis. How you implement this zoom is up to you. All user-facing labels should describe what the user will see.
+- **Semantic zoom is the core metaphor.** The user should start at a high-level overview and progressively drill down to specific details and ultimately to the actual text or close analysis. Semantic zoom means in-place progressive disclosure — users expand the element they are looking at to reveal more detail, rather than toggling a global depth control. How you implement this zoom is up to you. All user-facing labels should describe what the user will see.
 - **Fully self-contained** — a single HTML file with embedded CSS and JS. You may load libraries from CDNs (unpkg, cdnjs, jsdelivr). No references to any file outside `<out>/`.
 - **Visually polished.** Use a warm, bookish aesthetic — serif fonts for content (e.g. `Georgia`, `Lora`, `Crimson Text`), clean sans-serif for UI.
 - **Include the back link** to the landing page at the top of the page using the relative path provided above.
