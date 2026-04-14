@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fossils Found Since — On the Origin of Species</title>
+<style>
+:root {
+  --sepia-bg: #f5ead0;
+  --sepia-dark: #5c4a2a;
+  --sepia-mid: #8b7355;
+  --sepia-light: #d4c4a0;
+  --sepia-border: #c4a86b;
+  --science-blue: #1a3a5c;
+  --science-light: #e8f0f8;
+  --science-mid: #4a7faa;
+  --science-accent: #2980b9;
+  --strata-1: #8B7355;
+  --strata-2: #6B8E6B;
+  --strata-3: #7B8E97;
+  --strata-4: #A0856C;
+  --strata-5: #6C7B6C;
+  --strata-6: #8E7B6C;
+  --strata-7: #7B7B6C;
+  --strata-8: #6C7B8E;
+  --fossil-card-bg: #fefcf7;
+  --shadow: rgba(60, 40, 20, 0.15);
+  --text: #2c2416;
+  --text-light: #6b5d4a;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: #2c2416;
+  color: var(--text);
+  min-height: 100vh;
+}
+
+.back-link {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 1000;
+  background: rgba(44, 36, 22, 0.85);
+  color: var(--sepia-light);
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(196, 168, 107, 0.3);
+  transition: all 0.2s;
+}
+.back-link:hover {
+  background: rgba(44, 36, 22, 0.95);
+  border-color: var(--sepia-border);
+}
+
+/* Hero Section */
+.hero {
+  background: linear-gradient(180deg,
+    #1a1208 0%,
+    #2c2416 15%,
+    #3d3220 30%,
+    #4e4030 45%,
+    #5c4a2a 60%,
+    #6b5a3a 75%,
+    #7a6a4a 90%,
+    #8b7a5a 100%
+  );
+  padding: 80px 24px 60px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(180deg,
+    transparent 0px,
+    transparent 18px,
+    rgba(255,255,255,0.03) 18px,
+    rgba(255,255,255,0.03) 20px
+  );
+  pointer-events: none;
+}
+.hero h1 {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(28px, 5vw, 52px);
+  color: var(--sepia-light);
+  margin-bottom: 16px;
+  font-weight: 400;
+  letter-spacing: 1px;
+  position: relative;
+}
+.hero .subtitle {
+  font-family: Georgia, serif;
+  font-size: clamp(14px, 2.5vw, 20px);
+  color: var(--sepia-mid);
+  font-style: italic;
+  max-width: 700px;
+  margin: 0 auto 24px;
+  line-height: 1.6;
+  position: relative;
+}
+.hero .intro {
+  font-size: clamp(13px, 2vw, 16px);
+  color: rgba(212, 196, 160, 0.75);
+  max-width: 680px;
+  margin: 0 auto;
+  line-height: 1.7;
+  position: relative;
+}
+.hero .stats-bar {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  margin-top: 32px;
+  flex-wrap: wrap;
+  position: relative;
+}
+.hero .stat {
+  text-align: center;
+}
+.hero .stat-num {
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--sepia-border);
+  display: block;
+}
+.hero .stat-label {
+  font-size: 12px;
+  color: var(--sepia-mid);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+/* Legend */
+.legend {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  padding: 20px;
+  background: rgba(44, 36, 22, 0.6);
+  border-bottom: 1px solid rgba(196, 168, 107, 0.15);
+  flex-wrap: wrap;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--sepia-mid);
+}
+.legend-swatch {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+}
+.legend-swatch.darwin { background: var(--sepia-border); }
+.legend-swatch.science { background: var(--science-accent); }
+
+/* Strata Container */
+.strata-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px 60px;
+}
+
+/* Stratum */
+.stratum {
+  margin: 0;
+  border-left: 4px solid var(--strata-color, var(--strata-1));
+  position: relative;
+}
+.stratum-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 24px;
+  cursor: pointer;
+  background: linear-gradient(90deg,
+    rgba(var(--strata-rgb, 139,115,85), 0.15) 0%,
+    transparent 100%
+  );
+  border-bottom: 1px solid rgba(196, 168, 107, 0.1);
+  transition: background 0.3s;
+  user-select: none;
+}
+.stratum-header:hover {
+  background: linear-gradient(90deg,
+    rgba(var(--strata-rgb, 139,115,85), 0.25) 0%,
+    transparent 100%
+  );
+}
+.stratum-icon {
+  font-size: 28px;
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(var(--strata-rgb, 139,115,85), 0.2);
+  border-radius: 50%;
+}
+.stratum-info {
+  flex: 1;
+}
+.stratum-title {
+  font-family: Georgia, serif;
+  font-size: clamp(16px, 3vw, 22px);
+  color: var(--sepia-light);
+  margin-bottom: 4px;
+}
+.stratum-desc {
+  font-size: 13px;
+  color: var(--sepia-mid);
+  line-height: 1.4;
+}
+.stratum-count {
+  font-size: 12px;
+  color: var(--sepia-mid);
+  background: rgba(196, 168, 107, 0.15);
+  padding: 4px 12px;
+  border-radius: 12px;
+  white-space: nowrap;
+}
+.stratum-chevron {
+  color: var(--sepia-mid);
+  font-size: 20px;
+  transition: transform 0.3s;
+  flex-shrink: 0;
+}
+.stratum.open .stratum-chevron {
+  transform: rotate(180deg);
+}
+
+/* Fossil Timeline */
+.fossil-timeline {
+  display: none;
+  padding: 8px 16px 24px 28px;
+}
+.stratum.open .fossil-timeline {
+  display: block;
+}
+
+/* Fossil Card */
+.fossil-card {
+  background: var(--fossil-card-bg);
+  border-radius: 8px;
+  margin: 12px 0;
+  overflow: hidden;
+  box-shadow: 0 2px 12px var(--shadow);
+  border: 1px solid rgba(196, 168, 107, 0.2);
+}
+.fossil-card-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  cursor: pointer;
+  transition: background 0.2s;
+  user-select: none;
+}
+.fossil-card-header:hover {
+  background: rgba(196, 168, 107, 0.08);
+}
+.fossil-date {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--science-accent);
+  background: var(--science-light);
+  padding: 4px 10px;
+  border-radius: 4px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.fossil-name {
+  font-family: Georgia, serif;
+  font-size: 17px;
+  color: var(--text);
+  font-style: italic;
+  flex: 1;
+}
+.fossil-brief {
+  font-size: 13px;
+  color: var(--text-light);
+  display: none;
+}
+@media (min-width: 640px) {
+  .fossil-brief { display: block; }
+}
+.fossil-expand {
+  color: var(--text-light);
+  font-size: 16px;
+  transition: transform 0.3s;
+  flex-shrink: 0;
+}
+.fossil-card.open .fossil-expand {
+  transform: rotate(180deg);
+}
+
+/* Fossil Detail */
+.fossil-detail {
+  display: none;
+  border-top: 1px solid rgba(196, 168, 107, 0.15);
+}
+.fossil-card.open .fossil-detail {
+  display: block;
+}
+
+.paired-view {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 0;
+}
+@media (max-width: 768px) {
+  .paired-view { grid-template-columns: 1fr; }
+}
+
+/* Darwin Side */
+.darwin-side {
+  background: linear-gradient(135deg, #faf3e0, #f5ead0);
+  padding: 24px;
+  border-right: 1px solid rgba(196, 168, 107, 0.2);
+  position: relative;
+}
+@media (max-width: 768px) {
+  .darwin-side { border-right: none; border-bottom: 1px solid rgba(196, 168, 107, 0.2); }
+}
+.darwin-side::before {
+  content: 'THE GAP';
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--sepia-mid);
+  opacity: 0.5;
+}
+.darwin-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--sepia-mid);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.darwin-label::before { content: ''; width: 12px; height: 2px; background: var(--sepia-border); }
+.darwin-quote {
+  font-family: Georgia, serif;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--sepia-dark);
+  font-style: italic;
+  position: relative;
+  padding-left: 16px;
+  border-left: 3px solid var(--sepia-border);
+}
+.darwin-source {
+  font-size: 12px;
+  color: var(--sepia-mid);
+  margin-top: 12px;
+  font-style: normal;
+  font-family: sans-serif;
+}
+
+/* Science Side */
+.science-side {
+  background: linear-gradient(135deg, #f0f6fc, #e8f0f8);
+  padding: 24px;
+  position: relative;
+}
+.science-side::before {
+  content: 'THE BRIDGE';
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--science-mid);
+  opacity: 0.5;
+}
+.science-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--science-mid);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.science-label::before { content: ''; width: 12px; height: 2px; background: var(--science-accent); }
+.science-text {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--science-blue);
+}
+.science-text strong {
+  color: var(--science-accent);
+}
+
+/* Fossil Image */
+.fossil-image-container {
+  margin: 12px 0;
+  text-align: center;
+}
+.fossil-image {
+  max-width: 100%;
+  max-height: 220px;
+  border-radius: 6px;
+  border: 1px solid rgba(26, 58, 92, 0.15);
+  background: #f8f8f8;
+}
+.fossil-image-caption {
+  font-size: 11px;
+  color: var(--science-mid);
+  margin-top: 6px;
+}
+.fossil-image-placeholder {
+  width: 100%;
+  height: 120px;
+  background: linear-gradient(135deg, #e8e0d0, #d8d0c0);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--sepia-mid);
+  font-size: 13px;
+  font-style: italic;
+}
+
+/* Detail Footer */
+.fossil-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  background: rgba(44, 36, 22, 0.04);
+  border-top: 1px solid rgba(196, 168, 107, 0.1);
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.fossil-meta {
+  font-size: 12px;
+  color: var(--text-light);
+}
+.fossil-meta span {
+  margin-right: 16px;
+}
+.wiki-link {
+  font-size: 13px;
+  color: var(--science-accent);
+  text-decoration: none;
+  padding: 4px 12px;
+  border: 1px solid var(--science-accent);
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+.wiki-link:hover {
+  background: var(--science-accent);
+  color: white;
+}
+
+/* Arrow Bridge */
+.bridge-arrow {
+  display: none;
+  position: absolute;
+  top: 50%;
+  right: -14px;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  z-index: 2;
+  align-items: center;
+  justify-content: center;
+  color: var(--science-accent);
+  font-size: 16px;
+}
+@media (min-width: 769px) {
+  .bridge-arrow { display: flex; }
+  .darwin-side { position: relative; }
+}
+
+/* Geological Age Labels */
+.age-marker {
+  text-align: center;
+  padding: 12px;
+  color: var(--sepia-mid);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  position: relative;
+}
+.age-marker::before, .age-marker::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  height: 1px;
+  width: calc(50% - 80px);
+  background: rgba(196, 168, 107, 0.2);
+}
+.age-marker::before { left: 0; }
+.age-marker::after { right: 0; }
+
+/* Loading spinner for images */
+.img-loading {
+  background: linear-gradient(90deg, #e8e0d0 25%, #f0e8d8 50%, #e8e0d0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Scroll to top */
+.scroll-top {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 44px;
+  height: 44px;
+  background: rgba(44, 36, 22, 0.85);
+  color: var(--sepia-light);
+  border: 1px solid rgba(196, 168, 107, 0.3);
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 20px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  backdrop-filter: blur(8px);
+  transition: all 0.2s;
+}
+.scroll-top:hover {
+  background: rgba(44, 36, 22, 0.95);
+  border-color: var(--sepia-border);
+}
+.scroll-top.visible { display: flex; }
+
+/* Footer */
+.page-footer {
+  text-align: center;
+  padding: 40px 24px;
+  color: var(--sepia-mid);
+  font-size: 13px;
+  line-height: 1.7;
+  background: rgba(44, 36, 22, 0.3);
+  border-top: 1px solid rgba(196, 168, 107, 0.1);
+}
+.page-footer a {
+  color: var(--sepia-light);
+}
+</style>
+</head>
+<body>
+
+<a href="../../index.html" class="back-link">&larr; Back to Book</a>
+
+<section class="hero">
+  <h1>Fossils Found Since</h1>
+  <div class="subtitle">
+    "Why then is not every geological formation and every stratum full of such intermediate links?"
+    <br>&mdash; Charles Darwin, 1859
+  </div>
+  <div class="intro">
+    Darwin lamented the "extreme imperfection of the geological record" and the absence of transitional fossils.
+    In the 167 years since, science has found them &mdash; bridging gap after gap that once seemed unbridgeable.
+    Explore the strata below: each layer represents a major evolutionary transition, each fossil a bridge Darwin desperately wished for.
+  </div>
+  <div class="stats-bar">
+    <div class="stat">
+      <span class="stat-num">30+</span>
+      <span class="stat-label">Transitional Fossils</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">8</span>
+      <span class="stat-label">Major Transitions</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">1861&ndash;2015</span>
+      <span class="stat-label">Discovery Span</span>
+    </div>
+  </div>
+</section>
+
+<div class="legend">
+  <div class="legend-item">
+    <div class="legend-swatch darwin"></div>
+    <span>Darwin's Worry (1859)</span>
+  </div>
+  <div class="legend-item">
+    <div class="legend-swatch science"></div>
+    <span>Science's Answer</span>
+  </div>
+  <div class="legend-item">
+    <span style="font-size:11px; opacity:0.6;">Click any stratum to explore &middot; Click any fossil to see the paired view</span>
+  </div>
+</div>
+
+<div class="strata-container" id="strata">
+</div>
+
+<button class="scroll-top" id="scrollTop" title="Back to top">&uarr;</button>
+
+<footer class="page-footer">
+  Each fossil listed is linked to its Wikipedia article for further reading.<br>
+  Images loaded dynamically from the Wikipedia REST API.<br>
+  Darwin quotes from <em>On the Origin of Species</em>, first edition (1859).<br>
+  <a href="../../index.html">&larr; Return to the book</a>
+</footer>
+
+<script>
+const STRATA = [
+  {
+    id: 'dino-bird',
+    title: 'Dinosaur \u2192 Bird',
+    icon: '\uD83E\uDD85',
+    color: '139,115,85',
+    desc: 'The transition from theropod dinosaurs to modern birds \u2014 one of evolution\'s most spectacular transformations.',
+    fossils: [
+      {
+        name: 'Archaeopteryx lithographica',
+        date: '1861',
+        location: 'Solnhofen, Bavaria, Germany',
+        brief: 'The first transitional fossil \u2014 discovered just 2 years after Origin',
+        wiki: 'Archaeopteryx',
+        darwinQuote: 'We should be extremely cautious in concluding that an organ could not have been formed by transitional gradations of some kind.',
+        darwinSource: 'Chapter 6 \u2014 Difficulties on Theory',
+        scienceText: '<strong>Archaeopteryx</strong>, discovered in 1861 in a Bavarian limestone quarry, stunned the world just two years after Darwin published Origin. This 150-million-year-old creature had feathered wings like a bird but teeth, clawed fingers, and a bony tail like a dinosaur \u2014 exactly the kind of transitional form Darwin\'s theory predicted. Thomas Huxley immediately recognized it as evidence linking reptiles and birds.',
+        transition: 'Theropod dinosaur \u2192 Bird'
+      },
+      {
+        name: 'Sinosauropteryx prima',
+        date: '1996',
+        location: 'Liaoning Province, China',
+        brief: 'First feathered non-avian dinosaur ever found',
+        wiki: 'Sinosauropteryx',
+        darwinQuote: 'Furthermore, we may conclude that transitional grades between structures fitted for very different habits of life will rarely have been developed at an early period in great numbers.',
+        darwinSource: 'Chapter 6 \u2014 Difficulties on Theory',
+        scienceText: '<strong>Sinosauropteryx</strong>, discovered by farmers in Liaoning Province in 1996, was the first dinosaur found with a covering of simple filamentous feathers \u2014 proving that feathers evolved before flight. These proto-feathers were likely used for insulation, changing our understanding of dinosaur biology forever. Its discovery opened the floodgates of feathered dinosaur finds from China.',
+        transition: 'Non-avian dinosaur with proto-feathers'
+      },
+      {
+        name: 'Confuciusornis sanctus',
+        date: '1994',
+        location: 'Liaoning Province, China',
+        brief: 'Earliest known bird with a true beak and no teeth',
+        wiki: 'Confuciusornis',
+        darwinQuote: 'We should always look for forms intermediate between each species and a common but unknown progenitor.',
+        darwinSource: 'Chapter 9 \u2014 On the Imperfection of the Geological Record',
+        scienceText: '<strong>Confuciusornis</strong>, from 125 million years ago, was the earliest known bird with a toothless beak, a key step toward modern birds. Yet it retained dinosaurian features: clawed wings and a primitive skeletal structure. Thousands of specimens have been found, many exquisitely preserved with feather impressions, showing both male and female forms with distinct plumage.',
+        transition: 'Early beaked bird'
+      },
+      {
+        name: 'Microraptor gui',
+        date: '2000',
+        location: 'Liaoning Province, China',
+        brief: 'Four-winged dinosaur suggesting multiple paths to flight',
+        wiki: 'Microraptor',
+        darwinQuote: 'Animals displaying early transitional grades of the structure will seldom continue to exist to the present day, for they will have been supplanted by the very process of perfection through natural selection.',
+        darwinSource: 'Chapter 6 \u2014 Difficulties on Theory',
+        scienceText: '<strong>Microraptor</strong>, discovered in 2000, was a pigeon-sized dromaeosaurid with long flight feathers on both its arms and legs \u2014 a four-winged dinosaur. It could likely glide between trees. This astonishing form suggested that the evolution of flight may have passed through a four-winged stage, an evolutionary experiment unseen in any living bird.',
+        transition: 'Four-winged gliding dinosaur'
+      },
+      {
+        name: 'Anchiornis huxleyi',
+        date: '2009',
+        location: 'Liaoning Province, China',
+        brief: 'Oldest known feathered dinosaur with reconstructed color',
+        wiki: 'Anchiornis',
+        darwinQuote: 'The number of intermediate and transitional links, between all living and extinct species, must have been inconceivably great.',
+        darwinSource: 'Chapter 9 \u2014 On the Imperfection of the Geological Record',
+        scienceText: '<strong>Anchiornis</strong>, named in honor of Thomas Huxley, is from about 160 million years ago \u2014 older than Archaeopteryx. It had feathered limbs and was one of the first fossils whose actual color was determined from preserved melanosomes: a mostly black body with white-banded wings and a rusty red crest. This showed feathers were already complex and patterned long before flight evolved.',
+        transition: 'Feathered troodontid predating Archaeopteryx'
+      }
+    ]
+  },
+  {
+    id: 'fish-tetrapod',
+    title: 'Fish \u2192 Tetrapod',
+    icon: '\uD83D\uDC1F',
+    color: '107,142,107',
+    desc: 'How fish crawled onto land \u2014 one of the most dramatic transitions in life\'s history, spanning the Late Devonian.',
+    fossils: [
+      {
+        name: 'Tiktaalik roseae',
+        date: '2004',
+        location: 'Ellesmere Island, Nunavut, Canada',
+        brief: 'The "fishapod" \u2014 a fish with wrists',
+        wiki: 'Tiktaalik',
+        darwinQuote: 'But, as by this theory innumerable transitional forms must have existed, why do we not find them embedded in countless numbers in the crust of the earth?',
+        darwinSource: 'Chapter 6 \u2014 Difficulties on Theory',
+        scienceText: '<strong>Tiktaalik</strong>, discovered in 2004 by Neil Shubin\'s team in Arctic Canada, is a 375-million-year-old fish with gills and scales \u2014 but also a flat crocodile-like head, a flexible neck, and front fins containing bones equivalent to a shoulder, elbow, and wrist. It could prop itself up in shallow water. The team predicted where to find it based on geological maps of Devonian-age sediments, then traveled to the Arctic and found it.',
+        transition: 'Lobe-finned fish with proto-limbs'
+      },
+      {
+        name: 'Acanthostega gunnari',
+        date: '1987',
+        location: 'East Greenland',
+        brief: 'Eight-fingered aquatic tetrapod',
+        wiki: 'Acanthostega',
+        darwinQuote: 'Geology assuredly does not reveal any such finely graduated organic chain; and this, perhaps, is the most obvious and gravest objection which can be urged against my theory.',
+        darwinSource: 'Chapter 9 \u2014 On the Imperfection of the Geological Record',
+        scienceText: '<strong>Acanthostega</strong>, rediscovered as nearly complete skeletons in 1987, revolutionized understanding of the fish-tetrapod transition. This 365-million-year-old creature had eight fingers on each hand and internal gills \u2014 proving that limbs with digits evolved for life in water, not for walking on land. It shattered the assumption that legs evolved for terrestrial locomotion.',
+        transition: 'Aquatic tetrapod with digits but still gill-breathing'
+      },
+      {
+        name: 'Ichthyostega stensioei',
+        date: '1932',
+        location: 'East Greenland',
+        brief: 'One of the earliest known tetrapods',
+        wiki: 'Ichthyostega',
+        darwinQuote: 'We ought only to look for a few links, some more closely, some more distantly related to each other.',
+        darwinSource: 'Chapter 9 \u2014 On the Imperfection of the Geological Record',
+        scienceText: '<strong>Ichthyostega</strong>, discovered in 1932 in Devonian rocks of Greenland, was among the first known tetrapods. About 1.5 meters long, it had a fish-like tail fin and body but four limbs with digits. Recent CT scanning revealed its limbs were probably used for hauling through shallow swamps rather than walking \u2014 more seal-like than lizard-like.',
+        transition: 'Early tetrapod with fish-like features'
+      },
+      {
+        name: 'Panderichthys rhombolepis',
+        date: '1941',
+        location: 'Latvia',
+        brief: 'Lobe-finned fish with tetrapod skull features',
+        wiki: 'Panderichthys',
+        darwinQuote: 'The explanation lies, as I believe, in the extreme imperfection of the geological record.',
+        darwinSource: 'Chapter 9 \u2014 On the Imperfection of the Geological Record',
+        scienceText: '<strong>Panderichthys</strong>, from 380-million-year-old Latvian sediments, is a lobe-finned fish whose flat head and forward-facing eyes resemble a tetrapod\'s rather than a fish\'s. CT scans in 2008 revealed rudimentary finger-like bones in its fins, pushing back the origin of digit precursors to before Tiktaalik.',
+        transition: 'Fish with tetrapod-like skull and fin bones'
+      }
+    ]
+  },
+  {
+    id: 'land-whale',
+    title: 'Land Mammal \u2192 Whale',
+    icon: '\uD83D\uDC0B',
+    color: '123,142,151',
+    desc: 'How four-legged land mammals returned to the sea and became the largest animals ever to live.',
+    fossils: [
+      {
+        name: 'Pakicetus inachus',
+        date: '1983',
+        location: 'Punjab, Pakistan',
+        brief: 'A wolf-sized whale ancestor that lived on land',
+        wiki: 'Pakicetus',
+        darwinQuote: 'In North America the black bear was seen by Hearne swimming for hours with widely open mouth, thus catching, like a whale, insects in the water. Even in so extreme a case as this... I can see no difficulty in a race of bears being rendered, by natural selection, more and more aquatic in their structure and habits, with larger and larger mouths, till a creature was produced as monstrous as a whale.',
+        darwinSource: 'Chapter 6 \u2014 Transitions in Habits of Life',
+        scienceText: '<strong>Pakicetus</strong>, discovered in 1983 in Pakistan, lived about 50 million years ago and was a wolf-sized, four-legged land mammal \u2014 yet its ear bones reveal it is an early cetacean (whale relative). It had hooves and probably waded in shallow water to catch fish. Darwin was ridiculed for his bear-to-whale speculation, but reality proved even stranger: whales descended from hoofed land mammals related to hippos.',
+        transition: 'Terrestrial ancestor of whales'
+      },
+      {
+        name: 'Ambulocetus natans',
+        date: '1994',
+        location: 'Punjab, Pakistan',
+        brief: 'The "walking whale" \u2014 an amphibious cetacean',
+        wiki: 'Ambulocetus',
+        darwinQuote: 'How, for instance, a land carnivorous animal could have been converted into one with aquatic habits; for how could the animal in its transitional state have subsisted?',
+        darwinSource: 'Chapter 6 \u2014 Difficulties on Theory',
+        scienceText: '<strong>Ambulocetus</strong> ("walking whale"), from 49 million years ago, was a sea-lion-sized amphibious predator. It had powerful hind legs for swimming and walking, a long crocodile-like snout, and could hunt both on land and in water. Its bones show it swam with an up-and-down spinal undulation, like modern whales, not side-to-side like fish \u2014 a holdover from its land-mammal ancestry.',
+        transition: 'Semi-aquatic whale ancestor'
+      },
+      {
+        name: 'Rodhocetus kasranii',
+        date: '1994',
+        location: 'Balochistan, Pakistan',
+        brief: 'An early whale already committed to swimming',
+        wiki: 'Rodhocetus',
+        darwinQuote: 'It would be easy to show that within the same group carnivorous animals exist having every intermediate grade between truly aquatic and strictly terrestrial habits.',
+        darwinSource: 'Chapter 6 \u2014 Difficulties on Theory',
+        scienceText: '<strong>Rodhocetus</strong>, from 47 million years ago, shows the transition progressing further. Its pelvis was disconnected from its spine (unlike land mammals), allowing powerful tail-driven swimming. Its hind legs were shrinking but still present, and its feet were likely webbed. The sacral vertebrae show it was the earliest whale fully committed to tail-powered swimming.',
+        transition: 'Tail-swimming whale with shrinking legs'
+      },
+      {
+        name: 'Basilosaurus isis',
+        date: '1834',
+        location: 'Louisiana, USA (later Egypt)',
+        brief: 'Giant ancient whale with tiny vestigial hind legs',
+        wiki: 'Basilosaurus',
+        darwinQuote: 'The most striking case, however, is that of the Whale family; as these animals have huge bones, are marine, and range over the world, the fact of not a single bone of a whale having been discovered in any secondary formation, seemed fully to justify the belief that this great and distinct order had been suddenly produced.',
+        darwinSource: 'Chapter 9 \u2014 On the Sudden Appearance of Groups',
+        scienceText: '<strong>Basilosaurus</strong>, initially misnamed as a reptile ("king lizard"), was a fully aquatic whale up to 18 meters long that lived 37 million years ago. Crucially, it retained tiny but complete hind legs with knees, ankles, and toes \u2014 useless for walking but powerful evidence of terrestrial ancestry. Complete skeletons from Egypt\'s "Valley of the Whales" (Wadi Al-Hitan, a UNESCO World Heritage Site) document this transition beautifully.',
+        transition: 'Fully aquatic whale with vestigial hind limbs'
+      },
+      {
+        name: 'Maiacetus inuus',
+        date: '2009',
+        location: 'Balochistan, Pakistan',
+        brief: 'Pregnant whale ancestor found with fetus positioned for land birth',
+        wiki: 'Maiacetus',
+        darwinQuote: 'But just in proportion as this process of extermination has acted on an enormous scale, so must the number of intermediate varieties, which have formerly existed on the earth, be truly enormous.',
+        darwinSource: 'Chapter 9 \u2014 On the Imperfection of the Geological Record',
+        scienceText: '<strong>Maiacetus</strong> ("mother whale"), described in 2009, provided an extraordinary snapshot: a pregnant female with a fetus positioned head-first, indicating it still gave birth on land like a land mammal, not tail-first like modern whales. This 47.5-million-year-old protocetid could both walk and swim, capturing the exact moment when whales were between two worlds.',
+        transition: 'Amphibious whale that birthed on land'
+      }
+    ]
+  },
+  {
+    id: 'ape-human',
+    title: 'Ape \u2192 Human',
+    icon: '\uD83E\uDDCD',
+    color: '160,133,108',
+    desc: 'The hominin family tree \u2014 from forest-dwelling apes to upright walkers to us.',
+    fossils: [
+      {
+        name: 'Sahelanthropus tchadensis',
+        date: '2001',
+        location: 'Toros-Menalla, Chad',
+        brief: 'Oldest known hominin \u2014 7 million years old',
+        wiki: 'Sahelanthropus',
+        darwinQuote: 'Consequently, if my theory be true, it is indisputable that before the lowest Silurian stratum was deposited, long periods elapsed... and that during these vast, yet quite unknown, periods of time, the world swarmed with living creatures.',
+        darwinSource: 'Chapter 9 \u2014 On the Sudden Appearance in Lowest Strata',
+        scienceText: '<strong>Sahelanthropus tchadensis</strong>, nicknamed "Touma\u00ef" ("hope of life"), was announced in 2002 from a skull found in Chad. At approximately 7 million years old, it dates close to the time when human and chimpanzee lineages diverged. Its foramen magnum (the hole where the spine enters the skull) is positioned for upright posture, suggesting bipedalism at the very dawn of the human line.',
+        transition: 'Earliest known hominin'
+      },
+      {
+        name: 'Ardipithecus ramidus',
+        date: '1994',
+        location: 'Afar Region, Ethiopia',
+        brief: '"Ardi" \u2014 4.4 million-year-old woodland bipedal ape',
+        wiki: 'Ardipithecus',
+        darwinQuote: 'As natural selection acts solely by the preservation of profitable modifications, each new form will tend in a fully-stocked country to take the place of, and finally to exterminate, its own less improved parent or other less-favoured forms with which it comes into competition.',
+        darwinSource: 'Chapter 6 \u2014 On the Absence of Transitional Varieties',
+        scienceText: '<strong>Ardipithecus ramidus</strong>, known from a partial skeleton nicknamed "Ardi," lived 4.4 million years ago in Ethiopian woodlands. She had an opposable big toe for climbing trees yet could walk upright on the ground \u2014 demolishing the idea that bipedalism evolved on open savannahs. Ardi shows that our ancestors were not chimpanzee-like, but something altogether different.',
+        transition: 'Woodland-dwelling bipedal ape'
+      },
+      {
+        name: 'Australopithecus afarensis',
+        date: '1974',
+        location: 'Hadar, Ethiopia',
+        brief: '"Lucy" \u2014 the most famous human ancestor',
+        wiki: 'Australopithecus_afarensis',
+        darwinQuote: 'I believe in no fixed law of development, causing all the inhabitants of a country to change abruptly, or simultaneously, or to an equal degree. The process of modification must be extremely slow.',
+        darwinSource: 'Chapter 10 \u2014 On the Geological Succession of Organic Beings',
+        scienceText: '<strong>Australopithecus afarensis</strong>, known from the famous "Lucy" skeleton found by Donald Johanson in 1974, lived 3.2 million years ago. She stood about 1.1 meters tall, walked fully upright, but had a brain only slightly larger than a chimpanzee\'s. The 1978 discovery of fossilized footprints at Laetoli, Tanzania, confirmed her species walked on two legs 3.6 million years ago.',
+        transition: 'Upright-walking hominin with ape-sized brain'
+      },
+      {
+        name: 'Homo erectus',
+        date: '1891',
+        location: 'Trinil, Java, Indonesia',
+        brief: 'First hominin to leave Africa \u2014 Dubois\' "Java Man"',
+        wiki: 'Homo_erectus',
+        darwinQuote: 'The number of specimens in all our museums is absolutely as nothing compared with the countless generations of countless species which certainly have existed.',
+        darwinSource: 'Chapter 14 \u2014 Recapitulation',
+        scienceText: '<strong>Homo erectus</strong>, discovered by Eug\u00e8ne Dubois in Java in 1891, was the first human ancestor found outside Europe. With a brain roughly two-thirds the size of modern humans, it made sophisticated stone tools, controlled fire, and was the first hominin to migrate across continents. The 1984 "Turkana Boy" skeleton from Kenya showed a nearly modern body plan by 1.6 million years ago.',
+        transition: 'Large-brained, tool-making human ancestor'
+      },
+      {
+        name: 'Homo naledi',
+        date: '2013',
+        location: 'Rising Star Cave, South Africa',
+        brief: 'Small-brained hominin that may have buried its dead',
+        wiki: 'Homo_naledi',
+        darwinQuote: 'Only a small portion of the surface of the earth has been geologically explored, and no part with sufficient care, as the important discoveries made every year in Europe prove.',
+        darwinSource: 'Chapter 9 \u2014 On the Poorness of Pal\u00e6ontological Collections',
+        scienceText: '<strong>Homo naledi</strong>, discovered in 2013 deep inside South Africa\'s Rising Star cave system, confounded expectations. With a brain one-third the size of ours but a relatively modern body, it lived around 300,000 years ago \u2014 contemporary with early Homo sapiens. Most remarkably, the placement of over 1,500 bones deep in a nearly inaccessible cave suggests deliberate body disposal, once thought exclusive to large-brained humans.',
+        transition: 'Small-brained hominin with complex behavior'
+      }
+    ]
+  },
+  {
+    id: 'reptile-mammal',
+    title: 'Reptile \u2192 Mammal',
+    icon: '\uD83E\uDD8E',
+    color: '108,123,108',
+    desc: 'The synapsid-to-mammal transition \u2014 documented by one of the most complete fossil sequences known.',
+    fossils: [
+      {
+        name: 'Dimetrodon grandis',
+        date: '1878',
+        location: 'Texas, USA',
+        brief: 'Sail-backed synapsid \u2014 more closely related to us than to any dinosaur',
+        wiki: 'Dimetrodon',
+        darwinQuote: 'If it could be demonstrated that any complex organ existed, which could not possibly have been formed by numerous, successive, slight modifications, my theory would absolutely break down.',
+        darwinSource: 'Chapter 6 \u2014 Difficulties on Theory',
+        scienceText: '<strong>Dimetrodon</strong>, the iconic sail-backed predator often mistaken for a dinosaur, was actually a synapsid \u2014 a member of the lineage that led to mammals. Living 290 million years ago, it had differentiated teeth (incisors, canines) unlike the uniform teeth of true reptiles. Its large sail may have aided thermoregulation, foreshadowing the warm-bloodedness of mammals.',
+        transition: 'Early synapsid with differentiated teeth'
+      },
+      {
+        name: 'Cynognathus crateronotus',
+        date: '1894',
+        location: 'South Africa',
+        brief: 'Dog-sized predator with mammal-like jaw and teeth',
+        wiki: 'Cynognathus',
+        darwinQuote: 'So that the number of intermediate and transitional links, between all living and extinct species, must have been inconceivably great. But assuredly, if this theory be true, such have lived upon this earth.',
+        darwinSource: 'Chapter 9 \u2014 On the Imperfection of the Geological Record',
+        scienceText: '<strong>Cynognathus</strong>, described by Seeley in 1894, was a dog-sized cynodont predator from 240 million years ago. It had a nearly mammalian jaw, differentiated teeth (incisors, canines, molars), evidence of whiskers (and therefore possibly fur), and a secondary palate allowing it to breathe while eating \u2014 all mammalian traits housed in a still-reptilian skull.',
+        transition: 'Advanced cynodont with near-mammalian jaw'
+      },
+      {
+        name: 'Thrinaxodon liorhinus',
+        date: '1894',
+        location: 'South Africa',
+        brief: 'Cat-sized cynodont showing evidence of whiskers',
+        wiki: 'Thrinaxodon',
+        darwinQuote: 'No doubt many organs exist of which we do not know the transitional grades, more especially if we look to much-isolated species, round which, according to my theory, there has been much extinction.',
+        darwinSource: 'Chapter 6 \u2014 Difficulties on Theory',
+        scienceText: '<strong>Thrinaxodon</strong>, a cat-sized cynodont from 245 million years ago, shows pits on its snout that in modern mammals house whisker follicles \u2014 suggesting it had sensory whiskers and perhaps fur. Its vertebral column was differentiated into distinct cervical, thoracic, and lumbar regions like a mammal, and its ribs suggest it may have had a diaphragm for more efficient breathing.',
+        transition: 'Cynodont with probable whiskers and diaphragm'
+      },
+      {
+        name: 'Morganucodon watsoni',
+        date: '1949',
+        location: 'Glamorgan, Wales',
+        brief: 'Tiny shrew-like animal at the boundary of mammal-ness',
+        wiki: 'Morganucodon',
+        darwinQuote: 'We should be extremely cautious in concluding that an organ could not have been formed by transitional gradations of some kind.',
+        darwinSource: 'Chapter 6 \u2014 Difficulties on Theory',
+        scienceText: '<strong>Morganucodon</strong>, a shrew-sized animal from 205 million years ago, sits at the very boundary between non-mammalian synapsids and true mammals. It possessed the defining mammalian jaw joint (dentary-squamosal) but simultaneously retained the old reptilian joint bones, which were in the process of migrating into the middle ear to become the hammer and anvil \u2014 catching this extraordinary transition in the act.',
+        transition: 'Proto-mammal with dual jaw joints'
+      }
+    ]
+  },
+  {
+    id: 'cambrian',
+    title: 'Cambrian Explosion',
+    icon: '\uD83E\uDEBC',
+    color: '142,123,108',
+    desc: 'The "sudden appearance" of complex animals that troubled Darwin most \u2014 now illuminated by Precambrian and Cambrian fossil beds.',
+    fossils: [
+      {
+        name: 'Anomalocaris canadensis',
+        date: '1892',
+        location: 'Burgess Shale, British Columbia, Canada',
+        brief: 'Apex predator of the Cambrian seas \u2014 took 90 years to reconstruct',
+        wiki: 'Anomalocaris',
+        darwinQuote: 'The case at present must remain inexplicable; and may be truly urged as a valid argument against the views here entertained.',
+        darwinSource: 'Chapter 9 \u2014 On the Sudden Appearance in Lowest Strata',
+        scienceText: '<strong>Anomalocaris</strong>, the apex predator of the Cambrian seas (520 million years ago), was up to one meter long with compound eyes, grasping appendages, and a circular mouth. Initially found as fragments misidentified as separate animals (a shrimp, a jellyfish, a sea cucumber), it took 90 years to assemble the puzzle. It belongs to the stem group of arthropods, helping explain how this enormous phylum arose.',
+        transition: 'Stem-group arthropod, Cambrian apex predator'
+      },
+      {
+        name: 'Hallucigenia sparsa',
+        date: '1977',
+        location: 'Burgess Shale, British Columbia, Canada',
+        brief: 'The "dream animal" \u2014 initially reconstructed upside-down',
+        wiki: 'Hallucigenia',
+        darwinQuote: 'To the question why we do not find records of these vast primordial periods, I can give no satisfactory answer.',
+        darwinSource: 'Chapter 9 \u2014 On the Sudden Appearance in Lowest Strata',
+        scienceText: '<strong>Hallucigenia</strong>, named for its dreamlike appearance, was initially reconstructed upside-down and backward. When corrected in the 1990s, it was recognized as an early relative of velvet worms (Onychophora) \u2014 placing it on the lineage leading to arthropods. Its claws and body plan help bridge the gap between worm-like ancestors and the jointed-legged animals that dominate Earth today.',
+        transition: 'Stem-group onychophoran/arthropod relative'
+      },
+      {
+        name: 'Kimberella quadrata',
+        date: '1993',
+        location: 'White Sea, Russia',
+        brief: 'Precambrian animal that pushed complex life back before the Cambrian',
+        wiki: 'Kimberella',
+        darwinQuote: 'If my theory be true, it is indisputable that before the lowest Silurian stratum was deposited, long periods elapsed... the world swarmed with living creatures.',
+        darwinSource: 'Chapter 9 \u2014 On the Sudden Appearance in Lowest Strata',
+        scienceText: '<strong>Kimberella</strong>, reinterpreted in 1993 from fossils in 555-million-year-old Ediacaran rocks of Russia, appears to be a bilaterian animal \u2014 possibly a mollusk relative \u2014 that lived before the Cambrian explosion. Its scratch marks on microbial mats suggest it grazed like a snail. Darwin wished for Precambrian life; Kimberella is exactly the kind of complex pre-Cambrian animal he hoped for.',
+        transition: 'Precambrian bilaterian animal'
+      },
+      {
+        name: 'Dickinsonia costata',
+        date: '1947',
+        location: 'Ediacara Hills, South Australia',
+        brief: 'Precambrian organism confirmed as an animal in 2018',
+        wiki: 'Dickinsonia',
+        darwinQuote: 'We should not forget that only a small portion of the world is known with accuracy.',
+        darwinSource: 'Chapter 9 \u2014 On the Sudden Appearance in Lowest Strata',
+        scienceText: '<strong>Dickinsonia</strong>, from 558 million years ago, puzzled scientists for decades \u2014 was it a lichen, a worm, a jellyfish? In 2018, biomarker analysis of preserved cholesterol molecules confirmed it as an animal. Living 20 million years before the Cambrian explosion, it is one of the oldest confirmed animals on Earth, proving that animal life did not appear "suddenly" in the Cambrian as Darwin\'s critics claimed.',
+        transition: 'One of the oldest confirmed animals'
+      }
+    ]
+  },
+  {
+    id: 'horse',
+    title: 'Horse Evolution',
+    icon: '\uD83D\uDC0E',
+    color: '123,123,108',
+    desc: 'The classic textbook series \u2014 from a fox-sized forest browser to the modern horse. Darwin specifically discussed horses and tapirs.',
+    fossils: [
+      {
+        name: 'Hyracotherium (Eohippus)',
+        date: '1876',
+        location: 'Wyoming, USA',
+        brief: 'The "dawn horse" \u2014 fox-sized with four toes',
+        wiki: 'Hyracotherium',
+        darwinQuote: 'If we look to forms very distinct, for instance to the horse and tapir, we have no reason to suppose that links ever existed directly intermediate between them, but between each and an unknown common parent.',
+        darwinSource: 'Chapter 9 \u2014 On the Imperfection of the Geological Record',
+        scienceText: '<strong>Hyracotherium</strong> (also called Eohippus, the "dawn horse") was a dog-sized animal that lived 55 million years ago with four toes on its front feet, three on its hind feet, and teeth suited for browsing soft leaves. Standing only 20 inches tall, it looked nothing like a modern horse. O.C. Marsh assembled the first horse evolution sequence in the 1870s, and it became the most celebrated example of evolutionary change in the fossil record.',
+        transition: 'Earliest known horse ancestor'
+      },
+      {
+        name: 'Mesohippus bairdii',
+        date: '1875',
+        location: 'Great Plains, USA',
+        brief: 'Three-toed horse \u2014 larger and more horse-like',
+        wiki: 'Mesohippus',
+        darwinQuote: 'The common parent will have had in its whole organisation much general resemblance to the tapir and to the horse; but in some points of structure may have differed considerably from both.',
+        darwinSource: 'Chapter 9 \u2014 On the Imperfection of the Geological Record',
+        scienceText: '<strong>Mesohippus</strong>, from about 37 million years ago, stood 24 inches tall \u2014 noticeably larger than Hyracotherium. It had three toes on each foot (the fourth having been reduced to a vestige), a longer snout, and larger eyes. Its teeth showed a shift from browsing to mixed feeding. This intermediate form beautifully illustrates the gradual changes Darwin predicted.',
+        transition: 'Three-toed intermediate horse'
+      },
+      {
+        name: 'Merychippus insignis',
+        date: '1874',
+        location: 'Great Plains, USA',
+        brief: 'First grazing horse \u2014 adapted to open grasslands',
+        wiki: 'Merychippus',
+        darwinQuote: 'Species of different genera and classes have not changed at the same rate, or in the same degree.',
+        darwinSource: 'Chapter 10 \u2014 On the Geological Succession of Organic Beings',
+        scienceText: '<strong>Merychippus</strong>, living about 17 million years ago, was the first horse adapted for grazing on grass rather than browsing leaves. It stood on tiptoe on its enlarged central toe (the side toes no longer touching the ground), had high-crowned teeth with cement filling \u2014 ideal for grinding tough grasses \u2014 and springy ligaments for running on hard prairie ground. The age of grasslands created a new kind of horse.',
+        transition: 'First grazing horse with high-crowned teeth'
+      },
+      {
+        name: 'Pliohippus pernix',
+        date: '1874',
+        location: 'Great Plains, USA',
+        brief: 'Nearly one-toed \u2014 the direct precursor to modern Equus',
+        wiki: 'Pliohippus',
+        darwinQuote: 'When I found in La Plata the tooth of a horse embedded with the remains of Mastodon, Megatherium, Toxodon, and other extinct monsters... I was filled with astonishment.',
+        darwinSource: 'Chapter 10 \u2014 On Extinction',
+        scienceText: '<strong>Pliohippus</strong>, from about 12 million years ago, was essentially a one-toed horse. Its side toes had shrunk to tiny splints hidden under the skin. Standing about 12 hands tall, it was the size of a small modern pony and was long considered the direct ancestor of Equus, the genus that includes all modern horses, zebras, and donkeys.',
+        transition: 'One-toed horse, near-modern form'
+      }
+    ]
+  },
+  {
+    id: 'plant',
+    title: 'Plant Evolution',
+    icon: '\uD83C\uDF3F',
+    color: '108,123,142',
+    desc: 'From the first land plants to flowering plants \u2014 Darwin called the origin of angiosperms an "abominable mystery."',
+    fossils: [
+      {
+        name: 'Cooksonia pertoni',
+        date: '1937',
+        location: 'Wales, UK',
+        brief: 'One of the earliest known land plants',
+        wiki: 'Cooksonia',
+        darwinQuote: 'With respect to the terrestrial productions which lived during the Secondary and Palaeozoic periods, it is superfluous to state that our evidence from fossil remains is fragmentary in an extreme degree.',
+        darwinSource: 'Chapter 9 \u2014 On the Poorness of Pal\u00e6ontological Collections',
+        scienceText: '<strong>Cooksonia</strong>, from about 425 million years ago, was one of the simplest and earliest known land plants. Just a few centimeters tall with forking stems ending in spore-bearing capsules, it had no leaves or roots. It documents the critical transition from aquatic algae to land-dwelling plants, one of the most consequential events in Earth\'s history.',
+        transition: 'One of the earliest vascular land plants'
+      },
+      {
+        name: 'Archaeopteris hibernica',
+        date: '1871',
+        location: 'Ireland (later found worldwide)',
+        brief: 'First modern tree \u2014 fern leaves on a woody trunk',
+        wiki: 'Archaeopteris_(plant)',
+        darwinQuote: 'In other cases we have the plainest evidence in great fossilised trees, still standing upright as they grew, of many long intervals of time and changes of level during the process of deposition.',
+        darwinSource: 'Chapter 9 \u2014 On the Absence of Intermediate Varieties',
+        scienceText: '<strong>Archaeopteris</strong> (not to be confused with Archaeopteryx the bird!) was the first modern tree, living about 370 million years ago. It combined fern-like fronds with a woody trunk that grew in rings like a modern tree. It formed the first forests on Earth, transforming landscapes and atmospheric CO2 levels, and bridging the gap between small spore-bearing plants and modern seed plants.',
+        transition: 'First modern tree \u2014 fern leaves, woody trunk'
+      },
+      {
+        name: 'Archaefructus liaoningensis',
+        date: '1998',
+        location: 'Liaoning Province, China',
+        brief: 'Among the earliest known flowering plants',
+        wiki: 'Archaefructus',
+        darwinQuote: 'The abrupt manner in which whole groups of species suddenly appear in certain formations, has been urged by several palaeontologists... as a fatal objection to the belief in the transmutation of species.',
+        darwinSource: 'Chapter 9 \u2014 On the Sudden Appearance of Groups',
+        scienceText: '<strong>Archaefructus</strong>, from 125-million-year-old lake sediments in China, is one of the earliest known flowering plants. Preserved complete with roots, stems, leaves, flowers, and seeds, it was an aquatic herb. Darwin famously called the rapid rise of flowering plants an "abominable mystery" in an 1879 letter. Archaefructus and related fossils have begun to unravel that mystery, showing angiosperms evolved earlier than once thought.',
+        transition: 'Earliest known flowering plant'
+      },
+      {
+        name: 'Rhynia gwynne-vaughaniae',
+        date: '1917',
+        location: 'Rhynie, Aberdeenshire, Scotland',
+        brief: 'Exquisitely preserved 410-million-year-old plant',
+        wiki: 'Rhynia',
+        darwinQuote: 'Geology plainly declares that all species have changed; and they have changed in the manner which my theory requires, for they have changed slowly and in a graduated manner.',
+        darwinSource: 'Chapter 14 \u2014 Recapitulation',
+        scienceText: '<strong>Rhynia</strong>, discovered in 1917 in the Rhynie chert of Scotland, is preserved in extraordinary cellular detail by silica from ancient hot springs. This 410-million-year-old plant had simple branching stems with no leaves and no roots \u2014 just a horizontal creeping axis. It shows the earliest stages of vascular plant evolution, when plants were just beginning their conquest of dry land.',
+        transition: 'Early vascular plant preserved in cellular detail'
+      }
+    ]
+  }
+];
+
+// Render the page
+function render() {
+  const container = document.getElementById('strata');
+  container.innerHTML = '';
+
+  STRATA.forEach((stratum, si) => {
+    const el = document.createElement('div');
+    el.className = 'stratum';
+    el.style.setProperty('--strata-color', stratum.color.split(',').map(c=>'#'+parseInt(c).toString(16).padStart(2,'0')).join(''));
+    el.style.setProperty('--strata-rgb', stratum.color);
+    el.style.borderLeftColor = `rgb(${stratum.color})`;
+
+    el.innerHTML = `
+      <div class="stratum-header" data-stratum="${si}">
+        <div class="stratum-icon">${stratum.icon}</div>
+        <div class="stratum-info">
+          <div class="stratum-title">${stratum.title}</div>
+          <div class="stratum-desc">${stratum.desc}</div>
+        </div>
+        <div class="stratum-count">${stratum.fossils.length} fossils</div>
+        <div class="stratum-chevron">&#9660;</div>
+      </div>
+      <div class="fossil-timeline">
+        ${stratum.fossils.map((f, fi) => renderFossil(f, fi, si)).join('')}
+      </div>
+    `;
+    container.appendChild(el);
+  });
+
+  // Event delegation
+  container.addEventListener('click', handleClick);
+}
+
+function renderFossil(f, fi, si) {
+  return `
+    <div class="fossil-card" data-wiki="${f.wiki}">
+      <div class="fossil-card-header" data-fossil="${si}-${fi}">
+        <div class="fossil-date">${f.date}</div>
+        <div class="fossil-name">${f.name}</div>
+        <div class="fossil-brief">${f.brief}</div>
+        <div class="fossil-expand">&#9660;</div>
+      </div>
+      <div class="fossil-detail">
+        <div class="paired-view">
+          <div class="darwin-side">
+            <div class="bridge-arrow">\u2192</div>
+            <div class="darwin-label">Darwin Wrote (1859)</div>
+            <div class="darwin-quote">${f.darwinQuote}</div>
+            <div class="darwin-source">\u2014 ${f.darwinSource}</div>
+          </div>
+          <div class="science-side">
+            <div class="science-label">Science Found</div>
+            <div class="fossil-image-container" id="img-${si}-${fi}">
+              <div class="fossil-image-placeholder img-loading">Loading image...</div>
+            </div>
+            <div class="science-text">${f.scienceText}</div>
+          </div>
+        </div>
+        <div class="fossil-footer">
+          <div class="fossil-meta">
+            <span>\uD83D\uDCCD ${f.location}</span>
+            <span>\uD83D\uDD17 ${f.transition}</span>
+          </div>
+          <a href="https://en.wikipedia.org/wiki/${f.wiki}" target="_blank" rel="noopener" class="wiki-link">Wikipedia \u2192</a>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function handleClick(e) {
+  // Stratum header click
+  const stratumHeader = e.target.closest('.stratum-header');
+  if (stratumHeader) {
+    const stratum = stratumHeader.closest('.stratum');
+    stratum.classList.toggle('open');
+    return;
+  }
+
+  // Fossil header click
+  const fossilHeader = e.target.closest('.fossil-card-header');
+  if (fossilHeader) {
+    const card = fossilHeader.closest('.fossil-card');
+    const wasOpen = card.classList.contains('open');
+    card.classList.toggle('open');
+
+    if (!wasOpen) {
+      // Load image
+      const wiki = card.dataset.wiki;
+      const id = fossilHeader.dataset.fossil;
+      loadImage(wiki, id);
+    }
+    return;
+  }
+}
+
+// Image loading cache
+const imageCache = {};
+
+function loadImage(wikiTitle, containerId) {
+  const container = document.getElementById('img-' + containerId);
+  if (!container || container.dataset.loaded) return;
+
+  if (imageCache[wikiTitle]) {
+    renderImage(container, imageCache[wikiTitle]);
+    return;
+  }
+
+  const url = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(wikiTitle)}`;
+  fetch(url)
+    .then(r => r.json())
+    .then(data => {
+      if (data.thumbnail && data.thumbnail.source) {
+        const imgData = {
+          src: data.thumbnail.source,
+          alt: data.title || wikiTitle,
+          desc: data.description || ''
+        };
+        imageCache[wikiTitle] = imgData;
+        renderImage(container, imgData);
+      } else {
+        container.innerHTML = '<div class="fossil-image-placeholder">No image available on Wikipedia</div>';
+      }
+      container.dataset.loaded = 'true';
+    })
+    .catch(() => {
+      container.innerHTML = '<div class="fossil-image-placeholder">Could not load image</div>';
+      container.dataset.loaded = 'true';
+    });
+}
+
+function renderImage(container, imgData) {
+  container.innerHTML = `
+    <img class="fossil-image" src="${imgData.src}" alt="${imgData.alt}" loading="lazy"
+         onerror="this.parentElement.innerHTML='<div class=fossil-image-placeholder>Image unavailable</div>'">
+    <div class="fossil-image-caption">${imgData.desc}</div>
+  `;
+  container.dataset.loaded = 'true';
+}
+
+// Scroll to top button
+const scrollBtn = document.getElementById('scrollTop');
+window.addEventListener('scroll', () => {
+  scrollBtn.classList.toggle('visible', window.scrollY > 600);
+});
+scrollBtn.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+// Initialize
+render();
+
+// Open first stratum by default
+setTimeout(() => {
+  const first = document.querySelector('.stratum');
+  if (first) first.classList.add('open');
+}, 100);
+</script>
+
+</body>
+</html>

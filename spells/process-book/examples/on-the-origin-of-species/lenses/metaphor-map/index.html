@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Darwin's Metaphors -- On the Origin of Species</title>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;-webkit-font-smoothing:antialiased}
+body{
+  background:#0a0e1a;
+  color:#c8bfa9;
+  font-family:'Crimson Text',Georgia,serif;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ---- top bar ---- */
+.top-bar{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 24px;
+  background:linear-gradient(180deg,rgba(10,14,26,.97) 60%,rgba(10,14,26,0));
+  pointer-events:none;
+}
+.top-bar *{pointer-events:auto}
+.top-bar a{
+  font-family:'Inter',sans-serif;font-size:.8rem;font-weight:500;
+  color:#8a7e6b;text-decoration:none;
+  transition:color .2s;
+}
+.top-bar a:hover{color:#d4c5a0}
+.top-bar .title{
+  font-family:'Crimson Text',Georgia,serif;
+  font-size:1.05rem;font-weight:600;color:#d4c5a0;
+  letter-spacing:.03em;
+}
+
+/* ---- canvas ---- */
+#sky{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0}
+
+/* ---- panels ---- */
+.panel{
+  position:fixed;z-index:50;
+  background:rgba(12,16,30,.94);
+  border:1px solid rgba(180,160,110,.12);
+  border-radius:10px;
+  backdrop-filter:blur(18px);
+  overflow:hidden;
+  transition:opacity .35s,transform .35s;
+}
+.panel.hidden{opacity:0;pointer-events:none;transform:translateY(12px)}
+
+/* -- constellation (family) panel -- */
+#family-panel{
+  top:50%;left:50%;transform:translate(-50%,-50%);
+  width:min(680px,92vw);max-height:85vh;
+  overflow-y:auto;
+  padding:32px 36px 28px;
+}
+#family-panel.hidden{transform:translate(-50%,-46%)}
+#family-panel h2{
+  font-family:'Crimson Text',Georgia,serif;
+  font-size:1.7rem;font-weight:700;color:#e8d8a8;
+  margin-bottom:4px;
+}
+#family-panel .subtitle{
+  font-family:'Inter',sans-serif;font-size:.78rem;font-weight:400;
+  color:#8a7e6b;margin-bottom:18px;display:block;
+}
+#family-panel .family-desc{
+  font-size:1.05rem;line-height:1.65;color:#b8aa8e;margin-bottom:22px;
+}
+.metaphor-list{list-style:none}
+.metaphor-list li{
+  padding:14px 16px;margin-bottom:8px;
+  background:rgba(180,160,110,.06);
+  border:1px solid rgba(180,160,110,.1);
+  border-radius:8px;cursor:pointer;
+  transition:background .2s,border-color .2s;
+}
+.metaphor-list li:hover{
+  background:rgba(180,160,110,.12);
+  border-color:rgba(180,160,110,.22);
+}
+.metaphor-list .m-name{
+  font-weight:700;color:#e0d0a0;font-size:1.05rem;display:block;
+}
+.metaphor-list .m-brief{
+  font-family:'Inter',sans-serif;font-size:.78rem;color:#8a7e6b;
+  margin-top:3px;display:block;
+}
+.metaphor-list .m-freq{
+  font-family:'Inter',sans-serif;font-size:.7rem;font-weight:500;
+  color:#a08c60;background:rgba(180,160,110,.1);
+  padding:2px 8px;border-radius:10px;float:right;margin-top:2px;
+}
+
+/* -- metaphor detail panel -- */
+#detail-panel{
+  top:50%;left:50%;transform:translate(-50%,-50%);
+  width:min(720px,94vw);max-height:88vh;
+  overflow-y:auto;padding:32px 36px 28px;
+}
+#detail-panel.hidden{transform:translate(-50%,-46%)}
+#detail-panel h2{
+  font-family:'Crimson Text',Georgia,serif;
+  font-size:1.55rem;font-weight:700;color:#e8d8a8;margin-bottom:2px;
+}
+#detail-panel .detail-family{
+  font-family:'Inter',sans-serif;font-size:.75rem;font-weight:500;
+  color:#a08c60;margin-bottom:16px;display:inline-block;
+  cursor:pointer;
+}
+#detail-panel .detail-family:hover{color:#d4c5a0}
+#detail-panel .analysis{
+  font-size:1.02rem;line-height:1.7;color:#b8aa8e;margin-bottom:22px;
+}
+.passage{
+  margin-bottom:18px;
+  border-left:3px solid rgba(200,170,90,.35);
+  padding:14px 18px 14px 20px;
+  background:rgba(180,160,110,.04);
+  border-radius:0 8px 8px 0;
+}
+.passage .p-chapter{
+  font-family:'Inter',sans-serif;font-size:.72rem;font-weight:500;
+  color:#a08c60;text-transform:uppercase;letter-spacing:.06em;
+  margin-bottom:6px;display:block;
+}
+.passage blockquote{
+  font-style:italic;font-size:1.02rem;line-height:1.7;color:#c8bfa9;
+  margin-bottom:8px;
+}
+.passage .p-comment{
+  font-family:'Inter',sans-serif;font-size:.82rem;color:#8a7e6b;
+  line-height:1.55;
+}
+
+/* close reading / depth-4 */
+.close-reading{
+  margin-top:20px;padding:18px 20px;
+  background:rgba(180,160,110,.06);border-radius:8px;
+  border:1px solid rgba(180,160,110,.1);
+}
+.close-reading h3{
+  font-family:'Crimson Text',Georgia,serif;
+  font-size:1.15rem;font-weight:700;color:#d4c5a0;margin-bottom:10px;
+}
+.close-reading p{
+  font-size:.95rem;line-height:1.7;color:#a89a80;
+}
+
+/* buttons */
+.btn-back{
+  font-family:'Inter',sans-serif;font-size:.78rem;font-weight:500;
+  color:#8a7e6b;background:none;border:1px solid rgba(180,160,110,.18);
+  border-radius:6px;padding:5px 14px;cursor:pointer;
+  margin-bottom:18px;transition:color .2s,border-color .2s;
+}
+.btn-back:hover{color:#d4c5a0;border-color:rgba(180,160,110,.35)}
+
+.panel-close{
+  position:absolute;top:14px;right:16px;
+  font-family:'Inter',sans-serif;font-size:1.1rem;
+  color:#8a7e6b;background:none;border:none;cursor:pointer;
+  width:28px;height:28px;display:flex;align-items:center;justify-content:center;
+  border-radius:50%;transition:background .2s,color .2s;
+}
+.panel-close:hover{background:rgba(180,160,110,.12);color:#d4c5a0}
+
+/* ---- legend / instructions ---- */
+#legend{
+  position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+  z-index:60;
+  font-family:'Inter',sans-serif;font-size:.75rem;color:#6a5e4b;
+  text-align:center;
+  transition:opacity .4s;
+}
+#legend.faded{opacity:.35}
+
+/* scrollbar */
+.panel::-webkit-scrollbar{width:6px}
+.panel::-webkit-scrollbar-track{background:transparent}
+.panel::-webkit-scrollbar-thumb{background:rgba(180,160,110,.2);border-radius:3px}
+
+/* ---- responsive ---- */
+@media(max-width:600px){
+  #family-panel,#detail-panel{padding:22px 18px 20px}
+  #family-panel h2{font-size:1.35rem}
+  #detail-panel h2{font-size:1.25rem}
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a href="../../index.html">&larr; Back to book</a>
+  <span class="title">Darwin's Metaphors</span>
+  <span style="width:90px"></span>
+</div>
+
+<canvas id="sky"></canvas>
+
+<div id="family-panel" class="panel hidden"></div>
+<div id="detail-panel" class="panel hidden"></div>
+
+<div id="legend">Click a constellation to explore a metaphor family. Hover over stars to see names.</div>
+
+<script>
+// =========================================================================
+//  DATA -- metaphor families, individual metaphors, passages, analysis
+// =========================================================================
+const DATA = [
+  {
+    id: "tree-of-life",
+    name: "The Tree of Life",
+    color: [110, 200, 120],
+    description: "Darwin's most sustained and influential metaphor: all living things connected by branching descent from common ancestors, like limbs, branches, and twigs of a great tree. It does triple duty -- explaining classification, extinction, and the hierarchy of groups within groups.",
+    metaphors: [
+      {
+        name: "The Great Tree",
+        brief: "The central image of branching descent",
+        frequency: 8,
+        analysis: "Darwin introduces the Tree of Life at the climax of Chapter 4, transforming an old metaphor into a rigorous explanatory device. The tree is not merely decorative: its structure explains why classification falls into 'groups subordinate to groups.' Living species are green twigs; extinct lineages are dead branches. The image carries both beauty and violence -- twigs 'overtop and kill' one another.",
+        passages: [
+          {
+            chapter: "Chapter 4 -- Natural Selection",
+            quote: "The affinities of all the beings of the same class have sometimes been represented by a great tree. I believe this simile largely speaks the truth. The green and budding twigs may represent existing species; and those produced during each former year may represent the long succession of extinct species.",
+            comment: "Darwin signals awareness that he is working with a simile, then declares his faith in its truthfulness -- a remarkable rhetorical move that elevates metaphor to explanation."
+          },
+          {
+            chapter: "Chapter 4 -- Natural Selection",
+            quote: "As buds give rise by growth to fresh buds, and these, if vigorous, branch out and overtop on all sides many a feebler branch, so by generation I believe it has been with the great Tree of Life, which fills with its dead and broken branches the crust of the earth, and covers the surface with its ever branching and beautiful ramifications.",
+            comment: "The passage culminates in an image of cosmic scope: the Tree fills the geological record with its dead wood and covers the living world with its crown. 'Beautiful ramifications' -- the double meaning of ramification (branching / consequence) is perfectly calibrated."
+          }
+        ],
+        closeReading: {
+          title: "From simile to explanation",
+          text: "Notice how Darwin first attributes the tree image to others ('have sometimes been represented by a great tree') before claiming it as explanatory rather than merely illustrative ('I believe this simile largely speaks the truth'). He then systematically maps every feature of a real tree onto the biological world: green twigs = living species, dead branches = extinctions, forks = common ancestors. The metaphor becomes a model."
+        }
+      },
+      {
+        name: "Branching and Ramification",
+        brief: "The process of divergence as branching",
+        frequency: 12,
+        analysis: "Throughout the book, 'branching' serves as Darwin's default verb for speciation. It appears in discussions of nerve anatomy, coral growth, and geological succession -- always reinforcing the tree framework.",
+        passages: [
+          {
+            chapter: "Chapter 4 -- Natural Selection",
+            quote: "The limbs divided into great branches, and these into lesser and lesser branches, were themselves once, when the tree was small, budding twigs; and this connexion of the former and present buds by ramifying branches may well represent the classification of all extinct and living species in groups subordinate to groups.",
+            comment: "The fractal self-similarity of trees -- branches contain smaller branches -- mirrors the nested hierarchy of taxonomy."
+          },
+          {
+            chapter: "Chapter 10 -- Geological Succession",
+            quote: "...one species giving rise first to two or three varieties, these being slowly converted into species, which in their turn produce by equally slow steps other species, and so on, like the branching of a great tree from a single stem, till the group becomes large.",
+            comment: "Here the tree metaphor is explicitly temporal: the branching is narrated as a historical process unfolding across geological time."
+          }
+        ]
+      },
+      {
+        name: "The Chain of Life",
+        brief: "An older metaphor Darwin partly displaces",
+        frequency: 7,
+        analysis: "Darwin inherits the 'chain of being' from natural theology but transforms it. Where the chain implies a single linear sequence from low to high, Darwin converts it into a 'branching chain' -- retaining the language of links while subverting the metaphor's linearity.",
+        passages: [
+          {
+            chapter: "Chapter 9 -- Geological Record",
+            quote: "...those fine transitional forms, which on my theory assuredly have connected all the past and present species of the same group into one long and branching chain of life.",
+            comment: "'Branching chain' is an oxymoron -- chains do not branch. This hybrid phrase captures Darwin in the act of transforming an inherited metaphor."
+          },
+          {
+            chapter: "Chapter 13 -- Mutual Affinities",
+            quote: "...the most wonderfully diverse forms are still tied together by a long, but broken, chain of affinities. Extinction has only separated groups: it has by no means made them.",
+            comment: "The chain is 'broken' by extinction -- a beautifully concrete image for the gaps in the fossil record."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: "nature-as-agent",
+    name: "Nature as Artisan / Selector",
+    color: [220, 180, 80],
+    description: "Darwin's most controversial metaphorical strategy: personifying natural selection as a conscious, discriminating agent who 'scrutinises,' 'selects,' 'rejects,' and 'favours.' He knew the danger -- critics accused him of smuggling in a Designer -- yet the personification was indispensable for making the mechanism intuitive.",
+    metaphors: [
+      {
+        name: "Daily and Hourly Scrutinising",
+        brief: "Natural selection as vigilant examiner",
+        frequency: 4,
+        analysis: "This is perhaps the most vivid single personification in the book. Natural selection becomes an omnipresent inspector, examining 'every variation, even the slightest' across the entire globe, at all times. The image conveys both the thoroughness and the relentlessness of the process.",
+        passages: [
+          {
+            chapter: "Chapter 4 -- Natural Selection",
+            quote: "It may be said that natural selection is daily and hourly scrutinising, throughout the world, every variation, even the slightest; rejecting that which is bad, preserving and adding up all that is good; silently and insensibly working, whenever and wherever opportunity offers, at the improvement of each organic being in relation to its organic and inorganic conditions of life.",
+            comment: "The verbs pile up: scrutinising, rejecting, preserving, adding up, working. Natural selection is given the attributes of an ideal craftsman -- patient, thorough, silent, tireless."
+          },
+          {
+            chapter: "Chapter 14 -- Recapitulation",
+            quote: "What limit can be put to this power, acting during long ages and rigidly scrutinising the whole constitution, structure, and habits of each creature, -- favouring the good and rejecting the bad? I can see no limit to this power, in slowly and beautifully adapting each form to the most complex relations of life.",
+            comment: "In the recapitulation, Darwin intensifies the personification with 'rigidly scrutinising.' The word 'beautifully' reveals his aesthetic response to the process he describes."
+          }
+        ],
+        closeReading: {
+          title: "How 'she' becomes 'it': the gender of natural selection",
+          text: "Darwin uses the feminine pronoun for nature/natural selection in several key passages ('she does not grant an indefinite period,' 'she can never take a leap'), inheriting the classical tradition of natura as female. But in the most technical passages, the pronoun shifts to 'it' or disappears into passive constructions ('can be acted on'). This oscillation reveals Darwin's tension between the rhetorical power of personification and his commitment to mechanistic explanation. The personified 'she' makes the argument persuasive; the impersonal 'it' makes it scientific."
+        }
+      },
+      {
+        name: "The Magician's Wand",
+        brief: "Selection as magical power of transformation",
+        frequency: 2,
+        analysis: "Darwin quotes Youatt's comparison of artificial selection to a 'magician's wand' that can 'summon into life whatever form and mould he pleases.' This borrowed metaphor does important work: it establishes the power of selection in the reader's mind before Darwin extends it from human to natural agency.",
+        passages: [
+          {
+            chapter: "Chapter 1 -- Variation Under Domestication",
+            quote: "It is the magician's wand, by means of which he may summon into life whatever form and mould he pleases.",
+            comment: "Attributed to Youatt, speaking of artificial selection. The language of conjuring sets up the conceptual leap: if human selection can work such wonders, what might nature's selection achieve?"
+          },
+          {
+            chapter: "Chapter 1 -- Variation Under Domestication",
+            quote: "Lord Somerville, speaking of what breeders have done for sheep, says: -- 'It would seem as if they had chalked out upon a wall a form perfect in itself, and then had given it existence.'",
+            comment: "A second borrowed image: the breeder as artist who first imagines and then materialises a form. Darwin uses others' words to avoid seeming to claim divine powers for breeders -- while ensuring the reader absorbs exactly that implication."
+          }
+        ]
+      },
+      {
+        name: "Nature as 'She'",
+        brief: "Feminine personification of the selecting power",
+        frequency: 6,
+        analysis: "When Darwin wants to emphasize nature's superiority over human breeders, he shifts to the feminine pronoun, giving natural selection agency, patience, and judgment that surpass any human practitioner.",
+        passages: [
+          {
+            chapter: "Chapter 4 -- Natural Selection",
+            quote: "Though nature grants vast periods of time for the work of natural selection, she does not grant an indefinite period; for as all organic beings are striving, it may be said, to seize on each place in the economy of nature, if any one species does not become modified and improved in a corresponding degree with its competitors, it will soon be exterminated.",
+            comment: "Nature 'grants' time as a sovereign grants favours -- the metaphor implies both generosity and limits. The shift from 'she' to 'it' within two sentences is characteristic."
+          },
+          {
+            chapter: "Chapter 6 -- Difficulties on Theory",
+            quote: "...natural selection can act only by taking advantage of slight successive variations; she can never take a leap, but must advance by the shortest and slowest steps.",
+            comment: "Here 'she' expresses constraint rather than power. The personification humanises natural selection precisely when Darwin needs to explain its limitations."
+          }
+        ]
+      },
+      {
+        name: "Stamp of Higher Workmanship",
+        brief: "Nature's products as superior craftsmanship",
+        frequency: 3,
+        analysis: "Darwin frames the comparison between artificial and natural selection as one between a novice craftsman and a master. Nature's productions 'bear the stamp of far higher workmanship' -- language that simultaneously flatters the reader's sense of design and attributes that design to a mindless process.",
+        passages: [
+          {
+            chapter: "Chapter 4 -- Natural Selection",
+            quote: "Can we wonder, then, that nature's productions should be far 'truer' in character than man's productions; that they should be infinitely better adapted to the most complex conditions of life, and should plainly bear the stamp of far higher workmanship?",
+            comment: "The scare-quotes around 'truer' betray Darwin's awareness that he is using a metaphor of authenticity. 'Workmanship' implies a worker -- the very thing he is arguing does not exist in nature."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: "war-and-struggle",
+    name: "War, Battle, and Struggle",
+    color: [200, 90, 80],
+    description: "The language of conflict saturates the Origin. Darwin uses military and combative imagery to make visceral the competition between organisms -- from the 'battle within battle' of ecological relations to the 'war of nature' in the famous closing paragraph. This metaphor family did the most to shape popular understanding (and misunderstanding) of evolution.",
+    metaphors: [
+      {
+        name: "The Struggle for Existence",
+        brief: "Darwin's central framing concept",
+        frequency: 25,
+        analysis: "Darwin devotes all of Chapter 3 to this phrase and is careful to note he uses it 'in a large and metaphorical sense.' Yet the militaristic connotations proved impossible to contain. The 'struggle' became the public face of Darwinism, often to Darwin's dismay.",
+        passages: [
+          {
+            chapter: "Chapter 3 -- Struggle for Existence",
+            quote: "I should premise that I use the term Struggle for Existence in a large and metaphorical sense, including dependence of one being on another, and including (which is more important) not only the life of the individual, but success in leaving progeny.",
+            comment: "Darwin's explicit caveat: the 'struggle' is metaphorical, encompassing cooperation and dependence as well as combat. This qualification was routinely ignored by readers."
+          },
+          {
+            chapter: "Chapter 3 -- Struggle for Existence",
+            quote: "Nothing is easier than to admit in words the truth of the universal struggle for life, or more difficult -- at least I have found it so -- than constantly to bear this conclusion in mind.",
+            comment: "A remarkably personal admission. Darwin confesses that even he finds it hard to maintain the vision of universal competition. The metaphor is psychologically demanding."
+          }
+        ]
+      },
+      {
+        name: "Battle Within Battle",
+        brief: "Nested layers of ecological conflict",
+        frequency: 5,
+        analysis: "This image captures the fractal nature of ecological competition: every apparent equilibrium conceals ongoing contests at multiple scales simultaneously.",
+        passages: [
+          {
+            chapter: "Chapter 3 -- Struggle for Existence",
+            quote: "Battle within battle must ever be recurring with varying success; and yet in the long-run the forces are so nicely balanced, that the face of nature remains uniform for long periods of time, though assuredly the merest trifle would often give the victory to one organic being over another.",
+            comment: "The military metaphor ('battle,' 'victory') sits alongside an image of delicate equilibrium ('nicely balanced,' 'merest trifle'). War produces stability -- a paradox that makes the passage memorable."
+          }
+        ]
+      },
+      {
+        name: "The War of Nature",
+        brief: "The dark prelude to the book's final affirmation",
+        frequency: 3,
+        analysis: "In the closing paragraph, Darwin unflinchingly names the mechanism behind evolution's beauty. 'From the war of nature, from famine and death' -- this descent into darkness makes the ascent to 'endless forms most beautiful' all the more powerful.",
+        passages: [
+          {
+            chapter: "Chapter 14 -- Recapitulation and Conclusion",
+            quote: "Thus, from the war of nature, from famine and death, the most exalted object which we are capable of conceiving, namely, the production of the higher animals, directly follows. There is grandeur in this view of life...",
+            comment: "The juxtaposition is deliberately shocking: war, famine, death yield grandeur, beauty, wonder. This is Darwin's theodicy -- his answer to the problem of suffering in nature."
+          },
+          {
+            chapter: "Chapter 3 -- Struggle for Existence",
+            quote: "When we reflect on this struggle, we may console ourselves with the full belief, that the war of nature is not incessant, that no fear is felt, that death is generally prompt, and that the vigorous, the healthy, and the happy survive and multiply.",
+            comment: "An attempt at consolation that reveals how disturbing Darwin found his own vision. 'No fear is felt' is almost certainly wrong, but it serves a rhetorical purpose: making the 'war of nature' bearable."
+          }
+        ]
+      },
+      {
+        name: "The Great Battle of Life",
+        brief: "Competition between species as military campaign",
+        frequency: 6,
+        analysis: "Darwin repeatedly frames interspecific competition as a 'battle' with winners and losers, victories and defeats. The language is drawn from both military and sporting contexts.",
+        passages: [
+          {
+            chapter: "Chapter 3 -- Struggle for Existence",
+            quote: "...probably in no one case could we precisely say why one species has been victorious over another in the great battle of life.",
+            comment: "The concession of ignorance is strategically placed: we cannot explain the outcome of any particular battle, yet the general principle of competitive selection is undeniable."
+          },
+          {
+            chapter: "Chapter 4 -- Natural Selection",
+            quote: "...species and groups of species have tried to overmaster other species in the great battle for life.",
+            comment: "'Overmaster' is a strong word, implying dominance and subjugation. It appears in the Tree of Life passage, fusing the branching and warfare metaphor families."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: "economy-of-nature",
+    name: "The Economy of Nature",
+    color: [100, 160, 220],
+    description: "Darwin imagines nature as a structured economy with 'places' (niches) to be 'seized' and 'filled.' This metaphor, inherited from Linnaeus, becomes in Darwin's hands a dynamic market rather than a fixed order -- species compete for limited positions, and the economy is always being restructured by extinction and innovation.",
+    metaphors: [
+      {
+        name: "Places in the Economy",
+        brief: "Ecological niches as economic positions",
+        frequency: 10,
+        analysis: "The phrase 'place in the economy of nature' recurs throughout the Origin, each time reinforcing the image of nature as a structured system with limited openings. Species 'seize' these places -- the verb implies both competition and opportunity.",
+        passages: [
+          {
+            chapter: "Chapter 3 -- Struggle for Existence",
+            quote: "I am convinced that the whole economy of nature, with every fact on distribution, rarity, abundance, extinction, and variation, will be dimly seen or quite misunderstood.",
+            comment: "Darwin presents the 'economy of nature' as the key to understanding everything else. Without grasping the economic structure, all biological facts become opaque."
+          },
+          {
+            chapter: "Chapter 4 -- Natural Selection",
+            quote: "...as all organic beings are striving, it may be said, to seize on each place in the economy of nature, if any one species does not become modified and improved in a corresponding degree with its competitors, it will soon be exterminated.",
+            comment: "The language of market competition: species must improve or be driven out. Darwin writes in the age of industrial capitalism, and the parallels are deliberate."
+          },
+          {
+            chapter: "Chapter 4 -- Natural Selection",
+            quote: "...the more diversified the descendants from any one species become in structure, constitution, and habits, by so much will they be better enabled to seize on many and widely diversified places in the polity of nature.",
+            comment: "Darwin alternates between 'economy' and 'polity,' the latter suggesting governance and political order. Both frame nature as an organised system."
+          }
+        ]
+      },
+      {
+        name: "The Polity of Nature",
+        brief: "Nature as political commonwealth",
+        frequency: 4,
+        analysis: "Where 'economy' implies exchange and competition, 'polity' implies governance, law, and structured order. Darwin uses both, sometimes in the same chapter, suggesting nature operates simultaneously as market and state.",
+        passages: [
+          {
+            chapter: "Chapter 4 -- Natural Selection",
+            quote: "...the number of places in the polity of nature is not indefinitely great, -- not that we have any means of knowing that any one region has as yet got its maximum of species.",
+            comment: "A moment of empirical honesty: Darwin asserts that niches are finite, then immediately admits he cannot prove any region is full. The metaphor outruns the evidence."
+          }
+        ]
+      },
+      {
+        name: "The Web of Complex Relations",
+        brief: "Ecological interdependence as woven fabric",
+        frequency: 5,
+        analysis: "To complement the competitive 'economy' metaphor, Darwin uses 'web' to capture the mutual dependence of organisms. Where the economy emphasises competition for places, the web emphasises the interconnectedness of all players.",
+        passages: [
+          {
+            chapter: "Chapter 3 -- Struggle for Existence",
+            quote: "I am tempted to give one more instance showing how plants and animals, most remote in the scale of nature, are bound together by a web of complex relations.",
+            comment: "The web image counters the purely competitive implications of 'struggle' and 'economy.' Here, remoteness in the 'scale of nature' does not mean independence -- everything is bound together."
+          },
+          {
+            chapter: "Chapter 13 -- Mutual Affinities",
+            quote: "We shall never, probably, disentangle the inextricable web of affinities between the members of any one class.",
+            comment: "The web has become 'inextricable' -- a confession that the complexity of nature may permanently exceed our analytical powers."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: "wedge-metaphor",
+    name: "The Wedge",
+    color: [200, 140, 200],
+    description: "A brief but unforgettable image: the 'face of Nature' as a surface packed with ten thousand sharp wedges, driven inward by incessant blows. Each species is a wedge; when one is driven deeper, others are forced out. This metaphor was controversial in Darwin's time and he later downplayed it, but it remains one of the most physically vivid images in the book.",
+    metaphors: [
+      {
+        name: "Ten Thousand Sharp Wedges",
+        brief: "Species as wedges competing for space",
+        frequency: 2,
+        analysis: "The wedge metaphor compresses Darwin's entire theory into a single mechanical image. Unlike the tree (which is organic and temporal) or the economy (which is abstract), the wedge is physical, violent, and immediate. It emphasises displacement: every insertion forces something else out.",
+        passages: [
+          {
+            chapter: "Chapter 3 -- Struggle for Existence",
+            quote: "The face of Nature may be compared to a yielding surface, with ten thousand sharp wedges packed close together and driven inwards by incessant blows, sometimes one wedge being struck, and then another with greater force.",
+            comment: "This is one of Darwin's most compressed metaphors. Every element counts: the surface 'yields' (nature is not rigid); the wedges are 'sharp' (species are specialised); they are 'packed close' (niches are saturated); the blows are 'incessant' (selection never stops). The image is industrial -- it belongs to the workshop, not the garden."
+          }
+        ],
+        closeReading: {
+          title: "Why Darwin abandoned the wedge",
+          text: "The wedge metaphor appears only once in the first edition and Darwin increasingly distanced himself from it. The problem was theological: it implied a hand wielding a hammer, driving the wedges. Critics asked: whose blows? The image was too mechanical, too suggestive of design. By contrast, the tree metaphor was self-generating -- trees grow without an external agent. The wedge also implied that nature was a zero-sum game (every gain requires a loss), while the tree allowed for genuine novelty and expansion. Darwin's metaphorical evolution mirrors his theoretical refinement."
+        }
+      }
+    ]
+  },
+  {
+    id: "geological-record",
+    name: "The Geological Record as Imperfect Book",
+    color: [160, 180, 200],
+    description: "Darwin borrows Lyell's metaphor of the geological record as an incompletely preserved history book -- written in a changing dialect, with most volumes lost, most pages torn out, most lines illegible. This metaphor does crucial defensive work: it explains why the fossil record does not show the continuous gradations his theory predicts.",
+    metaphors: [
+      {
+        name: "A History Imperfectly Kept",
+        brief: "The fossil record as damaged library",
+        frequency: 4,
+        analysis: "This is Darwin's most sustained literary metaphor -- an extended comparison between the geological record and a multi-volume history written in a shifting language. It is also his most strategically important metaphor: without it, the absence of transitional fossils would refute his theory.",
+        passages: [
+          {
+            chapter: "Chapter 9 -- Geological Record",
+            quote: "For my part, following out Lyell's metaphor, I look at the natural geological record, as a history of the world imperfectly kept, and written in a changing dialect; of this history we possess the last volume alone, relating only to two or three countries. Of this volume, only here and there a short chapter has been preserved; and of each page, only here and there a few lines.",
+            comment: "The nested incompleteness is devastating: one volume of many, a few chapters of that volume, a few lines of each chapter. At every level, most information is lost. Darwin attributes the metaphor to Lyell, lending it geological authority."
+          },
+          {
+            chapter: "Chapter 9 -- Geological Record",
+            quote: "Each word of the slowly-changing language, in which the history is supposed to be written, being more or less different in the interrupted succession of chapters, may represent the apparently abruptly changed forms of life, entombed in our consecutive, but widely separated formations.",
+            comment: "The 'changing dialect' element is brilliant: it explains why species in successive formations look different (not because they changed abruptly, but because we are reading discontinuous pages of a slowly changing text)."
+          }
+        ],
+        closeReading: {
+          title: "Metaphor as argument",
+          text: "This is the clearest case in the Origin where metaphor does the heavy argumentative lifting. Darwin cannot show transitional fossils because they have not been found. His response is not empirical but rhetorical: he provides a metaphor that makes the absence of evidence consistent with his theory. The geological record is not merely incomplete -- it is systematically biased against preservation. The metaphor converts a weakness (missing fossils) into a prediction (of course they are missing). It is a masterpiece of defensive rhetoric, and it largely worked: readers accepted the incompleteness of the record as explanation for the missing gradations."
+        }
+      },
+      {
+        name: "The Face of Nature",
+        brief: "Nature's visible surface as deceptive appearance",
+        frequency: 3,
+        analysis: "Darwin repeatedly uses 'the face of nature' to mark the contrast between surface appearance and hidden reality. The face is 'bright with gladness,' but beneath it lies universal competition and death.",
+        passages: [
+          {
+            chapter: "Chapter 3 -- Struggle for Existence",
+            quote: "We behold the face of nature bright with gladness, we often see superabundance of food; we do not see, or we forget, that the birds which are idly singing round us mostly live on insects or seeds, and are thus constantly destroying life.",
+            comment: "The 'face of nature' is a mask. Darwin asks the reader to see through cheerful surfaces to the struggle beneath. The idyllically singing birds are in fact engines of death."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: "entangled-bank",
+    name: "The Entangled Bank",
+    color: [140, 200, 170],
+    description: "The concluding image of the entire book: a bank of earth teeming with diverse interdependent life. Unlike the Tree of Life (which emphasises descent) or the Struggle (which emphasises competition), the Entangled Bank captures ecology -- the dense web of coexistence in a single place at a single moment. It is Darwin's final word, and perhaps his most lasting image.",
+    metaphors: [
+      {
+        name: "The Entangled Bank (Conclusion)",
+        brief: "The book's final and most famous image",
+        frequency: 2,
+        analysis: "The entangled bank appears twice: first briefly in Chapter 3, as an example of deceptive complexity, and then magnificently in the last paragraph. In both cases, the point is the same: apparent chaos conceals lawful order. But the emotional register is completely different -- from scientific caution to prophetic wonder.",
+        passages: [
+          {
+            chapter: "Chapter 14 -- Recapitulation and Conclusion",
+            quote: "It is interesting to contemplate an entangled bank, clothed with many plants of many kinds, with birds singing on the bushes, with various insects flitting about, and with worms crawling through the damp earth, and to reflect that these elaborately constructed forms, so different from each other, and dependent on each other in so complex a manner, have all been produced by laws acting around us.",
+            comment: "This is the final set piece of the Origin. Every sense is engaged: sight (plants, birds), sound (singing), motion (flitting, crawling), touch (damp earth). The bank is 'entangled' -- not chaotic, but complexly interwoven. And all of it produced by 'laws,' not by divine intervention."
+          },
+          {
+            chapter: "Chapter 3 -- Struggle for Existence",
+            quote: "When we look at the plants and bushes clothing an entangled bank, we are tempted to attribute their proportional numbers and kinds to what we call chance. But how false a view is this!",
+            comment: "The first appearance is polemical: the bank looks random but is not. Darwin will spend the rest of the book explaining what governs the apparent tangle."
+          }
+        ],
+        closeReading: {
+          title: "Why the bank, not the tree, is Darwin's last word",
+          text: "The Tree of Life is the Origin's most famous metaphor, but Darwin chose the Entangled Bank for his conclusion. The tree is abstract, temporal, genealogical -- it exists across millions of years. The bank is concrete, present, ecological -- it exists in a single moment, in a single place. Where the tree explains history, the bank celebrates the present tense of life. Darwin ends not with the grand sweep of geological time but with a patch of earth you might walk past without noticing. The choice is characteristically modest: the grandest theory in biology culminates in a roadside ditch. 'There is grandeur in this view of life' -- but the grandeur is found in the humble and the local."
+        }
+      }
+    ]
+  }
+];
+
+// =========================================================================
+//  CANVAS RENDERING -- constellation star map
+// =========================================================================
+const canvas = document.getElementById('sky');
+const ctx = canvas.getContext('2d');
+let W, H, dpr;
+let stars = [];         // background stars
+let constellations = []; // metaphor families
+let hoveredStar = null;
+let hoveredConstellation = null;
+let animFrame;
+let mouse = { x: -999, y: -999 };
+
+function resize() {
+  dpr = window.devicePixelRatio || 1;
+  W = window.innerWidth;
+  H = window.innerHeight;
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  canvas.style.width = W + 'px';
+  canvas.style.height = H + 'px';
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  layoutConstellations();
+}
+
+// Layout: place constellation centres, then distribute metaphor stars around them
+function layoutConstellations() {
+  constellations = [];
+  const cx = W / 2, cy = H / 2;
+  const rOrbit = Math.min(W, H) * 0.32;
+  const n = DATA.length;
+
+  DATA.forEach((fam, i) => {
+    const angle = (i / n) * Math.PI * 2 - Math.PI / 2;
+    const fx = cx + Math.cos(angle) * rOrbit;
+    const fy = cy + Math.sin(angle) * rOrbit;
+
+    // total frequency for sizing
+    const totalFreq = fam.metaphors.reduce((s, m) => s + m.frequency, 0);
+    const famRadius = 14 + totalFreq * 0.6;
+
+    const mStars = [];
+    const nm = fam.metaphors.length;
+    fam.metaphors.forEach((m, j) => {
+      const mAngle = (j / nm) * Math.PI * 2 + angle;
+      const dist = 40 + nm * 12 + Math.random() * 20;
+      const mx = fx + Math.cos(mAngle) * dist;
+      const my = fy + Math.sin(mAngle) * dist;
+      const mRadius = 3 + Math.sqrt(m.frequency) * 2.2;
+      mStars.push({
+        x: mx, y: my, radius: mRadius,
+        data: m, familyId: fam.id,
+        twinkleOffset: Math.random() * Math.PI * 2,
+        twinkleSpeed: 0.5 + Math.random() * 1.5
+      });
+    });
+
+    constellations.push({
+      x: fx, y: fy, radius: famRadius,
+      data: fam, stars: mStars,
+      twinkleOffset: Math.random() * Math.PI * 2,
+      twinkleSpeed: 0.3 + Math.random() * 0.8
+    });
+  });
+
+  // background stars
+  stars = [];
+  for (let i = 0; i < 280; i++) {
+    stars.push({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      r: Math.random() * 1.2 + 0.3,
+      twinkleOffset: Math.random() * Math.PI * 2,
+      twinkleSpeed: 0.3 + Math.random() * 2,
+      brightness: 0.15 + Math.random() * 0.35
+    });
+  }
+}
+
+function draw(t) {
+  ctx.clearRect(0, 0, W, H);
+
+  // background gradient
+  const grad = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, Math.max(W, H) * 0.7);
+  grad.addColorStop(0, '#0f1528');
+  grad.addColorStop(1, '#070a14');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
+
+  // background stars
+  stars.forEach(s => {
+    const twinkle = 0.5 + 0.5 * Math.sin(t * 0.001 * s.twinkleSpeed + s.twinkleOffset);
+    const alpha = s.brightness * (0.4 + 0.6 * twinkle);
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(200,195,180,${alpha})`;
+    ctx.fill();
+  });
+
+  // draw constellations
+  constellations.forEach(c => {
+    const [cr, cg, cb] = c.data.color;
+    const isHoveredFamily = hoveredConstellation === c;
+
+    // connection lines from family centre to each metaphor star
+    c.stars.forEach(ms => {
+      const lineAlpha = isHoveredFamily ? 0.25 : 0.08;
+      ctx.beginPath();
+      ctx.moveTo(c.x, c.y);
+      ctx.lineTo(ms.x, ms.y);
+      ctx.strokeStyle = `rgba(${cr},${cg},${cb},${lineAlpha})`;
+      ctx.lineWidth = isHoveredFamily ? 1.2 : 0.7;
+      ctx.stroke();
+    });
+
+    // lines between adjacent metaphor stars
+    for (let i = 0; i < c.stars.length; i++) {
+      const a = c.stars[i];
+      const b = c.stars[(i + 1) % c.stars.length];
+      const lineAlpha = isHoveredFamily ? 0.18 : 0.05;
+      ctx.beginPath();
+      ctx.moveTo(a.x, a.y);
+      ctx.lineTo(b.x, b.y);
+      ctx.strokeStyle = `rgba(${cr},${cg},${cb},${lineAlpha})`;
+      ctx.lineWidth = isHoveredFamily ? 0.9 : 0.5;
+      ctx.stroke();
+    }
+
+    // metaphor stars
+    c.stars.forEach(ms => {
+      const twinkle = 0.5 + 0.5 * Math.sin(t * 0.001 * ms.twinkleSpeed + ms.twinkleOffset);
+      const isHovered = hoveredStar === ms;
+      const glowSize = ms.radius * (isHovered ? 4.5 : 2.5 + twinkle * 1.2);
+
+      // glow
+      const grd = ctx.createRadialGradient(ms.x, ms.y, 0, ms.x, ms.y, glowSize);
+      const ga = isHovered ? 0.35 : 0.12 + twinkle * 0.08;
+      grd.addColorStop(0, `rgba(${cr},${cg},${cb},${ga})`);
+      grd.addColorStop(1, `rgba(${cr},${cg},${cb},0)`);
+      ctx.beginPath();
+      ctx.arc(ms.x, ms.y, glowSize, 0, Math.PI * 2);
+      ctx.fillStyle = grd;
+      ctx.fill();
+
+      // core
+      const coreAlpha = 0.7 + twinkle * 0.3;
+      ctx.beginPath();
+      ctx.arc(ms.x, ms.y, ms.radius, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${Math.min(255, cr + 60)},${Math.min(255, cg + 60)},${Math.min(255, cb + 40)},${coreAlpha})`;
+      ctx.fill();
+
+      // label on hover
+      if (isHovered) {
+        ctx.font = '500 12px Inter, sans-serif';
+        ctx.fillStyle = `rgba(${Math.min(255, cr + 80)},${Math.min(255, cg + 80)},${Math.min(255, cb + 60)},0.95)`;
+        ctx.textAlign = 'center';
+        ctx.fillText(ms.data.name, ms.x, ms.y - ms.radius - 10);
+      }
+    });
+
+    // family centre star
+    const twinkle = 0.5 + 0.5 * Math.sin(t * 0.001 * c.twinkleSpeed + c.twinkleOffset);
+    const centerGlow = c.radius * (isHoveredFamily ? 4 : 2.5 + twinkle);
+    const grd = ctx.createRadialGradient(c.x, c.y, 0, c.x, c.y, centerGlow);
+    const cga = isHoveredFamily ? 0.4 : 0.15 + twinkle * 0.1;
+    grd.addColorStop(0, `rgba(${cr},${cg},${cb},${cga})`);
+    grd.addColorStop(0.5, `rgba(${cr},${cg},${cb},${cga * 0.3})`);
+    grd.addColorStop(1, `rgba(${cr},${cg},${cb},0)`);
+    ctx.beginPath();
+    ctx.arc(c.x, c.y, centerGlow, 0, Math.PI * 2);
+    ctx.fillStyle = grd;
+    ctx.fill();
+
+    // centre core
+    const ccAlpha = 0.8 + twinkle * 0.2;
+    ctx.beginPath();
+    ctx.arc(c.x, c.y, c.radius * 0.45, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(${Math.min(255, cr + 80)},${Math.min(255, cg + 80)},${Math.min(255, cb + 60)},${ccAlpha})`;
+    ctx.fill();
+
+    // family label
+    ctx.font = `600 ${isHoveredFamily ? 14 : 13}px Inter, sans-serif`;
+    ctx.fillStyle = `rgba(${Math.min(255, cr + 100)},${Math.min(255, cg + 100)},${Math.min(255, cb + 80)},${isHoveredFamily ? 1 : 0.75})`;
+    ctx.textAlign = 'center';
+    ctx.fillText(c.data.name, c.x, c.y + c.radius + 22);
+  });
+
+  animFrame = requestAnimationFrame(draw);
+}
+
+// Hit testing
+function hitTest(mx, my) {
+  // check metaphor stars first (smaller, in front)
+  for (const c of constellations) {
+    for (const ms of c.stars) {
+      const dx = mx - ms.x, dy = my - ms.y;
+      if (dx * dx + dy * dy < (ms.radius + 8) * (ms.radius + 8)) {
+        return { type: 'metaphor', star: ms, constellation: c };
+      }
+    }
+  }
+  // then family centres
+  for (const c of constellations) {
+    const dx = mx - c.x, dy = my - c.y;
+    if (dx * dx + dy * dy < (c.radius + 12) * (c.radius + 12)) {
+      return { type: 'family', constellation: c };
+    }
+  }
+  return null;
+}
+
+canvas.addEventListener('mousemove', e => {
+  mouse.x = e.clientX;
+  mouse.y = e.clientY;
+  const hit = hitTest(mouse.x, mouse.y);
+  hoveredStar = hit && hit.type === 'metaphor' ? hit.star : null;
+  hoveredConstellation = hit ? hit.constellation : null;
+  canvas.style.cursor = hit ? 'pointer' : 'default';
+});
+
+canvas.addEventListener('click', e => {
+  const hit = hitTest(e.clientX, e.clientY);
+  if (!hit) return;
+  if (hit.type === 'family') {
+    showFamilyPanel(hit.constellation.data);
+  } else if (hit.type === 'metaphor') {
+    showDetailPanel(hit.star.data, hit.constellation.data);
+  }
+});
+
+// =========================================================================
+//  PANEL RENDERING
+// =========================================================================
+const familyPanel = document.getElementById('family-panel');
+const detailPanel = document.getElementById('detail-panel');
+const legend = document.getElementById('legend');
+
+function hideAllPanels() {
+  familyPanel.classList.add('hidden');
+  detailPanel.classList.add('hidden');
+  legend.classList.remove('faded');
+}
+
+function showFamilyPanel(fam) {
+  detailPanel.classList.add('hidden');
+  legend.classList.add('faded');
+
+  const totalFreq = fam.metaphors.reduce((s, m) => s + m.frequency, 0);
+
+  let html = `<button class="panel-close" onclick="hideAllPanels()" aria-label="Close">&times;</button>`;
+  html += `<h2>${fam.name}</h2>`;
+  html += `<span class="subtitle">${totalFreq} occurrences across the Origin</span>`;
+  html += `<p class="family-desc">${fam.description}</p>`;
+  html += `<ul class="metaphor-list">`;
+  fam.metaphors.forEach(m => {
+    html += `<li onclick='showDetailFromFamily(${JSON.stringify(m.name).replace(/'/g, "\\'")},"${fam.id}")'>
+      <span class="m-freq">${m.frequency}x</span>
+      <span class="m-name">${m.name}</span>
+      <span class="m-brief">${m.brief}</span>
+    </li>`;
+  });
+  html += `</ul>`;
+
+  familyPanel.innerHTML = html;
+  familyPanel.classList.remove('hidden');
+}
+
+window.showDetailFromFamily = function(mName, famId) {
+  const fam = DATA.find(f => f.id === famId);
+  const m = fam.metaphors.find(x => x.name === mName);
+  if (m && fam) showDetailPanel(m, fam);
+};
+
+function showDetailPanel(m, fam) {
+  familyPanel.classList.add('hidden');
+  legend.classList.add('faded');
+
+  let html = `<button class="panel-close" onclick="hideAllPanels()" aria-label="Close">&times;</button>`;
+  html += `<button class="btn-back" onclick='showFamilyPanel(DATA.find(f=>f.id==="${fam.id}"))'>&#8592; ${fam.name}</button>`;
+  html += `<h2>${m.name}</h2>`;
+  html += `<span class="detail-family" onclick='showFamilyPanel(DATA.find(f=>f.id==="${fam.id}"))'>${fam.name} family &middot; ${m.frequency} occurrences</span>`;
+  html += `<p class="analysis">${m.analysis}</p>`;
+
+  m.passages.forEach(p => {
+    html += `<div class="passage">
+      <span class="p-chapter">${p.chapter}</span>
+      <blockquote>&ldquo;${p.quote}&rdquo;</blockquote>
+      <p class="p-comment">${p.comment}</p>
+    </div>`;
+  });
+
+  if (m.closeReading) {
+    html += `<div class="close-reading">
+      <h3>${m.closeReading.title}</h3>
+      <p>${m.closeReading.text}</p>
+    </div>`;
+  }
+
+  detailPanel.innerHTML = html;
+  detailPanel.classList.remove('hidden');
+}
+
+// keyboard
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') hideAllPanels();
+});
+
+// click outside panels to close
+canvas.addEventListener('click', e => {
+  const hit = hitTest(e.clientX, e.clientY);
+  if (!hit) hideAllPanels();
+});
+
+// =========================================================================
+//  INIT
+// =========================================================================
+window.addEventListener('resize', resize);
+resize();
+animFrame = requestAnimationFrame(draw);
+</script>
+</body>
+</html>

@@ -1,0 +1,1502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Organism Atlas — On the Origin of Species</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #faf6f0;
+  --warm-white: #f5efe6;
+  --parchment: #ede4d4;
+  --ink: #2c2416;
+  --ink-light: #5c4f3d;
+  --ink-faint: #8a7e6e;
+  --accent-blue: #3a6b8c;
+  --accent-green: #4a7c59;
+  --accent-amber: #b8860b;
+  --accent-red: #8b4049;
+  --accent-purple: #6b5078;
+  --shadow-soft: rgba(44, 36, 22, 0.08);
+  --shadow-med: rgba(44, 36, 22, 0.15);
+  --border-light: rgba(44, 36, 22, 0.1);
+  --border-med: rgba(44, 36, 22, 0.2);
+  /* Argument role colors */
+  --role-analogy: #3a6b8c;
+  --role-evidence: #4a7c59;
+  --role-thought: #b8860b;
+  --role-counter: #8b4049;
+  --role-analogy-bg: rgba(58, 107, 140, 0.08);
+  --role-evidence-bg: rgba(74, 124, 89, 0.08);
+  --role-thought-bg: rgba(184, 134, 11, 0.08);
+  --role-counter-bg: rgba(139, 64, 73, 0.08);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: 'Crimson Text', Georgia, serif;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+/* Header */
+.page-header {
+  background: linear-gradient(135deg, #2c2416 0%, #3d3224 40%, #2c2416 100%);
+  color: var(--cream);
+  padding: 2rem 2rem 2.5rem;
+  position: relative;
+  overflow: hidden;
+}
+.page-header::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  opacity: 0.5;
+}
+.back-link {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: rgba(250, 246, 240, 0.6);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  position: relative;
+  z-index: 1;
+  transition: color 0.2s;
+  letter-spacing: 0.03em;
+}
+.back-link:hover { color: rgba(250, 246, 240, 0.9); }
+.back-link svg { width: 14px; height: 14px; }
+.header-content {
+  position: relative;
+  z-index: 1;
+  max-width: 960px;
+  margin: 0 auto;
+}
+.header-content h1 {
+  font-family: 'Crimson Text', Georgia, serif;
+  font-size: 2.4rem;
+  font-weight: 700;
+  margin: 1rem 0 0.3rem;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+.header-content .subtitle {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 300;
+  color: rgba(250, 246, 240, 0.65);
+  margin-bottom: 1rem;
+  letter-spacing: 0.02em;
+}
+.header-description {
+  font-size: 1.1rem;
+  font-style: italic;
+  color: rgba(250, 246, 240, 0.8);
+  max-width: 700px;
+  line-height: 1.55;
+}
+.header-stats {
+  display: flex;
+  gap: 2rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+.stat-item {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  color: rgba(250, 246, 240, 0.5);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.stat-item strong {
+  display: block;
+  font-size: 1.6rem;
+  color: var(--cream);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+/* Search & Filter Bar */
+.controls {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1.5rem 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--cream);
+  border-bottom: 1px solid var(--border-light);
+}
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: white;
+  border: 1px solid var(--border-med);
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+  box-shadow: 0 1px 3px var(--shadow-soft);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.search-box:focus-within {
+  border-color: var(--accent-blue);
+  box-shadow: 0 1px 6px rgba(58, 107, 140, 0.15);
+}
+.search-box svg {
+  width: 18px; height: 18px;
+  color: var(--ink-faint);
+  flex-shrink: 0;
+}
+.search-box input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  color: var(--ink);
+  background: transparent;
+}
+.search-box input::placeholder { color: var(--ink-faint); }
+.filter-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.filter-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-faint);
+  margin-right: 0.25rem;
+}
+.filter-btn {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.3rem 0.75rem;
+  border-radius: 20px;
+  border: 1px solid var(--border-med);
+  background: white;
+  color: var(--ink-light);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.filter-btn:hover { border-color: var(--ink-light); color: var(--ink); }
+.filter-btn.active {
+  background: var(--ink);
+  color: var(--cream);
+  border-color: var(--ink);
+}
+/* Legend */
+.legend {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.legend-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-faint);
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  color: var(--ink-light);
+}
+.legend-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+/* Main Content */
+.main-content {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0.5rem 2rem 4rem;
+}
+/* Group Cards */
+.group-card {
+  background: white;
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 2px 8px var(--shadow-soft);
+  overflow: hidden;
+  transition: box-shadow 0.3s;
+}
+.group-card:hover { box-shadow: 0 4px 16px var(--shadow-med); }
+.group-header {
+  padding: 1.25rem 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  user-select: none;
+  transition: background 0.2s;
+}
+.group-header:hover { background: var(--warm-white); }
+.group-icon {
+  width: 48px; height: 48px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  flex-shrink: 0;
+}
+.group-info { flex: 1; min-width: 0; }
+.group-info h2 {
+  font-family: 'Crimson Text', Georgia, serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.25;
+}
+.group-info .group-desc {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+  margin-top: 0.15rem;
+  line-height: 1.4;
+}
+.group-count {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-faint);
+  text-align: right;
+  flex-shrink: 0;
+}
+.group-count strong {
+  display: block;
+  font-size: 1.5rem;
+  color: var(--ink);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.expand-arrow {
+  width: 20px; height: 20px;
+  color: var(--ink-faint);
+  flex-shrink: 0;
+  transition: transform 0.3s;
+}
+.group-card.expanded .expand-arrow { transform: rotate(180deg); }
+.group-body {
+  display: none;
+  border-top: 1px solid var(--border-light);
+  padding: 1.25rem 1.5rem;
+}
+.group-card.expanded .group-body { display: block; }
+/* Organism Cards Grid */
+.organism-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+}
+.organism-card {
+  background: var(--warm-white);
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.25s;
+  position: relative;
+}
+.organism-card:hover {
+  border-color: var(--border-med);
+  box-shadow: 0 3px 12px var(--shadow-med);
+  transform: translateY(-1px);
+}
+.organism-card.expanded {
+  grid-column: 1 / -1;
+  background: white;
+  border-color: var(--border-med);
+}
+.organism-top {
+  display: flex;
+  gap: 0.85rem;
+  align-items: flex-start;
+}
+.organism-thumb {
+  width: 56px; height: 56px;
+  border-radius: 8px;
+  object-fit: cover;
+  background: var(--parchment);
+  flex-shrink: 0;
+  border: 1px solid var(--border-light);
+}
+.organism-thumb-placeholder {
+  width: 56px; height: 56px;
+  border-radius: 8px;
+  background: var(--parchment);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  border: 1px solid var(--border-light);
+}
+.organism-meta { flex: 1; min-width: 0; }
+.organism-name {
+  font-family: 'Crimson Text', Georgia, serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.2;
+}
+.organism-latin {
+  font-family: 'Crimson Text', Georgia, serif;
+  font-style: italic;
+  font-size: 0.85rem;
+  color: var(--ink-faint);
+  margin-top: 0.1rem;
+}
+.organism-mentions {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem;
+  color: var(--ink-faint);
+  margin-top: 0.25rem;
+  letter-spacing: 0.02em;
+}
+.mention-bar {
+  height: 3px;
+  background: var(--parchment);
+  border-radius: 2px;
+  margin-top: 0.35rem;
+  overflow: hidden;
+}
+.mention-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.5s ease;
+}
+.role-tags {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+.role-tag {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 500;
+  padding: 0.15rem 0.5rem;
+  border-radius: 10px;
+  letter-spacing: 0.02em;
+}
+.role-tag.analogy { background: var(--role-analogy-bg); color: var(--role-analogy); }
+.role-tag.evidence { background: var(--role-evidence-bg); color: var(--role-evidence); }
+.role-tag.thought { background: var(--role-thought-bg); color: var(--role-thought); }
+.role-tag.counter { background: var(--role-counter-bg); color: var(--role-counter); }
+/* Expanded organism detail */
+.organism-detail {
+  display: none;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-light);
+}
+.organism-card.expanded .organism-detail { display: block; }
+.detail-section { margin-bottom: 1.25rem; }
+.detail-section:last-child { margin-bottom: 0; }
+.detail-section h4 {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-faint);
+  margin-bottom: 0.5rem;
+}
+.argument-role {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border-left: 3px solid;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+.argument-role.analogy { background: var(--role-analogy-bg); border-color: var(--role-analogy); }
+.argument-role.evidence { background: var(--role-evidence-bg); border-color: var(--role-evidence); }
+.argument-role.thought { background: var(--role-thought-bg); border-color: var(--role-thought); }
+.argument-role.counter { background: var(--role-counter-bg); border-color: var(--role-counter); }
+.argument-role .role-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.25rem;
+}
+.quote-block {
+  background: var(--warm-white);
+  border-left: 3px solid var(--parchment);
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
+  border-radius: 0 6px 6px 0;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--ink-light);
+  font-style: italic;
+}
+.quote-block .chapter-ref {
+  display: block;
+  font-family: 'Inter', sans-serif;
+  font-style: normal;
+  font-size: 0.7rem;
+  color: var(--ink-faint);
+  margin-top: 0.4rem;
+  letter-spacing: 0.02em;
+}
+.wiki-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--accent-blue);
+  text-decoration: none;
+  padding: 0.3rem 0.6rem;
+  border: 1px solid rgba(58, 107, 140, 0.25);
+  border-radius: 6px;
+  margin-top: 0.5rem;
+  transition: all 0.2s;
+}
+.wiki-link:hover {
+  background: rgba(58, 107, 140, 0.06);
+  border-color: var(--accent-blue);
+}
+.wiki-link svg { width: 14px; height: 14px; }
+.chapter-pills {
+  display: flex;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+}
+.chapter-pill {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 500;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  background: var(--parchment);
+  color: var(--ink-light);
+  white-space: nowrap;
+}
+/* No results */
+.no-results {
+  text-align: center;
+  padding: 3rem;
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 1.1rem;
+}
+/* Responsive */
+@media (max-width: 700px) {
+  .page-header { padding: 1.5rem 1rem 2rem; }
+  .header-content h1 { font-size: 1.7rem; }
+  .controls { padding: 1rem; }
+  .main-content { padding: 0.5rem 1rem 3rem; }
+  .group-header { padding: 1rem; }
+  .group-body { padding: 1rem; }
+  .organism-grid { grid-template-columns: 1fr; }
+  .header-stats { gap: 1.25rem; }
+  .legend { padding: 0.75rem 1rem; gap: 1rem; }
+}
+/* Smooth transitions */
+.group-body, .organism-detail {
+  animation: fadeIn 0.3s ease;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+/* Collapse button for expanded organisms */
+.collapse-hint {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem;
+  color: var(--ink-faint);
+  text-align: center;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px dashed var(--border-light);
+  cursor: pointer;
+}
+.collapse-hint:hover { color: var(--ink-light); }
+</style>
+</head>
+<body>
+
+<header class="page-header">
+  <div class="header-content">
+    <a href="../../index.html" class="back-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Back to book
+    </a>
+    <h1>Organism Atlas</h1>
+    <div class="subtitle">On the Origin of Species &middot; Charles Darwin, 1859</div>
+    <p class="header-description">
+      Charts every species, breed, and organism Darwin mentions &mdash; from pigeons to barnacles to elephants &mdash; revealing which organisms carry the heaviest argumentative weight and how they are deployed across different chapters.
+    </p>
+    <div class="header-stats">
+      <div class="stat-item"><strong id="stat-organisms">0</strong> Organisms</div>
+      <div class="stat-item"><strong id="stat-groups">6</strong> Groups</div>
+      <div class="stat-item"><strong id="stat-mentions">0</strong> Total mentions</div>
+      <div class="stat-item"><strong id="stat-chapters">14</strong> Chapters</div>
+    </div>
+  </div>
+</header>
+
+<div class="controls">
+  <div class="search-box">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" id="searchInput" placeholder="Search organisms (e.g. pigeon, bee, barnacle...)">
+  </div>
+  <div class="filter-row">
+    <span class="filter-label">Filter by role:</span>
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="analogy">Analogy</button>
+    <button class="filter-btn" data-filter="evidence">Direct Evidence</button>
+    <button class="filter-btn" data-filter="thought">Thought Experiment</button>
+    <button class="filter-btn" data-filter="counter">Counterexample</button>
+  </div>
+</div>
+
+<div class="legend">
+  <span class="legend-title">Argument roles:</span>
+  <span class="legend-item"><span class="legend-dot" style="background: var(--role-analogy)"></span> Analogy</span>
+  <span class="legend-item"><span class="legend-dot" style="background: var(--role-evidence)"></span> Direct Evidence</span>
+  <span class="legend-item"><span class="legend-dot" style="background: var(--role-thought)"></span> Thought Experiment</span>
+  <span class="legend-item"><span class="legend-dot" style="background: var(--role-counter)"></span> Counterexample</span>
+</div>
+
+<main class="main-content" id="mainContent">
+</main>
+
+<script>
+// =====================================================================
+// DATA: All organisms extracted from the text of Origin of Species
+// =====================================================================
+const ORGANISM_DATA = {
+  groups: [
+    {
+      id: 'domestic-animals',
+      name: 'Domestic Animals',
+      icon: '\uD83D\uDC0E',
+      color: '#8b6914',
+      description: 'Domesticated breeds that Darwin uses to demonstrate the power of artificial selection and variability under domestication.',
+      organisms: [
+        {
+          name: 'Domestic Pigeon',
+          latin: 'Columba livia (domestic varieties)',
+          wiki: 'Rock_dove',
+          mentions: 108,
+          chapters: [1,2,4,5,6,8,13,14],
+          roles: ['evidence','analogy'],
+          arguments: [
+            { role: 'evidence', text: 'Darwin\'s single most important organism. He kept and bred every variety he could obtain, using the extraordinary diversity of pigeon breeds (carrier, tumbler, pouter, fantail, jacobin, barb, runt, trumpeter) to prove that seemingly vast differences arise from a common ancestor through accumulated selection.' },
+            { role: 'analogy', text: 'The pigeon breeds serve as a powerful analogy for speciation in nature: if breeds so different they would be classified as separate species all descend from the rock-pigeon, then species in nature could likewise share common ancestors.' }
+          ],
+          quotes: [
+            { text: 'Altogether at least a score of pigeons might be chosen, which if shown to an ornithologist, and he were told that they were wild birds, would certainly, I think, be ranked by him as well-defined species.', chapter: 'Ch. I' },
+            { text: 'I crossed some uniformly white fantails with some uniformly black barbs, and they produced mottled brown and black birds; these I again crossed together, and one grandchild of the pure white fantail and pure black barb was of as beautiful a blue colour, with the white rump, double black wing-bar, and barred and white-edged tail-feathers, as any wild rock-pigeon!', chapter: 'Ch. I' },
+            { text: 'Great as the differences are between the breeds of pigeons, I am fully convinced that the common opinion of naturalists is correct, namely, that all have descended from the rock-pigeon (Columba livia).', chapter: 'Ch. I' }
+          ]
+        },
+        {
+          name: 'Dog',
+          latin: 'Canis lupus familiaris',
+          wiki: 'Dog',
+          mentions: 57,
+          chapters: [1,3,4,5,6,7,8,13,14],
+          roles: ['evidence','analogy'],
+          arguments: [
+            { role: 'evidence', text: 'Darwin examines the enormous diversity of dog breeds (greyhound, bloodhound, bull-dog, spaniel, terrier) as evidence of inherited variation, noting that dogs have probably descended from several wild species.' },
+            { role: 'analogy', text: 'The inherited instincts of different dog breeds (pointing, retrieving, herding) demonstrate how behavioral traits, like physical ones, can be shaped by selection.' }
+          ],
+          quotes: [
+            { text: 'If, for instance, it could be shown that the greyhound, bloodhound, terrier, spaniel, and bull-dog, which we all know propagate their kind so truly, were the offspring of any single species, then such facts would have great weight in making us doubt about the immutability of the many very closely allied and natural species.', chapter: 'Ch. I' },
+            { text: 'The tendency to catch rats rather than mice is known to be inherited.', chapter: 'Ch. IV' }
+          ]
+        },
+        {
+          name: 'Horse',
+          latin: 'Equus caballus',
+          wiki: 'Horse',
+          mentions: 67,
+          chapters: [1,3,5,7,8,13,14],
+          roles: ['evidence','analogy'],
+          arguments: [
+            { role: 'evidence', text: 'The differences between dray-horse and race-horse illustrate the power of artificial selection. Stripe patterns in horses demonstrate reversion to ancestral characters.' },
+            { role: 'analogy', text: 'Horse and donkey hybrids (mules) provide key evidence about the laws of hybridism and species boundaries.' }
+          ],
+          quotes: [
+            { text: 'I am doubtfully inclined to believe, in opposition to several authors, that all the races have descended from one wild stock.', chapter: 'Ch. I' }
+          ]
+        },
+        {
+          name: 'Cattle',
+          latin: 'Bos taurus',
+          wiki: 'Cattle',
+          mentions: 55,
+          chapters: [1,3,5,8,10,13],
+          roles: ['evidence'],
+          arguments: [
+            { role: 'evidence', text: 'Cattle breeds demonstrate variation under domestication, inherited peculiarities appearing at corresponding ages, and the effects of use and disuse (udder development in milked cows).' }
+          ],
+          quotes: [
+            { text: 'The great and inherited development of the udders in cows and goats in countries where they are habitually milked, in comparison with the state of these organs in other countries, is another instance of the effect of use.', chapter: 'Ch. I' }
+          ]
+        },
+        {
+          name: 'Sheep',
+          latin: 'Ovis aries',
+          wiki: 'Sheep',
+          mentions: 29,
+          chapters: [1,4,5,8],
+          roles: ['evidence'],
+          arguments: [
+            { role: 'evidence', text: 'Sheep breeds illustrate selection\'s power and correlation of growth. White sheep are differently affected by vegetable poisons than colored individuals, showing how traits are linked. The ancon sheep demonstrates sudden large variations.' }
+          ],
+          quotes: [
+            { text: 'White sheep and pigs are differently affected from coloured individuals by certain vegetable poisons.', chapter: 'Ch. I' }
+          ]
+        },
+        {
+          name: 'Rabbit',
+          latin: 'Oryctolagus cuniculus',
+          wiki: 'European_rabbit',
+          mentions: 10,
+          chapters: [1,5,12],
+          roles: ['evidence'],
+          arguments: [
+            { role: 'evidence', text: 'Domestic rabbits, like pigeons, provide evidence that diverse breeds descend from a single wild species. Darwin uses them to demonstrate structural variation under domestication.' }
+          ],
+          quotes: [
+            { text: 'In regard to ducks and rabbits, the breeds of which differ considerably from each other in structure, I do not doubt that they all have descended from the common wild duck and rabbit.', chapter: 'Ch. I' }
+          ]
+        },
+        {
+          name: 'Domestic Cat',
+          latin: 'Felis catus',
+          wiki: 'Cat',
+          mentions: 16,
+          chapters: [1,5,7],
+          roles: ['evidence'],
+          arguments: [
+            { role: 'evidence', text: 'Cats demonstrate correlation of growth: blue-eyed cats are invariably deaf, illustrating the mysterious connections between seemingly unrelated traits.' }
+          ],
+          quotes: [
+            { text: 'Cats with blue eyes are invariably deaf; colour and constitutional peculiarities go together.', chapter: 'Ch. I' }
+          ]
+        },
+        {
+          name: 'Domestic Duck',
+          latin: 'Anas platyrhynchos domesticus',
+          wiki: 'Domestic_duck',
+          mentions: 19,
+          chapters: [1,5,12,13],
+          roles: ['evidence'],
+          arguments: [
+            { role: 'evidence', text: 'The domestic duck demonstrates use and disuse: its wing bones weigh less and leg bones weigh more than in wild ducks, reflecting less flying and more walking.' }
+          ],
+          quotes: [
+            { text: 'I find in the domestic duck that the bones of the wing weigh less and the bones of the leg more, in proportion to the whole skeleton, than do the same bones in the wild-duck; and I presume that this change may be safely attributed to the domestic duck flying much less, and walking more, than its wild parent.', chapter: 'Ch. I' }
+          ]
+        },
+        {
+          name: 'Domestic Fowl',
+          latin: 'Gallus gallus domesticus',
+          wiki: 'Chicken',
+          mentions: 17,
+          chapters: [1,5,7,8],
+          roles: ['evidence'],
+          arguments: [
+            { role: 'evidence', text: 'All poultry breeds are believed to descend from the wild Indian fowl (Gallus bankiva). The game-cock, bantam, and laying breeds illustrate extreme diversification through selection.' }
+          ],
+          quotes: [
+            { text: 'Mr. Blyth, whose opinion, from his large and varied stores of knowledge, I should value more than that of almost any one, thinks that all the breeds of poultry have proceeded from the common wild Indian fowl (Gallus bankiva).', chapter: 'Ch. I' }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'insects',
+      name: 'Insects',
+      icon: '\uD83D\uDC1D',
+      color: '#b8860b',
+      description: 'Bees, ants, beetles, and other arthropods that Darwin uses to demonstrate instinct, social behavior, and natural selection at its most remarkable.',
+      organisms: [
+        {
+          name: 'Honeybee (Hive-Bee)',
+          latin: 'Apis mellifera',
+          wiki: 'Western_honey_bee',
+          mentions: 82,
+          chapters: [3,4,6,7,8,13],
+          roles: ['evidence','thought'],
+          arguments: [
+            { role: 'evidence', text: 'The hive-bee\'s hexagonal comb is Darwin\'s prime example of natural selection producing mathematical perfection. He shows how the instinct could have evolved gradually from the simpler rounded cells of humble-bees through the intermediate cells of Melipona.' },
+            { role: 'thought', text: 'Darwin argues that if the Melipona had made its spheres at given distances and equal sizes in a double layer, the result would be as perfect as the hive-bee\'s comb -- proving that complex geometry can arise from simple instincts.' }
+          ],
+          quotes: [
+            { text: 'He must be a dull man who can examine the exquisite structure of a comb, so beautifully adapted to its end, without enthusiastic admiration. We hear from mathematicians that bees have practically solved a recondite problem, and have made their cells of the proper shape to hold the greatest possible amount of honey, with the least possible consumption of precious wax in their construction.', chapter: 'Ch. VII' },
+            { text: 'The hive-bee can easily suck the nectar out of the incarnate clover, but not out of the common red clover, which is visited by humble-bees alone; so that whole fields of the red clover offer in vain an abundant supply of precious nectar to the hive-bee.', chapter: 'Ch. IV' }
+          ]
+        },
+        {
+          name: 'Bumblebee (Humble-Bee)',
+          latin: 'Bombus',
+          wiki: 'Bumblebee',
+          mentions: 17,
+          chapters: [3,4,7],
+          roles: ['evidence','analogy'],
+          arguments: [
+            { role: 'evidence', text: 'Humble-bees represent the simpler end of the series leading to the hive-bee\'s comb, making irregular rounded cells. Their role pollinating red clover (which hive-bees cannot reach) illustrates ecological interdependence.' },
+            { role: 'analogy', text: 'The famous chain: cats eat mice, mice destroy humble-bee nests, humble-bees pollinate clover. The number of cats in a neighbourhood determines the abundance of certain flowers.' }
+          ],
+          quotes: [
+            { text: 'At one end of a short series we have humble-bees, which use their old cocoons to hold honey, sometimes adding to them short tubes of wax, and likewise making separate and very irregular rounded cells of wax.', chapter: 'Ch. VII' }
+          ]
+        },
+        {
+          name: 'Ant (various species)',
+          latin: 'Formicidae',
+          wiki: 'Ant',
+          mentions: 48,
+          chapters: [3,6,7,13],
+          roles: ['evidence','counter'],
+          arguments: [
+            { role: 'evidence', text: 'Slave-making ants (Formica sanguinea and F. rufescens) provide vivid evidence of how instincts evolve by gradation. Darwin observed slave-raiding expeditions personally, documenting them in extraordinary detail.' },
+            { role: 'counter', text: 'Neuter (sterile) worker castes in ants pose a major difficulty for natural selection theory: how can selection act on individuals that never reproduce? Darwin resolves this through family-level selection.' }
+          ],
+          quotes: [
+            { text: 'This ant is absolutely dependent on its slaves; without their aid, the species would certainly become extinct in a single year.', chapter: 'Ch. VII' },
+            { text: 'So utterly helpless are the masters, that when Huber shut up thirty of them without a slave, but with plenty of the food which they like best, and with their larvae and pupae to stimulate them to work, they did nothing; they could not even feed themselves, and many perished of hunger.', chapter: 'Ch. VII' }
+          ]
+        },
+        {
+          name: 'Aphid',
+          latin: 'Aphidoidea',
+          wiki: 'Aphid',
+          mentions: 19,
+          chapters: [3,7,13],
+          roles: ['evidence'],
+          arguments: [
+            { role: 'evidence', text: 'Aphids demonstrate the relationship between ants and other insects (ants "milking" aphids for honeydew), and illustrate the power of geometrical increase -- a single aphid\'s descendants could, theoretically, cover the earth.' }
+          ],
+          quotes: [
+            { text: 'Aphides and ants. Instincts graduated.', chapter: 'Ch. VII (header)' }
+          ]
+        },
+        {
+          name: 'Beetle',
+          latin: 'Coleoptera (various)',
+          wiki: 'Beetle',
+          mentions: 32,
+          chapters: [2,3,5,6,9,11,12,13],
+          roles: ['evidence','counter'],
+          arguments: [
+            { role: 'evidence', text: 'Beetles on oceanic islands are often wingless, providing evidence that disuse and natural selection can reduce organs. The diving beetle illustrates aquatic adaptation.' },
+            { role: 'counter', text: 'The vast number of beetle species presents a puzzle about why some groups are so much more diverse than others.' }
+          ],
+          quotes: [
+            { text: 'The structure of the beetle which dives through the water...', chapter: 'Ch. III' }
+          ]
+        },
+        {
+          name: 'Butterfly',
+          latin: 'Lepidoptera',
+          wiki: 'Butterfly',
+          mentions: 4,
+          chapters: [5,13],
+          roles: ['evidence'],
+          arguments: [
+            { role: 'evidence', text: 'Butterflies are cited for their remarkable mimicry patterns and as examples of how secondary sexual characters (color, wing patterns) are highly variable.' }
+          ],
+          quotes: []
+        },
+        {
+          name: 'Silkworm',
+          latin: 'Bombyx mori',
+          wiki: 'Bombyx_mori',
+          mentions: 3,
+          chapters: [1,5],
+          roles: ['evidence'],
+          arguments: [
+            { role: 'evidence', text: 'The silkworm demonstrates that hereditary peculiarities appear at corresponding stages of development -- traits in the caterpillar or cocoon stage are inherited at those same stages.' }
+          ],
+          quotes: [
+            { text: 'Peculiarities in the silkworm are known to appear at the corresponding caterpillar or cocoon stage.', chapter: 'Ch. I' }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'birds',
+      name: 'Wild Birds',
+      icon: '\uD83D\uDC26',
+      color: '#3a6b8c',
+      description: 'From woodpeckers to cuckoos, Darwin invokes wild birds to illustrate adaptation, instinct, and geographical distribution.',
+      organisms: [
+        {
+          name: 'Woodpecker',
+          latin: 'Picidae',
+          wiki: 'Woodpecker',
+          mentions: 12,
+          chapters: ['Intro',4,6,14],
+          roles: ['analogy','counter'],
+          arguments: [
+            { role: 'analogy', text: 'The woodpecker is Darwin\'s opening example of adaptation too perfect to be explained by external conditions alone -- its feet, tail, beak, and tongue are admirably adapted to catch insects under bark.' },
+            { role: 'counter', text: 'The ground woodpecker of La Plata, which never climbs a tree despite having the full structure of a tree-climbing woodpecker, proves that habits can diverge from inherited structure.' }
+          ],
+          quotes: [
+            { text: 'It is preposterous to attribute to mere external conditions, the structure, for instance, of the woodpecker, with its feet, tail, beak, and tongue, so admirably adapted to catch insects under the bark of trees.', chapter: 'Introduction' },
+            { text: 'On the plains of La Plata, where not a tree grows, there is a woodpecker, which in every essential part of its organisation, even in its colouring, in the harsh tone of its voice, and undulatory flight, told me plainly of its close blood-relationship to our common species; yet it is a woodpecker which never climbs a tree!', chapter: 'Ch. VI' }
+          ]
+        },
+        {
+          name: 'Cuckoo',
+          latin: 'Cuculus canorus',
+          wiki: 'Common_cuckoo',
+          mentions: 17,
+          chapters: [7,14],
+          roles: ['evidence','thought'],
+          arguments: [
+            { role: 'evidence', text: 'The cuckoo\'s brood parasitism (laying eggs in other birds\' nests) is one of Darwin\'s three prime case studies of how instincts evolve. He traces a gradual series from the American cuckoo (which sometimes lays in other nests) to the European cuckoo (fully parasitic).' },
+            { role: 'thought', text: 'Darwin argues that if the ancient progenitor of the European cuckoo occasionally laid an egg in another bird\'s nest, and the fostered young gained an advantage, natural selection could gradually perfect this parasitic instinct.' }
+          ],
+          quotes: [
+            { text: 'The instinct which leads the cuckoo to lay her eggs in other birds\' nests... I believe that the strange instinct of our cuckoo could be, and has been, generated.', chapter: 'Ch. VII' },
+            { text: 'If the old bird profited by this occasional habit, or if the young were made more vigorous by advantage having been taken of the mistaken maternal instinct of another bird... then the old birds or the fostered young would gain an advantage.', chapter: 'Ch. VII' }
+          ]
+        },
+        {
+          name: 'Ostrich',
+          latin: 'Struthio camelus',
+          wiki: 'Common_ostrich',
+          mentions: 11,
+          chapters: [7,12],
+          roles: ['evidence','counter'],
+          arguments: [
+            { role: 'evidence', text: 'Ostriches demonstrate communal nesting behavior: several hens unite and lay eggs in shared nests. This imperfect instinct, with many wasted eggs, illustrates instincts in the process of evolving.' },
+            { role: 'counter', text: 'The ostrich\'s vestigial wings, useless for flight, exemplify organs that have been reduced through disuse while the overall body plan is retained.' }
+          ],
+          quotes: [
+            { text: 'This instinct, however, of the American ostrich has not as yet been perfected; for a surprising number of eggs lie strewed over the plains, so that in one day\'s hunting I picked up no less than twenty lost and wasted eggs.', chapter: 'Ch. VII' }
+          ]
+        },
+        {
+          name: 'Goose (Upland)',
+          latin: 'Chloephaga',
+          wiki: 'Upland_goose',
+          mentions: 18,
+          chapters: [5,6,12,13],
+          roles: ['counter'],
+          arguments: [
+            { role: 'counter', text: 'Upland geese with webbed feet that rarely swim demonstrate how organisms retain structures from ancestors despite changes in habit -- a key argument for descent with modification.' }
+          ],
+          quotes: [
+            { text: 'How it has arisen that there are upland geese with webbed feet, ground woodpeckers, diving thrushes, and petrels with the habits of auks.', chapter: 'Ch. VI' }
+          ]
+        },
+        {
+          name: 'Finch',
+          latin: 'Fringillidae / Geospizinae',
+          wiki: 'Darwin%27s_finches',
+          mentions: 26,
+          chapters: [1,4,6,12,13],
+          roles: ['evidence','analogy'],
+          arguments: [
+            { role: 'evidence', text: 'Finches in the Galapagos archipelago demonstrate adaptive radiation: closely allied species with differing beak forms occupy different islands, illustrating divergence of character.' },
+            { role: 'analogy', text: 'Darwin compares the diversity of pigeon breeds to the species of finches in nature, noting he found it equally difficult to believe both could descend from common ancestors.' }
+          ],
+          quotes: [
+            { text: 'I felt fully as much difficulty in believing that they could ever have descended from a common parent, as any naturalist could in coming to a similar conclusion in regard to the many species of finches, or other large groups of birds, in nature.', chapter: 'Ch. I' }
+          ]
+        },
+        {
+          name: 'Petrel',
+          latin: 'Procellariiformes',
+          wiki: 'Procellariiformes',
+          mentions: 8,
+          chapters: [6,12],
+          roles: ['counter'],
+          arguments: [
+            { role: 'counter', text: 'Petrels are the most aerial and oceanic of birds, yet the diving petrel has habits like an auk -- demonstrating how habits can diverge radically from the typical form of a group.' }
+          ],
+          quotes: [
+            { text: 'Petrels are the most aerial and oceanic of birds, yet in the quiet Sounds of Tierra del Fuego, the Puffinuria berardi... has the general habits... of auks.', chapter: 'Ch. VI' }
+          ]
+        },
+        {
+          name: 'Thrush',
+          latin: 'Turdidae',
+          wiki: 'Thrush_(bird)',
+          mentions: 10,
+          chapters: [6,11,12],
+          roles: ['counter','evidence'],
+          arguments: [
+            { role: 'counter', text: 'The water ouzel (a diving thrush) exemplifies habits diverging from the typical structure of a group. Thrushes on different islands illustrate geographical distribution and speciation.' }
+          ],
+          quotes: []
+        },
+        {
+          name: 'Swallow',
+          latin: 'Hirundinidae',
+          wiki: 'Swallow',
+          mentions: 5,
+          chapters: [6,7],
+          roles: ['analogy'],
+          arguments: [
+            { role: 'analogy', text: 'Swallows illustrate instinct and migration, where complex behaviors are performed without being taught.' }
+          ],
+          quotes: []
+        }
+      ]
+    },
+    {
+      id: 'marine-invertebrates',
+      name: 'Marine Invertebrates',
+      icon: '\uD83E\uDEB8',
+      color: '#4a7c59',
+      description: 'Barnacles, crustaceans, molluscs, and coral -- the marine creatures Darwin studied most intimately, especially during his eight years of barnacle research.',
+      organisms: [
+        {
+          name: 'Barnacle (Cirripede)',
+          latin: 'Cirripedia',
+          wiki: 'Barnacle',
+          mentions: 29,
+          chapters: [1,4,5,9,13,14],
+          roles: ['evidence'],
+          arguments: [
+            { role: 'evidence', text: 'Darwin spent eight years (1846-1854) studying barnacles in microscopic detail. They provided crucial evidence for his theory: parasitic barnacles that lose their shells demonstrate how disuse under natural selection can reduce organs, and highly variable opercular valves demonstrate that unusual structures are most variable.' }
+          ],
+          quotes: [
+            { text: 'When a cirripede is parasitic within another and is thus protected, it loses more or less completely its own shell or carapace. This is the case with the male Ibla, and in a truly extraordinary manner with the Proteolepas.', chapter: 'Ch. V' },
+            { text: 'The opercular valves of sessile cirripedes (rock barnacles) are, in every sense of the word, very important structures, and they differ extremely little even in different genera.', chapter: 'Ch. V' }
+          ]
+        },
+        {
+          name: 'Crustacean',
+          latin: 'Crustacea',
+          wiki: 'Crustacean',
+          mentions: 25,
+          chapters: [5,6,9,10,13],
+          roles: ['evidence'],
+          arguments: [
+            { role: 'evidence', text: 'Crustaceans provide key evidence for embryological arguments: larval forms of very different adult crustaceans are remarkably similar, revealing common descent more clearly than adult forms.' }
+          ],
+          quotes: []
+        },
+        {
+          name: 'Mollusc / Shell',
+          latin: 'Mollusca',
+          wiki: 'Mollusca',
+          mentions: 72,
+          chapters: [2,5,9,10,11,12],
+          roles: ['evidence'],
+          arguments: [
+            { role: 'evidence', text: 'Mollusc shells are the most common fossils and provide critical evidence for the geological succession of species. Their distribution across continents and islands also supports Darwin\'s geographical arguments.' }
+          ],
+          quotes: []
+        },
+        {
+          name: 'Coral',
+          latin: 'Anthozoa',
+          wiki: 'Coral',
+          mentions: 5,
+          chapters: [9,11],
+          roles: ['evidence'],
+          arguments: [
+            { role: 'evidence', text: 'Coral reefs help Darwin illustrate the vast timescales of geological change and the imperfection of the fossil record.' }
+          ],
+          quotes: []
+        },
+        {
+          name: 'Nautilus',
+          latin: 'Nautilus',
+          wiki: 'Nautilus',
+          mentions: 5,
+          chapters: [9,10],
+          roles: ['evidence'],
+          arguments: [
+            { role: 'evidence', text: 'The nautilus is a living fossil that has persisted with little change since ancient geological periods, demonstrating that some forms can remain stable while others diversify enormously.' }
+          ],
+          quotes: []
+        }
+      ]
+    },
+    {
+      id: 'mammals-vertebrates',
+      name: 'Wild Mammals & Vertebrates',
+      icon: '\uD83D\uDC3B',
+      color: '#8b4049',
+      description: 'From wolves to elephants, whales to bats -- the wild vertebrates that populate Darwin\'s arguments about natural selection, struggle for existence, and adaptation.',
+      organisms: [
+        {
+          name: 'Wolf',
+          latin: 'Canis lupus',
+          wiki: 'Wolf',
+          mentions: 18,
+          chapters: [4,6],
+          roles: ['thought'],
+          arguments: [
+            { role: 'thought', text: 'The wolf is the subject of Darwin\'s most famous hypothetical illustration of natural selection: wolves preying on deer would be selected for speed, gradually splitting into swift and slow varieties adapted to different prey.' }
+          ],
+          quotes: [
+            { text: 'Let us take the case of a wolf, which preys on various animals, securing some by craft, some by strength, and some by fleetness; and let us suppose that the fleetest prey, a deer for instance, had from any change in the country increased in numbers... I can under such circumstances see no reason to doubt that the swiftest and slimmest wolves would have the best chance of surviving.', chapter: 'Ch. IV' }
+          ]
+        },
+        {
+          name: 'Elephant',
+          latin: 'Elephas / Loxodonta',
+          wiki: 'Elephant',
+          mentions: 10,
+          chapters: [3,10],
+          roles: ['thought','evidence'],
+          arguments: [
+            { role: 'thought', text: 'The elephant is "the slowest breeder of all known animals," yet Darwin calculates that from a single pair, fifteen million elephants would be alive after five centuries -- proving that even the slowest breeders have enormous potential for increase, making the struggle for existence inevitable.' }
+          ],
+          quotes: [
+            { text: 'The elephant is reckoned to be the slowest breeder of all known animals, and I have taken some pains to estimate its probable minimum rate of natural increase... if this be so, at the end of the fifth century there would be alive fifteen million elephants, descended from the first pair.', chapter: 'Ch. III' }
+          ]
+        },
+        {
+          name: 'Whale',
+          latin: 'Cetacea',
+          wiki: 'Whale',
+          mentions: 15,
+          chapters: [6,9,10,13],
+          roles: ['evidence','counter'],
+          arguments: [
+            { role: 'evidence', text: 'Whale baleen demonstrates how organs can be converted from one function to another through gradual modification. The fossil record of whales shows succession of forms.' },
+            { role: 'counter', text: 'The absence of transitional fossil forms between land mammals and whales is acknowledged as a difficulty, but Darwin argues the geological record is imperfect.' }
+          ],
+          quotes: []
+        },
+        {
+          name: 'Bear',
+          latin: 'Ursidae',
+          wiki: 'Bear',
+          mentions: 12,
+          chapters: [3,6,11],
+          roles: ['thought','analogy'],
+          arguments: [
+            { role: 'thought', text: 'Darwin famously suggested a bear swimming with open mouth catching insects could, through natural selection, become "a creature as monstrous as a whale" -- an illustration of how aquatic habits might evolve (though he later regretted this example).' }
+          ],
+          quotes: []
+        },
+        {
+          name: 'Bat',
+          latin: 'Chiroptera',
+          wiki: 'Bat',
+          mentions: 12,
+          chapters: [5,6,11,12],
+          roles: ['evidence','counter'],
+          arguments: [
+            { role: 'evidence', text: 'Bats on oceanic islands demonstrate dispersal and geographical distribution. The flying squirrel to bat progression illustrates possible gradation of the wing.' },
+            { role: 'counter', text: 'How could an organ of flight like the bat\'s wing have evolved gradually? Darwin answers through the series: flying squirrels with skin flaps gradually enlarging.' }
+          ],
+          quotes: []
+        },
+        {
+          name: 'Fox',
+          latin: 'Vulpes',
+          wiki: 'Fox',
+          mentions: 7,
+          chapters: [1,11],
+          roles: ['evidence'],
+          arguments: [
+            { role: 'evidence', text: 'The many fox species inhabiting different quarters of the world are mentioned to illustrate the existence of closely allied natural species, paralleling domestic dog breeds.' }
+          ],
+          quotes: []
+        },
+        {
+          name: 'Giraffe',
+          latin: 'Giraffa camelopardalis',
+          wiki: 'Giraffe',
+          mentions: 5,
+          chapters: [6,7],
+          roles: ['thought'],
+          arguments: [
+            { role: 'thought', text: 'The giraffe\'s long neck is discussed as an example where natural selection acting on variation in neck length could gradually produce an extreme adaptation for browsing on tall trees.' }
+          ],
+          quotes: []
+        },
+        {
+          name: 'Frog / Toad',
+          latin: 'Anura',
+          wiki: 'Frog',
+          mentions: 7,
+          chapters: [6,12,13],
+          roles: ['evidence'],
+          arguments: [
+            { role: 'evidence', text: 'The absence of frogs and toads on oceanic islands is strong evidence for Darwin\'s theory of geographical distribution: salt water kills their eggs, so they cannot cross oceans, explaining their absence where mammals (as bats) can fly.' }
+          ],
+          quotes: []
+        }
+      ]
+    },
+    {
+      id: 'plants',
+      name: 'Plants',
+      icon: '\uD83C\uDF3F',
+      color: '#6b5078',
+      description: 'From mistletoe to clover, from orchids to the cabbage -- plants that illuminate co-adaptation, pollination, dispersal, and variation.',
+      organisms: [
+        {
+          name: 'Mistletoe',
+          latin: 'Viscum album',
+          wiki: 'Mistletoe',
+          mentions: 3,
+          chapters: ['Intro',3],
+          roles: ['analogy'],
+          arguments: [
+            { role: 'analogy', text: 'The mistletoe is Darwin\'s second opening example (alongside the woodpecker) of an organism whose complex adaptations -- depending on specific trees, birds for seed transport, and insects for pollination -- cannot be explained by external conditions alone.' }
+          ],
+          quotes: [
+            { text: 'In the case of the misseltoe, which draws its nourishment from certain trees, which has seeds that must be transported by certain birds, and which has flowers with separate sexes absolutely requiring the agency of certain insects to bring pollen from one flower to the other, it is equally preposterous to account for the structure of this parasite... by the effects of external conditions.', chapter: 'Introduction' }
+          ]
+        },
+        {
+          name: 'Red Clover',
+          latin: 'Trifolium pratense',
+          wiki: 'Trifolium_pratense',
+          mentions: 9,
+          chapters: [3,4],
+          roles: ['evidence','analogy'],
+          arguments: [
+            { role: 'evidence', text: 'Red clover is pollinated only by humble-bees (whose tongues can reach its deeper corolla), not hive-bees. This demonstrates ecological interdependence.' },
+            { role: 'analogy', text: 'The famous ecological web: the number of humble-bees depends on the number of field-mice (which destroy their nests), and mice depend on cats. Thus the frequency of cats in a parish determines the abundance of red clover.' }
+          ],
+          quotes: [
+            { text: 'The hive-bee can easily suck the nectar out of the incarnate clover, but not out of the common red clover, which is visited by humble-bees alone; so that whole fields of the red clover offer in vain an abundant supply of precious nectar to the hive-bee.', chapter: 'Ch. IV' }
+          ]
+        },
+        {
+          name: 'Cabbage',
+          latin: 'Brassica oleracea',
+          wiki: 'Brassica_oleracea',
+          mentions: 4,
+          chapters: [1,5],
+          roles: ['evidence'],
+          arguments: [
+            { role: 'evidence', text: 'The various races of cabbage (kale, broccoli, cauliflower, Brussels sprouts) demonstrate the extreme variability possible within a single species under cultivation.' }
+          ],
+          quotes: []
+        },
+        {
+          name: 'Orchid',
+          latin: 'Orchidaceae',
+          wiki: 'Orchid',
+          mentions: 2,
+          chapters: [6],
+          roles: ['evidence'],
+          arguments: [
+            { role: 'evidence', text: 'Orchids are cited for their extraordinary pollination adaptations, which Darwin later explored at book length (1862). Their flower structures are beautifully modified for insect pollination.' }
+          ],
+          quotes: []
+        },
+        {
+          name: 'Oak',
+          latin: 'Quercus',
+          wiki: 'Oak',
+          mentions: 4,
+          chapters: [2,3,5],
+          roles: ['evidence'],
+          arguments: [
+            { role: 'evidence', text: 'Oaks illustrate the difficulty of distinguishing between species and varieties: the many species of British oaks intergrade so subtly that experts disagree on their classification.' }
+          ],
+          quotes: []
+        }
+      ]
+    }
+  ]
+};
+
+// =====================================================================
+// Wikipedia Image Fetching
+// =====================================================================
+const imageCache = {};
+
+async function fetchWikipediaImage(wikiTitle, imgElement) {
+  if (imageCache[wikiTitle]) {
+    imgElement.src = imageCache[wikiTitle];
+    imgElement.style.display = 'block';
+    return;
+  }
+  try {
+    const resp = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(wikiTitle)}`);
+    if (!resp.ok) return;
+    const data = await resp.json();
+    if (data.thumbnail && data.thumbnail.source) {
+      imageCache[wikiTitle] = data.thumbnail.source;
+      imgElement.src = data.thumbnail.source;
+      imgElement.style.display = 'block';
+    }
+  } catch (e) {
+    // silently fail -- placeholder remains
+  }
+}
+
+// =====================================================================
+// Rendering
+// =====================================================================
+const mainContent = document.getElementById('mainContent');
+let totalOrganisms = 0;
+let totalMentions = 0;
+
+function getGroupEmoji(groupId) {
+  const emojis = {
+    'domestic-animals': '\uD83D\uDC0E',
+    'insects': '\uD83D\uDC1D',
+    'birds': '\uD83D\uDC26',
+    'marine-invertebrates': '\uD83E\uDEB8',
+    'mammals-vertebrates': '\uD83D\uDC3B',
+    'plants': '\uD83C\uDF3F'
+  };
+  return emojis[groupId] || '\uD83E\uDDA0';
+}
+
+function getRoleColor(role) {
+  const map = { analogy: 'var(--role-analogy)', evidence: 'var(--role-evidence)', thought: 'var(--role-thought)', counter: 'var(--role-counter)' };
+  return map[role] || 'var(--ink-faint)';
+}
+
+function getRoleName(role) {
+  const map = { analogy: 'Analogy', evidence: 'Direct Evidence', thought: 'Thought Experiment', counter: 'Counterexample' };
+  return map[role] || role;
+}
+
+// Find max mentions for the bar scaling
+let maxMentions = 0;
+ORGANISM_DATA.groups.forEach(g => {
+  g.organisms.forEach(o => {
+    if (o.mentions > maxMentions) maxMentions = o.mentions;
+    totalOrganisms++;
+    totalMentions += o.mentions;
+  });
+});
+document.getElementById('stat-organisms').textContent = totalOrganisms;
+document.getElementById('stat-mentions').textContent = totalMentions.toLocaleString();
+
+function renderGroups(filter, search) {
+  mainContent.innerHTML = '';
+  let anyVisible = false;
+
+  ORGANISM_DATA.groups.forEach(group => {
+    const filteredOrganisms = group.organisms.filter(o => {
+      const matchesFilter = filter === 'all' || o.roles.includes(filter);
+      const matchesSearch = !search ||
+        o.name.toLowerCase().includes(search) ||
+        (o.latin && o.latin.toLowerCase().includes(search)) ||
+        group.name.toLowerCase().includes(search);
+      return matchesFilter && matchesSearch;
+    });
+
+    if (filteredOrganisms.length === 0) return;
+    anyVisible = true;
+
+    const groupMentions = filteredOrganisms.reduce((s, o) => s + o.mentions, 0);
+
+    const card = document.createElement('div');
+    card.className = 'group-card';
+    card.dataset.groupId = group.id;
+
+    card.innerHTML = `
+      <div class="group-header" onclick="toggleGroup(this)">
+        <div class="group-icon" style="background: ${group.color}15; color: ${group.color};">${group.icon}</div>
+        <div class="group-info">
+          <h2>${group.name}</h2>
+          <div class="group-desc">${group.description}</div>
+        </div>
+        <div class="group-count">
+          <strong>${filteredOrganisms.length}</strong>
+          organisms
+        </div>
+        <svg class="expand-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="group-body">
+        <div class="organism-grid" id="grid-${group.id}"></div>
+      </div>
+    `;
+
+    mainContent.appendChild(card);
+
+    const grid = card.querySelector('.organism-grid');
+    filteredOrganisms.forEach(org => {
+      grid.appendChild(createOrganismCard(org, group.color));
+    });
+  });
+
+  if (!anyVisible) {
+    mainContent.innerHTML = '<div class="no-results">No organisms match your search.</div>';
+  }
+}
+
+function createOrganismCard(org, groupColor) {
+  const card = document.createElement('div');
+  card.className = 'organism-card';
+  card.dataset.name = org.name.toLowerCase();
+  card.dataset.roles = org.roles.join(',');
+
+  const barWidth = Math.max(5, (org.mentions / maxMentions) * 100);
+  const roleTags = org.roles.map(r => `<span class="role-tag ${r}">${getRoleName(r)}</span>`).join('');
+  const chapterPills = org.chapters.map(c => `<span class="chapter-pill">${typeof c === 'number' ? 'Ch. ' + c : c}</span>`).join('');
+
+  // Arguments rendering
+  const argsHtml = org.arguments.map(a => `
+    <div class="argument-role ${a.role}">
+      <div class="role-label" style="color: ${getRoleColor(a.role)}">${getRoleName(a.role)}</div>
+      ${a.text}
+    </div>
+  `).join('');
+
+  // Quotes rendering
+  const quotesHtml = org.quotes.map(q => `
+    <div class="quote-block">
+      "${q.text}"
+      <span class="chapter-ref">${q.chapter}</span>
+    </div>
+  `).join('');
+
+  card.innerHTML = `
+    <div class="organism-top">
+      <div class="organism-thumb-placeholder" data-wiki="${org.wiki || ''}">
+        <img class="organism-thumb" style="display:none;" alt="${org.name}" loading="lazy"
+             onerror="this.style.display='none'; this.parentNode.querySelector('.fallback-icon').style.display='flex';">
+        <span class="fallback-icon" style="font-size:1.3rem;">?</span>
+      </div>
+      <div class="organism-meta">
+        <div class="organism-name">${org.name}</div>
+        ${org.latin ? `<div class="organism-latin">${org.latin}</div>` : ''}
+        <div class="organism-mentions">${org.mentions} mentions across ${org.chapters.length} chapters</div>
+        <div class="mention-bar"><div class="mention-bar-fill" style="width: ${barWidth}%; background: ${groupColor};"></div></div>
+        <div class="role-tags">${roleTags}</div>
+      </div>
+    </div>
+    <div class="organism-detail">
+      <div class="detail-section">
+        <h4>Chapters</h4>
+        <div class="chapter-pills">${chapterPills}</div>
+      </div>
+      <div class="detail-section">
+        <h4>Argumentative Role</h4>
+        ${argsHtml}
+      </div>
+      ${quotesHtml ? `
+        <div class="detail-section">
+          <h4>Key Passages from the Text</h4>
+          ${quotesHtml}
+        </div>
+      ` : ''}
+      ${org.wiki ? `
+        <a class="wiki-link" href="https://en.wikipedia.org/wiki/${org.wiki}" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Read more on Wikipedia
+        </a>
+      ` : ''}
+      <div class="collapse-hint" onclick="event.stopPropagation(); collapseOrganism(this);">Click to collapse</div>
+    </div>
+  `;
+
+  card.addEventListener('click', function(e) {
+    if (e.target.closest('.wiki-link') || e.target.closest('.collapse-hint')) return;
+    toggleOrganism(this);
+  });
+
+  // Fetch image
+  if (org.wiki) {
+    const img = card.querySelector('.organism-thumb');
+    const fallback = card.querySelector('.fallback-icon');
+    fetchWikipediaImage(org.wiki, img).then(() => {
+      if (img.style.display === 'block') {
+        fallback.style.display = 'none';
+      }
+    });
+  }
+
+  return card;
+}
+
+function toggleGroup(header) {
+  const card = header.parentElement;
+  card.classList.toggle('expanded');
+}
+
+function toggleOrganism(card) {
+  const wasExpanded = card.classList.contains('expanded');
+  // Collapse all in same grid
+  const grid = card.parentElement;
+  grid.querySelectorAll('.organism-card.expanded').forEach(c => c.classList.remove('expanded'));
+  if (!wasExpanded) {
+    card.classList.add('expanded');
+    // Smooth scroll into view
+    setTimeout(() => {
+      card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 100);
+  }
+}
+
+function collapseOrganism(btn) {
+  const card = btn.closest('.organism-card');
+  card.classList.remove('expanded');
+}
+
+// =====================================================================
+// Search & Filter
+// =====================================================================
+let currentFilter = 'all';
+let currentSearch = '';
+
+document.getElementById('searchInput').addEventListener('input', function(e) {
+  currentSearch = e.target.value.toLowerCase().trim();
+  renderGroups(currentFilter, currentSearch);
+  // Auto-expand groups when searching
+  if (currentSearch.length > 0) {
+    document.querySelectorAll('.group-card').forEach(c => c.classList.add('expanded'));
+  }
+});
+
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    currentFilter = this.dataset.filter;
+    renderGroups(currentFilter, currentSearch);
+    // Auto-expand when filtering
+    if (currentFilter !== 'all') {
+      document.querySelectorAll('.group-card').forEach(c => c.classList.add('expanded'));
+    }
+  });
+});
+
+// Initial render
+renderGroups('all', '');
+
+// Auto-expand first group for immediate engagement
+setTimeout(() => {
+  const first = document.querySelector('.group-card');
+  if (first) first.classList.add('expanded');
+}, 300);
+</script>
+</body>
+</html>

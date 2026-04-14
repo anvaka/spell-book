@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Darwin Was Right (And Wrong) -- On the Origin of Species</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400&display=swap');
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #faf6f0;
+    --bg-card: #ffffff;
+    --bg-darwin: #fdf8f0;
+    --bg-modern: #f0f5fa;
+    --text: #2c2416;
+    --text-secondary: #6b5d4f;
+    --text-light: #9a8b7a;
+    --border: #e6ddd0;
+    --border-light: #f0e8dc;
+    --accent: #8b4513;
+    --green: #2d7a3a;
+    --green-bg: #e8f5e9;
+    --green-border: #a5d6a7;
+    --amber: #d4880f;
+    --amber-bg: #fff8e1;
+    --amber-border: #ffe082;
+    --red: #c0392b;
+    --red-bg: #fce4e4;
+    --red-border: #ef9a9a;
+    --blue: #2663a8;
+    --blue-bg: #e3f2fd;
+    --blue-border: #90caf9;
+    --shadow: 0 2px 8px rgba(44,36,22,0.08);
+    --shadow-hover: 0 4px 16px rgba(44,36,22,0.12);
+  }
+
+  body {
+    font-family: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+    min-height: 100vh;
+  }
+
+  /* Header */
+  .header {
+    background: linear-gradient(135deg, #3e2c1a 0%, #5c3d22 50%, #4a3520 100%);
+    color: #faf6f0;
+    padding: 2.5rem 2rem 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    opacity: 0.5;
+  }
+  .header-content {
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: rgba(250,246,240,0.7);
+    text-decoration: none;
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    transition: color 0.2s;
+  }
+  .back-link:hover { color: #faf6f0; }
+  .back-link svg { width: 16px; height: 16px; }
+
+  .header h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 0.6rem;
+  }
+  .header .subtitle {
+    font-size: 1.05rem;
+    opacity: 0.85;
+    max-width: 650px;
+    line-height: 1.6;
+  }
+  .header .book-ref {
+    margin-top: 1rem;
+    font-style: italic;
+    opacity: 0.6;
+    font-size: 0.9rem;
+  }
+
+  /* Legend */
+  .legend {
+    max-width: 900px;
+    margin: -1.2rem auto 0;
+    padding: 0 1.5rem;
+    position: relative;
+    z-index: 2;
+  }
+  .legend-inner {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 2rem;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-light);
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+  }
+
+  /* Score summary */
+  .score-summary {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+  }
+  .score-bar {
+    display: flex;
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 0.6rem;
+  }
+  .score-bar div { transition: width 0.6s ease; }
+  .score-bar .s-confirmed { background: var(--green); }
+  .score-bar .s-partial { background: var(--amber); }
+  .score-bar .s-corrected { background: var(--red); }
+  .score-bar .s-expanded { background: var(--blue); }
+  .score-text {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    text-align: center;
+  }
+
+  /* Main content */
+  .main {
+    max-width: 900px;
+    margin: 0 auto 4rem;
+    padding: 1rem 1.5rem;
+  }
+
+  /* Category */
+  .category {
+    margin-bottom: 1rem;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--bg-card);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: box-shadow 0.3s;
+  }
+  .category:hover { box-shadow: var(--shadow-hover); }
+
+  .category-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.2rem 1.5rem;
+    cursor: pointer;
+    user-select: none;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    font-family: inherit;
+    color: inherit;
+  }
+  .category-header:hover { background: rgba(139,69,19,0.03); }
+
+  .category-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, #f5ede3, #ebe0d2);
+  }
+
+  .category-info { flex: 1; }
+  .category-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.15rem;
+  }
+  .category-desc {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+  }
+
+  .category-badges {
+    display: flex;
+    gap: 0.3rem;
+    flex-shrink: 0;
+  }
+  .mini-badge {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+  .mini-badge.confirmed { background: var(--green); }
+  .mini-badge.partial { background: var(--amber); }
+  .mini-badge.corrected { background: var(--red); }
+  .mini-badge.expanded { background: var(--blue); }
+
+  .chevron {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+    color: var(--text-light);
+  }
+  .category.open .chevron { transform: rotate(180deg); }
+
+  .category-body {
+    display: none;
+    border-top: 1px solid var(--border-light);
+  }
+  .category.open .category-body { display: block; }
+
+  /* Claim */
+  .claim {
+    border-bottom: 1px solid var(--border-light);
+  }
+  .claim:last-child { border-bottom: none; }
+
+  .claim-header {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 1rem 1.5rem;
+    cursor: pointer;
+    user-select: none;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    font-family: inherit;
+    color: inherit;
+    transition: background 0.15s;
+  }
+  .claim-header:hover { background: rgba(139,69,19,0.02); }
+
+  .verdict-badge {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .verdict-badge.confirmed { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+  .verdict-badge.partial { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-border); }
+  .verdict-badge.corrected { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
+  .verdict-badge.expanded { background: var(--blue-bg); color: var(--blue); border: 1px solid var(--blue-border); }
+
+  .claim-title {
+    flex: 1;
+    font-weight: 600;
+    font-size: 1rem;
+  }
+  .verdict-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    flex-shrink: 0;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+  }
+  .verdict-label.confirmed { color: var(--green); background: var(--green-bg); }
+  .verdict-label.partial { color: var(--amber); background: var(--amber-bg); }
+  .verdict-label.corrected { color: var(--red); background: var(--red-bg); }
+  .verdict-label.expanded { color: var(--blue); background: var(--blue-bg); }
+
+  .claim-chevron {
+    width: 16px; height: 16px;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+    color: var(--text-light);
+  }
+  .claim.open .claim-chevron { transform: rotate(180deg); }
+
+  .claim-body {
+    display: none;
+    padding: 0 1.5rem 1.5rem;
+  }
+  .claim.open .claim-body { display: block; }
+
+  /* Comparison panes */
+  .comparison {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  @media (max-width: 700px) {
+    .comparison { grid-template-columns: 1fr; }
+  }
+
+  .pane {
+    border-radius: 8px;
+    padding: 1.2rem;
+    border: 1px solid;
+  }
+  .pane-darwin {
+    background: var(--bg-darwin);
+    border-color: #e6ddd0;
+  }
+  .pane-modern {
+    background: var(--bg-modern);
+    border-color: #c8d8e8;
+  }
+  .pane-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.6rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .pane-darwin .pane-label { color: var(--accent); }
+  .pane-modern .pane-label { color: var(--blue); }
+
+  .pane blockquote {
+    font-style: italic;
+    margin: 0.5rem 0;
+    padding-left: 0.8rem;
+    border-left: 3px solid var(--border);
+    color: var(--text-secondary);
+    font-size: 0.92rem;
+    line-height: 1.6;
+  }
+  .pane p {
+    font-size: 0.92rem;
+    line-height: 1.6;
+    margin-bottom: 0.5rem;
+  }
+  .pane p:last-child { margin-bottom: 0; }
+
+  /* Deep dive (Level 4) */
+  .deep-dive {
+    background: linear-gradient(135deg, #f8f4ee, #f5f0e8);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+  }
+  .deep-dive-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--accent);
+    padding: 0;
+    user-select: none;
+    width: 100%;
+    text-align: left;
+  }
+  .deep-dive-toggle:hover { color: #a0522d; }
+  .deep-dive-toggle svg {
+    width: 14px; height: 14px;
+    transition: transform 0.3s;
+    flex-shrink: 0;
+  }
+  .deep-dive.open .deep-dive-toggle svg { transform: rotate(180deg); }
+  .deep-dive-content {
+    display: none;
+    margin-top: 0.8rem;
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    line-height: 1.65;
+  }
+  .deep-dive.open .deep-dive-content { display: block; }
+  .deep-dive-content p { margin-bottom: 0.5rem; }
+  .deep-dive-content p:last-child { margin-bottom: 0; }
+
+  .source-link {
+    color: var(--blue);
+    text-decoration: none;
+    font-size: 0.82rem;
+    border-bottom: 1px dotted var(--blue);
+  }
+  .source-link:hover { border-bottom-style: solid; }
+
+  .discovery-tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-family: 'JetBrains Mono', monospace;
+    background: rgba(139,69,19,0.08);
+    color: var(--accent);
+    padding: 0.15rem 0.5rem;
+    border-radius: 3px;
+    margin-right: 0.3rem;
+  }
+
+  /* Footer */
+  .footer {
+    max-width: 900px;
+    margin: 0 auto 3rem;
+    padding: 2rem 1.5rem 0;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    color: var(--text-light);
+    font-size: 0.85rem;
+    line-height: 1.7;
+  }
+  .footer a { color: var(--accent); text-decoration: none; }
+  .footer a:hover { text-decoration: underline; }
+
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .category-body, .claim-body {
+    animation: fadeIn 0.25s ease;
+  }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    .header h1 { font-size: 1.7rem; }
+    .legend-inner { padding: 0.8rem 1rem; gap: 0.6rem 1.2rem; }
+    .category-header { padding: 1rem; }
+    .claim-header { padding: 0.8rem 1rem; }
+    .claim-body { padding: 0 1rem 1rem; }
+    .category-title { font-size: 1.1rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-content">
+    <a href="../../index.html" class="back-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Back to book
+    </a>
+    <h1>Darwin Was Right (And Wrong)</h1>
+    <p class="subtitle">A scientific scorecard: comparing every major claim in <em>On the Origin of Species</em> (1859) with what modern science has confirmed, corrected, or expanded upon.</p>
+    <p class="book-ref">Charles Darwin, <em>On the Origin of Species by Means of Natural Selection</em>, 1st ed., 1859</p>
+  </div>
+</div>
+
+<div class="legend">
+  <div class="legend-inner">
+    <div class="legend-item"><span class="verdict-badge confirmed" style="width:24px;height:24px;font-size:0.8rem">&#10003;</span> Confirmed</div>
+    <div class="legend-item"><span class="verdict-badge partial" style="width:24px;height:24px;font-size:0.8rem">&#9680;</span> Partially confirmed</div>
+    <div class="legend-item"><span class="verdict-badge corrected" style="width:24px;height:24px;font-size:0.8rem">&#10007;</span> Corrected</div>
+    <div class="legend-item"><span class="verdict-badge expanded" style="width:24px;height:24px;font-size:0.8rem">&uarr;</span> Expanded</div>
+  </div>
+</div>
+
+<div class="score-summary">
+  <div class="score-bar">
+    <div class="s-confirmed" style="width:42%"></div>
+    <div class="s-partial" style="width:19%"></div>
+    <div class="s-corrected" style="width:13%"></div>
+    <div class="s-expanded" style="width:26%"></div>
+  </div>
+  <div class="score-text">Of 31 major claims examined: 13 confirmed, 6 partially confirmed, 4 corrected, 8 expanded by modern science</div>
+</div>
+
+<div class="main" id="categories">
+</div>
+
+<div class="footer">
+  <p>A lens on <a href="../../index.html"><em>On the Origin of Species</em></a> by Charles Darwin (1859).</p>
+  <p>Modern science sources include Wikipedia, NCBI/PMC, Britannica, Nature, PNAS, and PBS. All Darwin quotations are from the first edition (1859).</p>
+</div>
+
+<script>
+const DATA = [
+  {
+    id: 'natural-selection',
+    icon: '\u2694\uFE0F',
+    title: 'Natural Selection',
+    desc: 'Darwin\'s central mechanism: differential survival and reproduction drives evolutionary change',
+    claims: [
+      {
+        title: 'Natural selection is the primary driver of adaptive evolution',
+        verdict: 'confirmed',
+        verdictLabel: 'Confirmed',
+        darwin: `<blockquote>"It may be said that natural selection is daily and hourly scrutinising, throughout the world, every variation, even the slightest; rejecting that which is bad, preserving and adding up all that is good; silently and insensibly working, whenever and wherever opportunity offers, at the improvement of each organic being."</blockquote><p>Darwin argued that natural selection is the main force shaping organisms, analogous to but more powerful than artificial selection by breeders.</p>`,
+        modern: `<p>The Modern Evolutionary Synthesis (1930s-1940s), built by R.A. Fisher, J.B.S. Haldane, and Sewall Wright, mathematically confirmed that natural selection acting on Mendelian variation is the primary driver of adaptive evolution. Thousands of documented cases now exist, from antibiotic resistance in bacteria to industrial melanism in peppered moths.</p><p>Darwin was essentially right: natural selection is the main architect of adaptation.</p>`,
+        deepDive: `<p><span class="discovery-tag">1930s</span> R.A. Fisher's <em>The Genetical Theory of Natural Selection</em> (1930) showed mathematically that Mendelian genetics is fully compatible with gradual evolution by natural selection, resolving the bitter "biometrician vs. Mendelian" dispute.</p><p><span class="discovery-tag">1953</span> H.B.D. Kettlewell's peppered moth experiments provided one of the first direct field demonstrations of natural selection in action.</p><p><span class="discovery-tag">1970s-present</span> Peter and Rosemary Grant's 40+ year study of Darwin's finches on Daphne Major documented natural selection changing beak size in real time in response to drought conditions.</p><p><a class="source-link" href="https://en.wikipedia.org/wiki/Modern_synthesis_(20th_century)" target="_blank">Wikipedia: Modern Synthesis</a></p>`
+      },
+      {
+        title: 'Struggle for existence shapes populations',
+        verdict: 'confirmed',
+        verdictLabel: 'Confirmed',
+        darwin: `<blockquote>"A struggle for existence inevitably follows from the high rate at which all organic beings tend to increase... as more individuals are produced than can possibly survive, there must in every case be a struggle for existence, either one individual with another of the same species, or with the individuals of distinct species, or with the physical conditions of life."</blockquote>`,
+        modern: `<p>Population ecology has thoroughly confirmed that competition for limited resources is a fundamental force in nature. Robert MacArthur and E.O. Wilson's work on island biogeography (1967), along with David Tilman's resource competition theory (1982), provided rigorous experimental and mathematical frameworks for understanding competitive dynamics in nature.</p>`,
+        deepDive: `<p><span class="discovery-tag">1934</span> G.F. Gause's "competitive exclusion principle" experimentally demonstrated that two species competing for the same resource cannot coexist indefinitely, confirming Darwin's intuition about the "struggle for existence."</p><p><span class="discovery-tag">1967</span> MacArthur and Wilson's <em>The Theory of Island Biogeography</em> modeled how species immigration and extinction reach equilibrium -- a mathematical fulfillment of Darwin's ideas about competitive balance.</p><p><a class="source-link" href="https://en.wikipedia.org/wiki/Competitive_exclusion_principle" target="_blank">Wikipedia: Competitive exclusion principle</a></p>`
+      },
+      {
+        title: 'Sexual selection explains ornamental traits',
+        verdict: 'confirmed',
+        verdictLabel: 'Confirmed',
+        darwin: `<blockquote>"This depends, not on a struggle for existence, but on a struggle between the males for possession of the females; the result is not death to the unsuccessful competitor, but few or no offspring."</blockquote><p>Darwin argued that traits like the peacock's tail could not be explained by natural selection alone, proposing that female choice and male-male competition constitute a second selective force.</p>`,
+        modern: `<p>Sexual selection is now one of the most active areas of evolutionary biology. Amotz Zahavi's "handicap principle" (1975) and R.A. Fisher's "runaway selection" model explain how extreme ornaments honestly signal genetic quality. Studies of barn swallows, widowbirds, guppies, and many others have confirmed female mate choice as a potent evolutionary force.</p>`,
+        deepDive: `<p><span class="discovery-tag">1915</span> Fisher first formalized the "runaway selection" model, showing that female preference and male trait can coevolve in a positive feedback loop.</p><p><span class="discovery-tag">1975</span> Amotz Zahavi proposed the handicap principle: costly ornaments are reliable signals of male quality precisely because they are expensive to maintain.</p><p><span class="discovery-tag">1982</span> Malte Andersson's widowbird experiment in Kenya showed that females preferentially mate with males whose tails were experimentally lengthened, providing direct evidence for female choice driving tail evolution.</p><p><a class="source-link" href="https://en.wikipedia.org/wiki/Sexual_selection" target="_blank">Wikipedia: Sexual selection</a></p>`
+      },
+      {
+        title: 'Natural selection can only act on existing variation',
+        verdict: 'confirmed',
+        verdictLabel: 'Confirmed',
+        darwin: `<blockquote>"Unless profitable variations do occur, natural selection can do nothing."</blockquote><p>Darwin recognized that natural selection does not create variation -- it only acts upon variation that already exists in populations.</p>`,
+        modern: `<p>Completely confirmed. We now know that mutations, recombination, and other processes generate the raw variation; natural selection then acts as a filter. The distinction between the origin of variation (mutation) and the sorting of variation (selection) is a cornerstone of modern population genetics.</p>`,
+        deepDive: `<p><span class="discovery-tag">1901</span> Hugo de Vries proposed his mutation theory, identifying mutations as a source of heritable variation. Though his emphasis on large-effect mutations was later corrected, the insight that variation arises independently of selection was confirmed.</p><p><span class="discovery-tag">1943</span> The Luria-Delbr\u00fcck experiment demonstrated that mutations arise randomly, not in response to selection, validating Darwin's insight that variation is pre-existing, not directed by need.</p><p><a class="source-link" href="https://en.wikipedia.org/wiki/Luria%E2%80%93Delbr%C3%BCck_experiment" target="_blank">Wikipedia: Luria-Delbr\u00fcck experiment</a></p>`
+      },
+      {
+        title: 'Natural selection is the sole important force in evolution',
+        verdict: 'partial',
+        verdictLabel: 'Partially confirmed',
+        darwin: `<blockquote>"Furthermore, I am convinced that Natural Selection has been the main but not exclusive means of modification."</blockquote><p>While Darwin hedged with "not exclusive," his overall framing placed natural selection as overwhelmingly dominant. He left little room for non-adaptive evolutionary forces.</p>`,
+        modern: `<p>Motoo Kimura's neutral theory (1968) showed that much molecular evolution is driven by random genetic drift rather than selection. Most DNA changes between species are selectively neutral. Additionally, genetic hitchhiking, gene flow, and mutation pressure are recognized as important evolutionary forces alongside selection. Selection remains the main driver of <em>adaptation</em>, but not of all evolutionary change.</p>`,
+        deepDive: `<p><span class="discovery-tag">1968</span> Motoo Kimura proposed the neutral theory of molecular evolution, arguing that most evolutionary changes at the molecular level are caused by random drift of selectively neutral mutations, not by Darwinian selection.</p><p><span class="discovery-tag">1973</span> Tomoko Ohta refined this with the "nearly neutral" theory, showing that slightly deleterious mutations can also drift to fixation in small populations.</p><p><span class="discovery-tag">2000s</span> Genomic data revealed that a large fraction of the human genome is under neither positive nor purifying selection. However, the fraction driven by selection vs. drift remains actively debated.</p><p><a class="source-link" href="https://en.wikipedia.org/wiki/Neutral_theory_of_molecular_evolution" target="_blank">Wikipedia: Neutral theory of molecular evolution</a></p>`
+      },
+      {
+        title: 'Natural selection leads inevitably to progress and perfection',
+        verdict: 'corrected',
+        verdictLabel: 'Corrected',
+        darwin: `<blockquote>"As natural selection works solely by and for the good of each being, all corporeal and mental endowments will tend to progress towards perfection."</blockquote>`,
+        modern: `<p>This is one of Darwin's clearest errors. Evolution has no inherent direction toward "perfection." Natural selection optimizes fitness in a local environment, but environments change, trade-offs constrain adaptation, and evolutionary "arms races" can lead to elaborate but suboptimal solutions. Stephen Jay Gould and Richard Lewontin's famous "Spandrels of San Marco" paper (1979) argued forcefully against the assumption that every trait is optimally adapted.</p>`,
+        deepDive: `<p><span class="discovery-tag">1979</span> Gould and Lewontin's "Spandrels of San Marco" paper critiqued the adaptationist programme, arguing that not every biological feature is an optimal adaptation. Some are by-products (spandrels) of other adaptations or developmental constraints.</p><p><span class="discovery-tag">1996</span> Gould's <em>Full House</em> argued that the apparent trend toward complexity in the fossil record is a statistical artifact of random variation expanding from a simple starting point, not a progressive drive.</p><p>Modern examples of suboptimal "design" abound: the recurrent laryngeal nerve in giraffes, the backward-wired vertebrate retina, and the human susceptibility to choking due to shared airway and food passage.</p><p><a class="source-link" href="https://en.wikipedia.org/wiki/Spandrel_(biology)" target="_blank">Wikipedia: Spandrel (biology)</a></p>`
+      }
+    ]
+  },
+  {
+    id: 'common-descent',
+    icon: '\uD83C\uDF33',
+    title: 'Common Descent & the Tree of Life',
+    desc: 'All living things descend from a shared ancestor, branching like a great tree',
+    claims: [
+      {
+        title: 'All life descends from a single common ancestor',
+        verdict: 'confirmed',
+        verdictLabel: 'Confirmed',
+        darwin: `<blockquote>"There is grandeur in this view of life, with its several powers, having been originally breathed into a few forms or into one; and that, whilst this planet has gone cycling on according to the fixed law of gravity, from so simple a beginning endless forms most beautiful and most wonderful have been, and are being, evolved."</blockquote>`,
+        modern: `<p>Universal common ancestry is now established beyond reasonable doubt. The universal genetic code (DNA/RNA), shared biochemistry (ATP, ribosomes, the citric acid cycle), and molecular phylogenetics all point to a single origin of life -- the Last Universal Common Ancestor (LUCA). In 2010, Douglas Theobald published a formal statistical test in <em>Nature</em> that strongly supported universal common ancestry over independent origins.</p>`,
+        deepDive: `<p><span class="discovery-tag">1953</span> Watson and Crick's discovery of the DNA double helix revealed a universal information-storage system shared by all life.</p><p><span class="discovery-tag">1977</span> Carl Woese and George Fox used ribosomal RNA sequences to discover Archaea as a third domain of life, all sharing common ancestry.</p><p><span class="discovery-tag">2010</span> Douglas Theobald, in <em>Nature</em>, used statistical model selection to formally test universal common ancestry, finding it overwhelmingly supported (over 10<sup>2,860</sup> times more likely than any alternative model).</p><p><a class="source-link" href="https://en.wikipedia.org/wiki/Last_universal_common_ancestor" target="_blank">Wikipedia: Last Universal Common Ancestor</a></p>`
+      },
+      {
+        title: 'Life forms a branching tree pattern',
+        verdict: 'partial',
+        verdictLabel: 'Partially confirmed',
+        darwin: `<blockquote>"The affinities of all the beings of the same class have sometimes been represented by a great tree. I believe this simile largely speaks the truth... As buds give rise by growth to fresh buds, and these, if vigorous, branch out and overtop on all sides many a feebler branch, so by generation I believe it has been with the great Tree of Life."</blockquote>`,
+        modern: `<p>For animals and plants, the tree metaphor works well. But horizontal gene transfer (HGT) in bacteria and archaea means that life's history is more like a "web" or "net" than a strictly branching tree. W. Ford Doolittle proposed the "web of life" model in 1999. Genes can jump between unrelated species, blurring the branches. For multicellular eukaryotes, however, Darwin's tree remains a remarkably accurate model.</p>`,
+        deepDive: `<p><span class="discovery-tag">1959</span> Japanese geneticists first documented bacterial conjugation (gene transfer between bacteria), suggesting life's history is not purely tree-like.</p><p><span class="discovery-tag">1999</span> W. Ford Doolittle published "Phylogenetic Classification and the Universal Tree" in <em>Science</em>, arguing that lateral gene transfer makes a single universal tree impossible for prokaryotes.</p><p><span class="discovery-tag">2018</span> David Quammen's <em>The Tangled Tree</em> brought wide attention to how horizontal gene transfer, endosymbiosis, and viral insertions have turned Darwin's clean tree into a complex web, at least at the microbial level.</p><p><a class="source-link" href="https://en.wikipedia.org/wiki/Tree_of_life_(biology)" target="_blank">Wikipedia: Tree of life (biology)</a></p>`
+      },
+      {
+        title: 'Classification reflects genealogy, not design',
+        verdict: 'confirmed',
+        verdictLabel: 'Confirmed',
+        darwin: `<blockquote>"All true classification is genealogical; that community of descent is the hidden bond which naturalists have been unconsciously seeking."</blockquote><p>Darwin argued that the "natural system" of classification reflects patterns of shared ancestry, not functional similarity.</p>`,
+        modern: `<p>This insight transformed taxonomy. Willi Hennig's cladistics (1950s-60s) formalized Darwin's principle: organisms should be classified by shared derived characteristics (synapomorphies) reflecting common ancestry. DNA-based molecular phylogenetics, developed from the 1960s onward, has overwhelmingly confirmed that the nested hierarchy of life reflects genealogy. Whales grouped with hippos, not fish; bats with primates, not birds.</p>`,
+        deepDive: `<p><span class="discovery-tag">1950</span> Willi Hennig published <em>Grundz\u00fcge einer Theorie der phylogenetischen Systematik</em>, founding cladistics -- a method of classifying organisms exclusively by evolutionary relationships, vindicating Darwin's principle.</p><p><span class="discovery-tag">1990</span> Carl Woese, Otto Kandler, and Mark Wheelis proposed the three-domain system (Bacteria, Archaea, Eukarya) based on molecular phylogenetics, a system grounded entirely in shared descent.</p><p><span class="discovery-tag">2000s</span> The Angiosperm Phylogeny Group repeatedly revised plant classification based on DNA evidence, demonstrating how genealogical classification overturns centuries of morphology-based systems.</p><p><a class="source-link" href="https://en.wikipedia.org/wiki/Cladistics" target="_blank">Wikipedia: Cladistics</a></p>`
+      },
+      {
+        title: 'Humans share common ancestry with other primates',
+        verdict: 'confirmed',
+        verdictLabel: 'Confirmed',
+        darwin: `<p>In the <em>Origin</em>, Darwin was deliberately coy, writing only: <blockquote>"Light will be thrown on the origin of man and his history."</blockquote> But the implication was unmistakable: humans descended from other animals through the same processes as all other species.</p>`,
+        modern: `<p>Human-chimpanzee DNA is approximately 98.8% identical. The human genome project (2003) and chimpanzee genome project (2005) confirmed in exquisite molecular detail what fossils had been showing since the discovery of <em>Australopithecus</em> (1924) and <em>Homo erectus</em> (1891). We now have a rich fossil record of hominin evolution, with species like <em>Homo naledi</em> (2015) continuing to fill gaps.</p>`,
+        deepDive: `<p><span class="discovery-tag">1871</span> Darwin's own <em>The Descent of Man</em> made his views explicit: humans evolved in Africa, from an ancestor shared with the great apes.</p><p><span class="discovery-tag">1924</span> Raymond Dart described <em>Australopithecus africanus</em>, the first discovered "missing link" between apes and humans, from South Africa -- exactly where Darwin predicted.</p><p><span class="discovery-tag">2005</span> The Chimpanzee Genome Project confirmed 98.8% DNA identity with humans. The chromosome 2 fusion (where two ancestral ape chromosomes fused into one human chromosome) provided a "smoking gun" for shared ancestry.</p><p><a class="source-link" href="https://en.wikipedia.org/wiki/Chimpanzee_genome_project" target="_blank">Wikipedia: Chimpanzee genome project</a></p>`
+      },
+      {
+        title: 'Extinction is caused by natural selection and competition',
+        verdict: 'partial',
+        verdictLabel: 'Partially confirmed',
+        darwin: `<blockquote>"The improved and modified descendants of a species will generally cause the extermination of the parent-species... the extinction of old forms is the almost inevitable consequence of the production of new forms."</blockquote>`,
+        modern: `<p>Competition-driven extinction is real, but Darwin greatly underestimated the role of catastrophic events. The discovery that an asteroid impact caused the end-Cretaceous mass extinction (Alvarez et al., 1980) revealed that sudden environmental catastrophes, not just gradual competitive displacement, have repeatedly reshaped life on Earth. The "Big Five" mass extinctions eliminated up to 96% of species in geologically brief intervals.</p>`,
+        deepDive: `<p><span class="discovery-tag">1980</span> Luis and Walter Alvarez proposed the asteroid impact hypothesis for the K-Pg extinction, based on an iridium anomaly in the geological record. The 180 km Chicxulub crater was identified in 1991.</p><p><span class="discovery-tag">1982</span> David Raup and Jack Sepkoski identified the "Big Five" mass extinctions in the fossil record, showing that background extinction (Darwin's competitive replacement) accounts for only a fraction of species loss.</p><p><span class="discovery-tag">2010s</span> Studies of the end-Permian extinction ("The Great Dying," ~252 Ma) revealed that volcanic eruptions, ocean acidification, and rapid climate change wiped out ~96% of marine species, processes far beyond competitive displacement.</p><p><a class="source-link" href="https://en.wikipedia.org/wiki/Cretaceous%E2%80%93Paleogene_extinction_event" target="_blank">Wikipedia: K-Pg extinction</a></p>`
+      }
+    ]
+  },
+  {
+    id: 'variation-heredity',
+    icon: '\uD83E\uDDEC',
+    title: 'Variation & Heredity',
+    desc: 'How organisms vary and pass traits to offspring -- Darwin\'s biggest blind spot',
+    claims: [
+      {
+        title: 'Variation among individuals is ubiquitous and heritable',
+        verdict: 'confirmed',
+        verdictLabel: 'Confirmed',
+        darwin: `<blockquote>"No one supposes that all the individuals of the same species are cast in the very same mould. These individual differences are highly important for us, as they afford materials for natural selection to accumulate."</blockquote>`,
+        modern: `<p>Completely confirmed and quantified. Modern genomics reveals that any two humans differ at roughly 3-4 million DNA positions out of 3.2 billion. Much of this variation is heritable. The field of quantitative genetics, founded by Fisher (1918), showed how continuous variation in traits like height arises from many genes of small effect -- exactly the kind of variation Darwin invoked.</p>`,
+        deepDive: `<p><span class="discovery-tag">1918</span> R.A. Fisher's paper "The Correlation Between Relatives on the Supposition of Mendelian Inheritance" showed that continuous variation (the kind Darwin described) results from many Mendelian genes of small effect.</p><p><span class="discovery-tag">2000s</span> Genome-wide association studies (GWAS) have identified thousands of genetic variants underlying variation in human height, disease susceptibility, and other traits, vindicating Darwin's emphasis on ubiquitous heritable variation.</p><p><a class="source-link" href="https://en.wikipedia.org/wiki/Quantitative_genetics" target="_blank">Wikipedia: Quantitative genetics</a></p>`
+      },
+      {
+        title: 'Inheritance works by blending of parental characters',
+        verdict: 'corrected',
+        verdictLabel: 'Corrected',
+        darwin: `<p>Darwin accepted the prevailing "blending inheritance" model of his time, where offspring are a blend of both parents' traits. His own hypothesis of "pangenesis" (published 1868) proposed that every cell sheds tiny "gemmules" that collect in the reproductive organs, carrying information about the parent's body.</p>`,
+        modern: `<p>This was Darwin's biggest scientific error. Gregor Mendel's work (1866, rediscovered 1900) showed that inheritance is <strong>particulate</strong>, not blending. Genes are discrete units that segregate and assort independently. DNA (Watson and Crick, 1953) revealed the molecular basis: digital information encoded in nucleotide sequences. Pangenesis was entirely wrong.</p>`,
+        deepDive: `<p><span class="discovery-tag">1866</span> Gregor Mendel published his laws of inheritance based on pea experiments, showing that traits are inherited as discrete units (genes) that do not blend. Tragically, Darwin never read Mendel's paper, though they were contemporaries.</p><p><span class="discovery-tag">1900</span> Mendel's work was independently rediscovered by Hugo de Vries, Carl Correns, and Erich von Tschermak.</p><p><span class="discovery-tag">1867</span> Fleeming Jenkin's review of the <em>Origin</em> pointed out that blending inheritance would halve variation each generation, making natural selection ineffective. This critique deeply troubled Darwin, but he could not resolve it without Mendelian genetics.</p><p><a class="source-link" href="https://en.wikipedia.org/wiki/Blending_inheritance" target="_blank">Wikipedia: Blending inheritance</a></p>`
+      },
+      {
+        title: 'Use and disuse shape inherited traits (Lamarckian inheritance)',
+        verdict: 'partial',
+        verdictLabel: 'Partially confirmed',
+        darwin: `<blockquote>"I think there can be little doubt that use in our domestic animals strengthens and enlarges certain parts, and disuse diminishes them; and that such modifications are inherited."</blockquote><p>Darwin accepted a Lamarckian component: that changes acquired during an organism's lifetime could be passed to offspring.</p>`,
+        modern: `<p>Classical Lamarckian inheritance (giraffe stretching its neck and passing that on) is wrong. However, <strong>epigenetics</strong> has revealed that some environmentally-induced changes can be inherited across a few generations through DNA methylation, histone modification, and small RNAs -- without changing the DNA sequence. This is a limited, nuanced form of "soft inheritance" that ironically gives Darwin a partial vindication, though the mechanism is nothing like what he imagined.</p>`,
+        deepDive: `<p><span class="discovery-tag">1953</span> The Modern Synthesis firmly rejected Lamarckian inheritance. August Weismann's "barrier" between germ cells and body cells was considered insurmountable.</p><p><span class="discovery-tag">2005</span> Marcus Pembrey and colleagues published the "Overkalix study" showing that grandchildren's health was affected by grandparents' food supply, suggesting transgenerational epigenetic effects.</p><p><span class="discovery-tag">2014</span> Brian Dias and Kerry Ressler at Emory University showed that mice trained to fear a specific odor could pass that fear response to offspring via epigenetic changes to sperm DNA methylation. The mechanisms and prevalence of transgenerational epigenetic inheritance remain actively debated.</p><p><a class="source-link" href="https://en.wikipedia.org/wiki/Transgenerational_epigenetic_inheritance" target="_blank">Wikipedia: Transgenerational epigenetic inheritance</a></p>`
+      },
+      {
+        title: 'Variation arises from external conditions and use',
+        verdict: 'corrected',
+        verdictLabel: 'Corrected',
+        darwin: `<blockquote>"The most frequent cause of variability may be attributed to the male and female reproductive elements having been affected prior to the act of conception."</blockquote><p>Darwin was uncertain about the causes of variation, attributing it vaguely to "conditions of life" and reproductive disturbances.</p>`,
+        modern: `<p>We now know that variation arises primarily from <strong>random mutations</strong> in DNA (point mutations, insertions, deletions, duplications, and chromosomal rearrangements) and from <strong>genetic recombination</strong> during meiosis. Mutations are random with respect to the organism's needs -- a key insight Darwin groped toward but could not articulate without knowledge of DNA. Environmental mutagens (radiation, chemicals) can increase mutation rates, but the mutations themselves are not directed toward adaptation.</p>`,
+        deepDive: `<p><span class="discovery-tag">1927</span> Hermann Muller showed that X-rays cause mutations in <em>Drosophila</em>, establishing that physical agents can increase the rate of heritable variation.</p><p><span class="discovery-tag">1943</span> Luria and Delbr\u00fcck proved that bacterial mutations arise randomly before selection, not in response to it.</p><p><span class="discovery-tag">2012</span> The ENCODE project revealed that mutations can affect gene regulation as well as protein sequences, vastly expanding our understanding of how variation arises and acts.</p><p><a class="source-link" href="https://en.wikipedia.org/wiki/Mutation" target="_blank">Wikipedia: Mutation</a></p>`
+      },
+      {
+        title: 'Correlation of growth links distant body parts',
+        verdict: 'expanded',
+        verdictLabel: 'Expanded',
+        darwin: `<blockquote>"I mean by this expression that the whole organisation is so tied together during its growth and development, that when slight variations in any one part occur, and are accumulated through natural selection, other parts become modified."</blockquote>`,
+        modern: `<p>Darwin's "correlation of growth" foreshadowed modern <strong>evolutionary developmental biology (evo-devo)</strong>. We now know that pleiotropic genes (single genes affecting multiple traits), shared signalling pathways (like Hox genes, Hedgehog, Wnt), and developmental constraints explain why changes in one body part often accompany changes in others. The reality is far richer than Darwin imagined: the same toolkit genes build eyes in flies and humans.</p>`,
+        deepDive: `<p><span class="discovery-tag">1978</span> Ed Lewis's Nobel Prize-winning work on <em>Drosophila</em> Hox genes showed that the same genes control body plan organization across the animal kingdom.</p><p><span class="discovery-tag">1995</span> Walter Gehring demonstrated that the eyeless/Pax6 gene can trigger eye development across species as diverse as flies and mice, revealing deep conservation of developmental gene networks.</p><p><span class="discovery-tag">2000s</span> Sean Carroll's <em>Endless Forms Most Beautiful</em> (2005) popularized evo-devo, showing how changes in gene regulation, not just gene sequence, underlie morphological evolution.</p><p><a class="source-link" href="https://en.wikipedia.org/wiki/Evolutionary_developmental_biology" target="_blank">Wikipedia: Evolutionary developmental biology</a></p>`
+      }
+    ]
+  },
+  {
+    id: 'geological-time',
+    icon: '\u23F3',
+    title: 'Geological Time & the Fossil Record',
+    desc: 'Deep time, the imperfection of fossils, and the Cambrian puzzle',
+    claims: [
+      {
+        title: 'The Earth is immensely old -- far older than anyone believed',
+        verdict: 'confirmed',
+        verdictLabel: 'Confirmed',
+        darwin: `<blockquote>"He who can read Sir Charles Lyell's grand work on the Principles of Geology... yet does not admit how incomprehensibly vast have been the past periods of time, may at once close this volume."</blockquote><p>Darwin insisted that evolution required vast geological time, far more than the 20-100 million years estimated by Lord Kelvin based on the Earth's cooling rate.</p>`,
+        modern: `<p>Darwin was triumphantly right. Radiometric dating, made possible by the discovery of radioactivity (Becquerel, 1896), revealed the Earth is <strong>4.54 billion years old</strong> (Clair Patterson, 1956). Kelvin's estimates were wrong because he did not know about radioactive decay as an internal heat source. Darwin needed deep time, and he got it -- 100 times more than Kelvin allowed.</p>`,
+        deepDive: `<p><span class="discovery-tag">1862</span> Lord Kelvin calculated the Earth was 20-400 million years old based on cooling from a molten state. This deeply worried Darwin.</p><p><span class="discovery-tag">1896</span> Henri Becquerel discovered radioactivity. In 1903, Pierre Curie showed that radium generates heat, invalidating Kelvin's cooling calculation.</p><p><span class="discovery-tag">1907</span> Bertram Boltwood used uranium-lead dating to estimate rocks at 2.2 billion years old.</p><p><span class="discovery-tag">1956</span> Clair Patterson determined the age of Earth at 4.55 billion years using lead isotope ratios from the Canyon Diablo meteorite.</p><p><a class="source-link" href="https://en.wikipedia.org/wiki/Age_of_Earth" target="_blank">Wikipedia: Age of Earth</a></p>`
+      },
+      {
+        title: 'The geological record is extremely imperfect',
+        verdict: 'confirmed',
+        verdictLabel: 'Confirmed',
+        darwin: `<blockquote>"I look at the natural geological record, as a history of the world imperfectly kept, and written in a changing dialect; of this history we possess the last volume alone, relating only to two or three countries. Of this volume, only here and there a short chapter has been preserved; and of each page, only here and there a few lines."</blockquote>`,
+        modern: `<p>Darwin's characterization of the fossil record as deeply incomplete was prescient. Only an estimated 1-2% of all species that ever lived have been preserved as fossils. Soft-bodied organisms fossilize extremely rarely. However, since Darwin's time, the record has improved enormously. Exceptional Lagerst\u00e4tten like the Burgess Shale (1909) and Chengjiang (1984) have filled many gaps. The record is imperfect, as Darwin said, but less so than he feared.</p>`,
+        deepDive: `<p><span class="discovery-tag">1909</span> Charles Walcott discovered the Burgess Shale in British Columbia, revealing a treasure trove of soft-bodied Cambrian organisms, including many bizarre forms like <em>Anomalocaris</em> and <em>Hallucigenia</em>.</p><p><span class="discovery-tag">1984</span> The Chengjiang biota in China, discovered by Hou Xianguang, pushed the window of exceptional preservation back to 518 million years ago.</p><p><span class="discovery-tag">2004</span> <em>Tiktaalik</em>, a transitional fossil between fish and tetrapods, was discovered exactly where paleontologists predicted it would be based on geological age and environment.</p><p><a class="source-link" href="https://en.wikipedia.org/wiki/Fossil_record" target="_blank">Wikipedia: Fossil record</a></p>`
+      },
+      {
+        title: 'The sudden appearance of fossils in the Cambrian is a problem for my theory',
+        verdict: 'partial',
+        verdictLabel: 'Partially confirmed',
+        darwin: `<blockquote>"To the question why we do not find records of these vast primordial periods, I can give no satisfactory answer... The case at present must remain inexplicable; and may be truly urged as a valid argument against the views here entertained."</blockquote><p>Darwin candidly admitted that the apparent sudden appearance of complex life in the Cambrian (then called Silurian) was a serious difficulty for his theory of gradual change.</p>`,
+        modern: `<p>Darwin's concern has been largely (but not entirely) resolved. Precambrian fossils have been found: the Ediacaran biota (~575-541 Ma) includes soft-bodied multicellular organisms that preceded the Cambrian. Molecular clock studies push the origin of animals back to 700-800 Ma. However, the Cambrian "explosion" (~541-520 Ma) remains genuinely rapid in geological terms. The trigger may involve rising oxygen levels, ecological arms races, and the evolution of eyes. Darwin was right that precursors existed; he was wrong that the pace was always uniform.</p>`,
+        deepDive: `<p><span class="discovery-tag">1940s</span> Reg Sprigg discovered the Ediacara biota in South Australia, revealing pre-Cambrian multicellular life for the first time, resolving part of Darwin's dilemma.</p><p><span class="discovery-tag">1998</span> Fossils of embryos from the Doushantuo Formation in China (~600 Ma) showed that complex multicellular life existed well before the Cambrian.</p><p><span class="discovery-tag">2019</span> Molecular clock analyses, calibrated with new fossils, suggested the last common ancestor of animals lived around 750-800 million years ago, meaning animals diversified for ~200 million years before the Cambrian explosion preserved them as fossils.</p><p><a class="source-link" href="https://en.wikipedia.org/wiki/Cambrian_explosion" target="_blank">Wikipedia: Cambrian explosion</a></p>`
+      },
+      {
+        title: 'Evolution is always slow and gradual (natura non facit saltum)',
+        verdict: 'partial',
+        verdictLabel: 'Partially confirmed',
+        darwin: `<blockquote>"As natural selection acts solely by accumulating slight, successive, favourable variations, it can produce no great or sudden modification; it can act only by very short and slow steps. Hence the canon of 'Natura non facit saltum' ['nature does not make jumps'] applies with almost equal force to my theory."</blockquote>`,
+        modern: `<p>Darwin's strict gradualism has been modified. Niles Eldredge and Stephen Jay Gould's <strong>punctuated equilibrium</strong> (1972) showed that species often remain stable for millions of years (stasis) then change relatively rapidly during speciation events. Additionally, polyploidy (genome duplication) can create new plant species in a single generation, and major genetic reorganizations like endosymbiosis created eukaryotic cells in a revolutionary leap. Gradualism describes much of evolution, but not all.</p>`,
+        deepDive: `<p><span class="discovery-tag">1972</span> Niles Eldredge and Stephen Jay Gould published "Punctuated Equilibria: An Alternative to Phyletic Gradualism," arguing that the fossil record's pattern of stasis and sudden change is real, not an artifact of incompleteness.</p><p><span class="discovery-tag">1967</span> Lynn Margulis proposed the endosymbiotic theory: mitochondria and chloroplasts were once free-living bacteria that merged with ancestral cells, a "saltationist" event that created eukaryotic life.</p><p><span class="discovery-tag">1990s</span> Polyploidy (whole-genome duplication) was recognized as a common mechanism of instant speciation in plants. Up to 80% of angiosperms may be polyploid in origin.</p><p><a class="source-link" href="https://en.wikipedia.org/wiki/Punctuated_equilibrium" target="_blank">Wikipedia: Punctuated equilibrium</a></p>`
+      },
+      {
+        title: 'Species once lost never reappear',
+        verdict: 'confirmed',
+        verdictLabel: 'Confirmed',
+        darwin: `<blockquote>"Species and groups of species gradually disappear, one after another, first from one spot, then from another, and finally from the world... a group does not reappear after it has once disappeared; or its existence, as long as it lasts, is continuous."</blockquote>`,
+        modern: `<p>This prediction, known as "Dollo's Law" (formalized by Louis Dollo in 1893), has held up remarkably well. Complex structures lost in evolution are essentially never regained in their original form. While there are rare partial reversals (e.g., some stick insects re-evolved wings), no extinct species has ever reappeared. The statistical argument is overwhelming: evolution is not reversible in the same way because the number of possible genetic paths forward vastly exceeds the chance of retracing an exact path back.</p>`,
+        deepDive: `<p><span class="discovery-tag">1893</span> Louis Dollo formalized the irreversibility of evolution. "An organism never returns exactly to a former state, even if it finds itself placed in conditions of existence identical to those in which it has previously lived."</p><p><span class="discovery-tag">2003</span> A study of ancestral steroid hormone receptors by Joseph Thornton showed that evolutionary intermediates become incompatible with reversal, providing a molecular explanation for Dollo's Law.</p><p><a class="source-link" href="https://en.wikipedia.org/wiki/Dollo%27s_law_of_irreversibility" target="_blank">Wikipedia: Dollo's law</a></p>`
+      }
+    ]
+  },
+  {
+    id: 'biogeography',
+    icon: '\uD83C\uDF0D',
+    title: 'Biogeography',
+    desc: 'Why species live where they do -- islands, continents, and barriers',
+    claims: [
+      {
+        title: 'Island species are derived from nearby mainland species',
+        verdict: 'confirmed',
+        verdictLabel: 'Confirmed',
+        darwin: `<blockquote>"The most striking and important fact for us in regard to the inhabitants of islands, is their affinity to those of the nearest mainland, without being actually the same species."</blockquote><p>Darwin argued that island species colonized from nearby continents and then diverged, rather than being independently created for each island.</p>`,
+        modern: `<p>Completely confirmed by molecular phylogenetics. Darwin's finches, Hawaiian honeycreepers, Anolis lizards of the Caribbean, and lemurs of Madagascar all trace their ancestry to mainland colonizers. DNA sequencing has revealed the timing and source of island colonizations with remarkable precision. MacArthur and Wilson's island biogeography theory (1967) formalized how island size and distance from mainland predict species richness.</p>`,
+        deepDive: `<p><span class="discovery-tag">1947</span> Ernst Mayr's <em>Systematics and the Origin of Species</em> showed that islands are natural laboratories for speciation, confirming Darwin's observations.</p><p><span class="discovery-tag">1967</span> MacArthur and Wilson's <em>The Theory of Island Biogeography</em> showed mathematically that species diversity on islands is determined by immigration (from mainland) and extinction rates.</p><p><span class="discovery-tag">1999</span> DNA studies showed all 14 species of Darwin's finches descended from a single mainland ancestor that colonized the Galapagos ~2-3 million years ago.</p><p><a class="source-link" href="https://en.wikipedia.org/wiki/Island_biogeography" target="_blank">Wikipedia: Island biogeography</a></p>`
+      },
+      {
+        title: 'Oceanic islands lack certain groups (e.g., native mammals, amphibians)',
+        verdict: 'confirmed',
+        verdictLabel: 'Confirmed',
+        darwin: `<blockquote>"Although in oceanic islands the number of kinds of inhabitants is scanty, the proportion of endemic species (i.e. those found nowhere else in the world) is often extremely large."</blockquote><p>Darwin noted that oceanic islands typically lack large mammals and amphibians, but have many endemic species of birds, insects, and plants -- as expected if they were colonized by dispersal, not created in place.</p>`,
+        modern: `<p>Confirmed across all oceanic islands studied. The Galapagos have no native land mammals (only sea lions and bats, which can swim or fly). Hawaii has no native reptiles, amphibians, or land mammals. New Zealand's only native land mammal is a bat. This pattern is exactly what dispersal theory predicts: only organisms that can cross ocean barriers (birds, bats, small wind-borne or floating organisms) colonize remote islands.</p>`,
+        deepDive: `<p><span class="discovery-tag">1876</span> Alfred Russel Wallace's <em>The Geographical Distribution of Animals</em> systematically documented the absence of certain groups on oceanic islands, extending Darwin's observations.</p><p><span class="discovery-tag">2000s</span> Molecular studies confirmed that New Zealand's unique biota (kiwi, tuatara, weta) descended from ancient Gondwanan lineages and more recent transoceanic colonizers -- never from a hypothetical land bridge.</p><p><a class="source-link" href="https://en.wikipedia.org/wiki/Island_biogeography" target="_blank">Wikipedia: Island biogeography</a></p>`
+      },
+      {
+        title: 'Each species originated in one place and dispersed from there',
+        verdict: 'partial',
+        verdictLabel: 'Partially confirmed',
+        darwin: `<blockquote>"Whenever it is fully admitted, as I believe it will some day be, that each species has proceeded from a single birthplace, and when in the course of time we know something definite about the means of distribution, we shall be enabled to speculate with security on the former extension of the land."</blockquote>`,
+        modern: `<p>Mostly confirmed. Most species do originate in one area and disperse. However, Darwin rejected continental drift (proposing instead long-distance dispersal as the sole explanation). Alfred Wegener's theory of continental drift (1912) and plate tectonics (1960s) revealed that continents themselves move, carrying species with them. Biogeography now uses both dispersal AND vicariance (the splitting of populations by geological events). The discovery of the supercontinent Gondwana explained why ratites (ostriches, emus, rheas) exist on separate southern continents.</p>`,
+        deepDive: `<p><span class="discovery-tag">1912</span> Alfred Wegener proposed continental drift, noting that South American and African fossils matched. He was ridiculed for decades but vindicated by plate tectonics.</p><p><span class="discovery-tag">1960s</span> The plate tectonics revolution showed that continents move, splitting and carrying populations. This "vicariance biogeography" complemented Darwin's dispersal-focused model.</p><p><span class="discovery-tag">2005</span> Molecular dating of ratite birds showed that their distribution across southern continents resulted partly from Gondwanan breakup and partly from later overwater dispersal, combining both mechanisms.</p><p><a class="source-link" href="https://en.wikipedia.org/wiki/Biogeography" target="_blank">Wikipedia: Biogeography</a></p>`
+      },
+      {
+        title: 'Seeds can survive ocean transport and colonize distant islands',
+        verdict: 'confirmed',
+        verdictLabel: 'Confirmed',
+        darwin: `<blockquote>"To my surprise I found that out of 87 kinds, 64 germinated after an immersion of 28 days, and a few survived an immersion of 137 days."</blockquote><p>Darwin conducted meticulous experiments soaking seeds in salt water to show they could survive ocean crossings, explaining plant dispersal to oceanic islands.</p>`,
+        modern: `<p>Darwin's experiments were pioneering and his conclusions correct. Modern studies have confirmed long-distance ocean dispersal for many plant species. The coconut palm is a classic example. Additionally, birds carry seeds in their guts and mud on their feet (as Darwin also tested). Molecular phylogeography has confirmed that many island plant populations originated via transoceanic dispersal, not land bridges. Darwin's hands-on experimental approach was remarkably modern.</p>`,
+        deepDive: `<p><span class="discovery-tag">2003</span> Alan de Queiroz's synthesis of molecular and biogeographic evidence showed that long-distance transoceanic dispersal is far more common than previously believed, vindicating Darwin over the land-bridge school.</p><p><span class="discovery-tag">2011</span> Studies confirmed that sea beans (tropical drift seeds) can survive months of ocean travel and germinate after washing ashore thousands of miles from their parent plants.</p><p><a class="source-link" href="https://en.wikipedia.org/wiki/Long-distance_dispersal" target="_blank">Wikipedia: Long-distance dispersal</a></p>`
+      }
+    ]
+  },
+  {
+    id: 'morphology',
+    icon: '\uD83E\uDDB4',
+    title: 'Morphology, Embryology & Vestigial Organs',
+    desc: 'Homology, embryonic resemblances, and the "stamp of inutility"',
+    claims: [
+      {
+        title: 'Homologous structures reveal shared ancestry',
+        verdict: 'confirmed',
+        verdictLabel: 'Confirmed',
+        darwin: `<blockquote>"What can be more curious than that the hand of a man, formed for grasping, that of a mole for digging, the leg of the horse, the paddle of the porpoise, and the wing of the bat, should all be constructed on the same pattern, and should include the same bones, in the same relative positions?"</blockquote>`,
+        modern: `<p>Darwin's insight is now understood at the molecular level. Homologous structures share not just similar anatomy but identical developmental genes. The same Hox genes that pattern limb development in mice also pattern fins in fish and wings in birds. Molecular homology extends Darwin's argument far deeper than he could have imagined: homologous proteins and DNA sequences provide an independent, quantitative measure of shared descent.</p>`,
+        deepDive: `<p><span class="discovery-tag">1978</span> Ed Lewis showed Hox genes control body segmentation in <em>Drosophila</em>, and these genes are conserved across all bilaterally symmetric animals.</p><p><span class="discovery-tag">1990s</span> Cliff Tabin and colleagues demonstrated that the same genes (Sonic hedgehog, FGF, etc.) control limb development in all tetrapods, from frogs to humans.</p><p><span class="discovery-tag">2004</span> The deep conservation of developmental genes was recognized as one of the most powerful confirmations of common descent, going far beyond morphological similarity.</p><p><a class="source-link" href="https://en.wikipedia.org/wiki/Homology_(biology)" target="_blank">Wikipedia: Homology (biology)</a></p>`
+      },
+      {
+        title: 'Rudimentary (vestigial) organs prove descent with modification',
+        verdict: 'expanded',
+        verdictLabel: 'Expanded',
+        darwin: `<blockquote>"Rudimentary organs may be compared with the letters in a word, still retained in the spelling, but become useless in the pronunciation, but which serve as a clue in seeking for its derivation."</blockquote><p>Darwin pointed to structures like the human appendix, the wings of flightless beetles, and the eyes of blind cave fish as evidence that organisms retain traces of their ancestors' anatomy.</p>`,
+        modern: `<p>Darwin's concept is confirmed but expanded in two ways. First, many "vestigial" organs turn out to retain some function (the appendix harbors beneficial gut bacteria; wisdom teeth still erupt). Second, <strong>molecular vestigia</strong> are even more compelling: the human genome contains ~20,000 pseudogenes (broken copies of once-functional genes), endogenous retroviruses (8% of our DNA), and genes for making egg yolk (vitellogenin pseudogenes in placental mammals). These genomic "fossils" are among the strongest evidence for evolution.</p>`,
+        deepDive: `<p><span class="discovery-tag">1999</span> Endogenous retroviruses (ERVs) shared at identical positions in human and chimpanzee genomes proved they were inherited from a common ancestor infected by the same virus millions of years ago.</p><p><span class="discovery-tag">2008</span> The discovery of vitellogenin pseudogenes in the human genome revealed that our ancestors once produced egg yolk. The genes are still there but broken, a molecular vestigial organ.</p><p><span class="discovery-tag">2015</span> Research on the human appendix showed it functions as a "safe house" for beneficial gut bacteria during illness, demonstrating that vestigial does not always mean functionless.</p><p><a class="source-link" href="https://en.wikipedia.org/wiki/Vestigiality" target="_blank">Wikipedia: Vestigiality</a></p>`
+      },
+      {
+        title: 'Embryos of different species resemble each other more than adults do',
+        verdict: 'expanded',
+        verdictLabel: 'Expanded',
+        darwin: `<blockquote>"The embryo is the animal in its less modified state; and in so far it reveals the structure of its progenitor."</blockquote><p>Darwin argued, following von Baer, that embryonic resemblance between different species reveals their shared ancestry more clearly than adult forms, which have diverged through adaptation.</p>`,
+        modern: `<p>The general principle is confirmed -- embryos of vertebrates do show striking similarities (pharyngeal arches, similar body plans). However, Ernst Haeckel's "biogenetic law" (ontogeny recapitulates phylogeny) was an overstatement. The modern view, informed by evo-devo, recognizes a "phylotypic period" (the "hourglass model") where embryos of related species converge in form during mid-development, while early and late stages may differ. Shared developmental gene regulatory networks (like the pharyngeal arch toolkit) explain the similarities.</p>`,
+        deepDive: `<p><span class="discovery-tag">1866</span> Ernst Haeckel proposed the biogenetic law, but his illustrations exaggerated embryonic similarities and were later criticized.</p><p><span class="discovery-tag">1997</span> Michael Richardson and colleagues photographed embryos from many vertebrate species, showing that while Haeckel's drawings were inaccurate, a genuine period of similarity (the pharyngula stage) does exist.</p><p><span class="discovery-tag">2010</span> Transcriptomic studies confirmed the "developmental hourglass" model: gene expression profiles converge at mid-embryogenesis across vertebrates, precisely during the phylotypic period.</p><p><a class="source-link" href="https://en.wikipedia.org/wiki/Recapitulation_theory" target="_blank">Wikipedia: Recapitulation theory</a></p>`
+      },
+      {
+        title: 'Organs of extreme perfection (like the eye) evolved gradually',
+        verdict: 'expanded',
+        verdictLabel: 'Expanded',
+        darwin: `<blockquote>"To suppose that the eye, with all its inimitable contrivances for adjusting the focus to different distances, for admitting different amounts of light, and for the correction of spherical and chromatic aberration, could have been formed by natural selection, seems, I freely confess, absurd in the highest possible degree."</blockquote><p>Darwin then argued that a graded series of eyes exists in nature, from simple light-sensitive spots to complex camera eyes, showing that gradual evolution is plausible.</p>`,
+        modern: `<p>Brilliantly confirmed and expanded. Dan-Erik Nilsson and Susanne Pelger (1994) modeled the evolution of a camera eye from a flat light-sensitive patch in fewer than 400,000 generations -- a geological eyeblink. Eyes have evolved independently 50-100 times across the animal kingdom, yet all use the same master control gene (<strong>Pax6</strong>), revealing that the genetic toolkit for eyes is ancient and conserved. The graded series Darwin described reflects real evolutionary history, now confirmed by comparative genomics.</p>`,
+        deepDive: `<p><span class="discovery-tag">1994</span> Nilsson and Pelger published a computational model showing that a camera-type eye could evolve from a simple eyespot through a series of small, advantageous steps in under 364,000 generations -- potentially less than half a million years.</p><p><span class="discovery-tag">1995</span> Walter Gehring's lab showed that the Pax6 gene can trigger eye development in <em>Drosophila</em> when expressed ectopically, and that Pax6 homologs control eye development across all bilaterian animals.</p><p><span class="discovery-tag">2012</span> Studies of box jellyfish revealed sophisticated lens eyes with graded refractive indices, showing complex eye evolution in an organism without a true brain.</p><p><a class="source-link" href="https://en.wikipedia.org/wiki/Evolution_of_the_eye" target="_blank">Wikipedia: Evolution of the eye</a></p>`
+      },
+      {
+        title: 'Coevolution shapes organisms in relation to each other',
+        verdict: 'expanded',
+        verdictLabel: 'Expanded',
+        darwin: `<blockquote>"It is equally preposterous to account for the structure of this parasite [mistletoe], with its relations to several distinct organic beings, by the effects of external conditions."</blockquote><p>Darwin recognized that species evolve in response to each other -- parasites and hosts, flowers and pollinators -- not just in response to the physical environment.</p>`,
+        modern: `<p>Darwin's insight launched the field of coevolution. His most famous prediction: that a moth with a 30 cm proboscis must exist to pollinate the Madagascar orchid <em>Angraecum sesquipedale</em>, was confirmed when <em>Xanthopan morganii</em> was discovered in 1903, and photographed feeding on the orchid in 1992. Today, coevolution is recognized as a major driver of biodiversity, from predator-prey arms races to mutualistic symbioses. The field has expanded far beyond what Darwin envisioned, encompassing coevolution between hosts and their microbiomes.</p>`,
+        deepDive: `<p><span class="discovery-tag">1862</span> Darwin predicted the existence of a hawkmoth with a 30 cm tongue to pollinate the Malagasy orchid with a 30 cm nectar spur.</p><p><span class="discovery-tag">1903</span> <em>Xanthopan morganii praedicta</em> (note the subspecies name "praedicta" -- "the predicted one") was described from Madagascar.</p><p><span class="discovery-tag">1992</span> The moth was finally photographed pollinating the orchid, 130 years after Darwin's prediction.</p><p><span class="discovery-tag">1964</span> Paul Ehrlich and Peter Raven published their landmark paper on butterfly-plant coevolution, formalizing the concept of coevolutionary "arms races."</p><p><a class="source-link" href="https://en.wikipedia.org/wiki/Coevolution" target="_blank">Wikipedia: Coevolution</a></p>`
+      }
+    ]
+  },
+  {
+    id: 'speciation',
+    icon: '\uD83D\uDD2C',
+    title: 'Speciation & Classification',
+    desc: 'How new species form and how we should organize the diversity of life',
+    claims: [
+      {
+        title: 'Varieties are incipient species',
+        verdict: 'confirmed',
+        verdictLabel: 'Confirmed',
+        darwin: `<blockquote>"I look at the term species, as one arbitrarily given for the sake of convenience to a set of individuals closely resembling each other... It does not essentially differ from the word variety, which is given to less distinct and more fluctuating forms."</blockquote><p>Darwin argued there is no sharp boundary between varieties and species -- varieties are species in the making.</p>`,
+        modern: `<p>Confirmed by "ring species" (like the Larus gull complex and Ensatina salamanders) where populations form a chain of interbreeding varieties that eventually become reproductively isolated. Genomic studies show speciation is often gradual, with "speciation genes" accumulating differences that eventually prevent interbreeding. The species concept remains debated (there are 20+ species definitions), but Darwin's core insight -- that speciation is a continuous process -- is thoroughly validated.</p>`,
+        deepDive: `<p><span class="discovery-tag">1942</span> Ernst Mayr formalized the Biological Species Concept: species are groups of actually or potentially interbreeding natural populations that are reproductively isolated from other such groups. But he acknowledged the boundary is often fuzzy, as Darwin predicted.</p><p><span class="discovery-tag">1949</span> Robert Stebbins described <em>Ensatina eschscholtzii</em> as a ring species in California, where neighboring populations interbreed but the ends of the ring do not -- a living demonstration of speciation in progress.</p><p><span class="discovery-tag">2010s</span> Genomic studies of Darwin's finches showed that species boundaries are "leaky," with occasional gene flow between species -- exactly the kind of intermediate state Darwin predicted.</p><p><a class="source-link" href="https://en.wikipedia.org/wiki/Ring_species" target="_blank">Wikipedia: Ring species</a></p>`
+      },
+      {
+        title: 'Divergence of character drives species to become more different over time',
+        verdict: 'expanded',
+        verdictLabel: 'Expanded',
+        darwin: `<blockquote>"The more diversified the descendants from any one species become in structure, constitution, and habits, by so much will they be better enabled to seize on many and widely diversified places in the polity of nature."</blockquote><p>Darwin proposed that natural selection favors increasing divergence because descendants that differ more can exploit more ecological niches.</p>`,
+        modern: `<p>Darwin's "principle of divergence" has been expanded into the modern theory of <strong>adaptive radiation</strong>. Dolph Schluter's work on stickleback fish, together with studies of Darwin's finches, cichlid fishes, and Anolis lizards, shows that ecological opportunity drives rapid diversification. The mechanism is confirmed but more nuanced than Darwin imagined: <strong>character displacement</strong> (species diverging more where they coexist) and <strong>ecological release</strong> (rapid evolution when competition is removed) are the main drivers.</p>`,
+        deepDive: `<p><span class="discovery-tag">1956</span> W.L. Brown and E.O. Wilson formalized "character displacement": competing species diverge more in sympatry than allopatry, confirming Darwin's divergence principle.</p><p><span class="discovery-tag">2000</span> Dolph Schluter published <em>The Ecology of Adaptive Radiation</em>, synthesizing evidence that ecological opportunity drives diversification, as Darwin's principle predicted.</p><p><span class="discovery-tag">2000s</span> African cichlid fishes in Lakes Victoria, Malawi, and Tanganyika provided spectacular examples: hundreds of species evolved from single ancestors in as little as 15,000 years, driven by ecological divergence.</p><p><a class="source-link" href="https://en.wikipedia.org/wiki/Adaptive_radiation" target="_blank">Wikipedia: Adaptive radiation</a></p>`
+      },
+      {
+        title: 'Geographic isolation promotes speciation',
+        verdict: 'expanded',
+        verdictLabel: 'Expanded',
+        darwin: `<blockquote>"Isolation, also, is an important element in the process of natural selection... If a small area be opened up for immigration, and this is what generally takes place in nature, the new forms will be continually liable to be swamped by the existing population."</blockquote><p>Darwin recognized that geographic isolation helps new varieties establish without being swamped by interbreeding with the parent population.</p>`,
+        modern: `<p>Allopatric speciation (speciation via geographic isolation) is now recognized as the dominant mode of speciation in animals, as Ernst Mayr argued. But the picture has expanded: <strong>sympatric speciation</strong> (without geographic barriers) has been demonstrated in cichlid fish and apple maggot flies. <strong>Parapatric speciation</strong> (along environmental gradients) and <strong>peripatric speciation</strong> (in small peripheral populations) add further modes. Speciation is more diverse in its mechanisms than Darwin imagined.</p>`,
+        deepDive: `<p><span class="discovery-tag">1942</span> Ernst Mayr argued forcefully that geographic (allopatric) speciation is the predominant mode, especially in animals.</p><p><span class="discovery-tag">1966</span> Guy Bush described sympatric speciation in apple maggot flies (<em>Rhagoletis pomonella</em>), where a shift from hawthorn to apple fruits created reproductive isolation without geographic barriers.</p><p><span class="discovery-tag">2000s</span> Studies of cichlid fish in crater lakes provided strong evidence for sympatric speciation driven by ecological specialization and sexual selection.</p><p><a class="source-link" href="https://en.wikipedia.org/wiki/Speciation" target="_blank">Wikipedia: Speciation</a></p>`
+      },
+      {
+        title: 'Artificial selection by breeders is analogous to natural selection',
+        verdict: 'confirmed',
+        verdictLabel: 'Confirmed',
+        darwin: `<blockquote>"I have called this principle, by which each slight variation, if useful, is preserved, by the term of Natural Selection, in order to mark its relation to man's power of selection."</blockquote><p>Darwin devoted his entire first chapter to pigeon breeding and domestic variation, arguing that the diversity of domestic pigeons -- all descended from the rock dove -- demonstrates the power of cumulative selection.</p>`,
+        modern: `<p>Completely confirmed. Modern genomics has identified the specific genes underlying artificially selected traits: the myostatin gene in double-muscled cattle, the IGF1 gene controlling dog size, and the BCDO2 gene affecting chicken skin color. Experimental evolution studies in bacteria (Richard Lenski's 75,000+ generation <em>E. coli</em> experiment, started 1988) directly demonstrate selection in action. Darwin's analogy remains a powerful and valid pedagogical tool.</p>`,
+        deepDive: `<p><span class="discovery-tag">2007</span> A study in <em>Science</em> showed that the enormous size variation in domestic dogs (from Chihuahuas to Great Danes) is largely controlled by a single gene (IGF1), demonstrating how selection on a few genes can produce dramatic change.</p><p><span class="discovery-tag">2012</span> Richard Lenski's Long-Term Evolution Experiment with <em>E. coli</em> observed bacteria evolving the ability to metabolize citrate, a major new trait arising through natural selection in the lab after ~31,000 generations.</p><p><a class="source-link" href="https://en.wikipedia.org/wiki/E._coli_long-term_evolution_experiment" target="_blank">Wikipedia: E. coli long-term evolution experiment</a></p>`
+      },
+      {
+        title: 'Hybridism and sterility of hybrids show species boundaries',
+        verdict: 'expanded',
+        verdictLabel: 'Expanded',
+        darwin: `<blockquote>"The sterility of first crosses between species, and of their hybrid offspring, has not been acquired through natural selection... it is incidental on other differences, and not a special endowment."</blockquote><p>Darwin argued that hybrid sterility is a by-product of genetic divergence, not a directly selected reproductive barrier.</p>`,
+        modern: `<p>Darwin was right that hybrid sterility is usually a by-product (the Dobzhansky-Muller model, 1930s-40s), not directly selected. However, modern research has expanded the picture enormously: specific "speciation genes" have been identified (e.g., <em>Hmr</em> and <em>Lhr</em> in <em>Drosophila</em>), reinforcement (selection for pre-mating isolation when hybrids are unfit) has been confirmed, and hybridization has been shown to sometimes produce <em>new species</em> (homoploid hybrid speciation in sunflowers, Helianthus). Hybridization can be creative, not just a dead end.</p>`,
+        deepDive: `<p><span class="discovery-tag">1936-1942</span> Theodosius Dobzhansky and Hermann Muller independently proposed that hybrid incompatibility arises from negative epistatic interactions between genes that diverged in isolated populations -- the Dobzhansky-Muller model.</p><p><span class="discovery-tag">2006</span> Daniel Barbash identified <em>Hmr</em> and <em>Lhr</em> as the first "speciation genes" in <em>Drosophila</em>, showing that hybrid lethality results from the incompatibility of specific gene products.</p><p><span class="discovery-tag">2004</span> Loren Rieseberg's work on <em>Helianthus</em> (sunflower) showed that hybridization between two species created three new, stable, ecologically distinct species -- hybrid speciation in action.</p><p><a class="source-link" href="https://en.wikipedia.org/wiki/Hybrid_speciation" target="_blank">Wikipedia: Hybrid speciation</a></p>`
+      }
+    ]
+  }
+];
+
+function renderBadge(verdict) {
+  const symbols = { confirmed: '\u2713', partial: '\u25D0', corrected: '\u2717', expanded: '\u2191' };
+  return `<span class="verdict-badge ${verdict}">${symbols[verdict]}</span>`;
+}
+
+function renderMiniBadges(claims) {
+  return claims.map(c => `<span class="mini-badge ${c.verdict}"></span>`).join('');
+}
+
+function chevronSVG(cls) {
+  return `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>`;
+}
+
+function renderCategory(cat) {
+  return `
+    <div class="category" id="${cat.id}">
+      <button class="category-header" onclick="toggleCategory('${cat.id}')">
+        <div class="category-icon">${cat.icon}</div>
+        <div class="category-info">
+          <div class="category-title">${cat.title}</div>
+          <div class="category-desc">${cat.desc}</div>
+        </div>
+        <div class="category-badges">${renderMiniBadges(cat.claims)}</div>
+        ${chevronSVG('chevron')}
+      </button>
+      <div class="category-body">
+        ${cat.claims.map((claim, i) => renderClaim(cat.id, claim, i)).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function renderClaim(catId, claim, index) {
+  const claimId = `${catId}-claim-${index}`;
+  return `
+    <div class="claim" id="${claimId}">
+      <button class="claim-header" onclick="toggleClaim('${claimId}')">
+        ${renderBadge(claim.verdict)}
+        <span class="claim-title">${claim.title}</span>
+        <span class="verdict-label ${claim.verdict}">${claim.verdictLabel}</span>
+        ${chevronSVG('claim-chevron')}
+      </button>
+      <div class="claim-body">
+        <div class="comparison">
+          <div class="pane pane-darwin">
+            <div class="pane-label">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+              Darwin wrote (1859)
+            </div>
+            ${claim.darwin}
+          </div>
+          <div class="pane pane-modern">
+            <div class="pane-label">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              Modern science says
+            </div>
+            ${claim.modern}
+          </div>
+        </div>
+        ${claim.deepDive ? `
+          <div class="deep-dive" id="${claimId}-deep">
+            <button class="deep-dive-toggle" onclick="toggleDeepDive('${claimId}-deep')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              Key discoveries &amp; sources
+            </button>
+            <div class="deep-dive-content">${claim.deepDive}</div>
+          </div>
+        ` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function toggleCategory(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+
+function toggleClaim(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('open');
+  // Auto-open parent category if not already open
+  const parent = el.closest('.category');
+  if (!parent.classList.contains('open')) {
+    parent.classList.add('open');
+  }
+}
+
+function toggleDeepDive(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+
+// Render
+document.getElementById('categories').innerHTML = DATA.map(renderCategory).join('');
+
+// Open first category by default
+document.querySelector('.category').classList.add('open');
+</script>
+
+</body>
+</html>

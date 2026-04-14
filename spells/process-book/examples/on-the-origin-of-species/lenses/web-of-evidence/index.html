@@ -1,0 +1,1627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evidence Web — On the Origin of Species</title>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+Pro:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --domestication: #c2703e;
+  --variation: #8e6c3e;
+  --geology: #6b7f5e;
+  --biogeography: #4a7c8c;
+  --morphology: #7a5c8c;
+  --behavior: #a85a5a;
+  --claim: #3d3d3d;
+  --bg: #faf6f0;
+  --bg-dark: #f0ebe3;
+  --text: #2c2418;
+  --text-light: #6b5e4f;
+  --border: #d4c9b8;
+  --shadow: rgba(44,36,24,0.12);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Crimson Text', Georgia, serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow: hidden;
+  height: 100vh;
+}
+#back-link {
+  position: fixed;
+  top: 16px;
+  left: 20px;
+  z-index: 100;
+  font-family: 'Source Sans Pro', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-light);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.2s;
+}
+#back-link:hover { color: var(--text); }
+#back-link svg { width: 16px; height: 16px; }
+#header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 90;
+  background: linear-gradient(to bottom, var(--bg) 70%, transparent);
+  padding: 14px 20px 30px;
+  text-align: center;
+  pointer-events: none;
+}
+#header > * { pointer-events: auto; }
+#header h1 {
+  font-family: 'Crimson Text', Georgia, serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0.3px;
+  margin-top: 6px;
+}
+#header .subtitle {
+  font-family: 'Source Sans Pro', sans-serif;
+  font-size: 13px;
+  color: var(--text-light);
+  margin-top: 2px;
+  font-weight: 300;
+}
+#search-container {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+#search-input {
+  font-family: 'Source Sans Pro', sans-serif;
+  font-size: 14px;
+  padding: 7px 12px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: white;
+  color: var(--text);
+  width: 220px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+#search-input:focus {
+  border-color: #9a8a72;
+  box-shadow: 0 0 0 3px rgba(154,138,114,0.15);
+}
+#search-input::placeholder { color: #b0a593; }
+#search-count {
+  font-family: 'Source Sans Pro', sans-serif;
+  font-size: 12px;
+  color: var(--text-light);
+  min-width: 60px;
+}
+#legend {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 100;
+  background: rgba(255,255,255,0.92);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 18px;
+  box-shadow: 0 2px 12px var(--shadow);
+  backdrop-filter: blur(6px);
+}
+#legend h3 {
+  font-family: 'Source Sans Pro', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-light);
+  margin-bottom: 10px;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-family: 'Source Sans Pro', sans-serif;
+  font-size: 13px;
+  color: var(--text);
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.legend-item:hover { opacity: 0.7; }
+.legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+#instructions {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 100;
+  background: rgba(255,255,255,0.92);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  box-shadow: 0 2px 12px var(--shadow);
+  backdrop-filter: blur(6px);
+  font-family: 'Source Sans Pro', sans-serif;
+  font-size: 12px;
+  color: var(--text-light);
+  max-width: 200px;
+  line-height: 1.6;
+}
+#instructions strong {
+  color: var(--text);
+  font-weight: 600;
+}
+#breadcrumb {
+  position: fixed;
+  top: 80px;
+  left: 20px;
+  z-index: 100;
+  font-family: 'Source Sans Pro', sans-serif;
+  font-size: 13px;
+  color: var(--text-light);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+#breadcrumb span {
+  cursor: pointer;
+  transition: color 0.15s;
+}
+#breadcrumb span:hover { color: var(--text); }
+#breadcrumb .sep { color: var(--border); cursor: default; }
+#breadcrumb .sep:hover { color: var(--border); }
+#breadcrumb .current {
+  color: var(--text);
+  font-weight: 600;
+  cursor: default;
+}
+#detail-panel {
+  position: fixed;
+  top: 0;
+  right: -460px;
+  width: 440px;
+  height: 100vh;
+  z-index: 200;
+  background: white;
+  border-left: 1px solid var(--border);
+  box-shadow: -4px 0 24px var(--shadow);
+  transition: right 0.35s ease;
+  overflow-y: auto;
+  padding: 28px 28px 40px;
+}
+#detail-panel.open { right: 0; }
+#detail-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: var(--bg);
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: var(--text-light);
+  transition: background 0.2s, color 0.2s;
+}
+#detail-close:hover { background: var(--bg-dark); color: var(--text); }
+#detail-domain {
+  font-family: 'Source Sans Pro', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  margin-bottom: 6px;
+}
+#detail-title {
+  font-family: 'Crimson Text', Georgia, serif;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 12px;
+}
+#detail-description {
+  font-family: 'Crimson Text', Georgia, serif;
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--text);
+  margin-bottom: 20px;
+}
+#detail-quote {
+  background: var(--bg);
+  border-left: 3px solid var(--border);
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  border-radius: 0 6px 6px 0;
+}
+#detail-quote p {
+  font-family: 'Crimson Text', Georgia, serif;
+  font-style: italic;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--text);
+}
+#detail-quote .attribution {
+  font-family: 'Source Sans Pro', sans-serif;
+  font-style: normal;
+  font-size: 12px;
+  color: var(--text-light);
+  margin-top: 8px;
+}
+#detail-connections {
+  margin-top: 16px;
+}
+#detail-connections h4 {
+  font-family: 'Source Sans Pro', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-light);
+  margin-bottom: 10px;
+}
+.connection-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--bg-dark);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.connection-item:hover { background: var(--bg); }
+.conn-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 5px;
+}
+.conn-label {
+  font-family: 'Source Sans Pro', sans-serif;
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.4;
+}
+svg { display: block; }
+.node-label {
+  font-family: 'Source Sans Pro', sans-serif;
+  fill: var(--text);
+  pointer-events: none;
+  text-anchor: middle;
+}
+.link {
+  stroke-opacity: 0.2;
+  fill: none;
+}
+.link.highlight {
+  stroke-opacity: 0.6;
+}
+.node {
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.node:hover { opacity: 0.85; }
+.node.dimmed { opacity: 0.15; }
+.link.dimmed { stroke-opacity: 0.04; }
+.node.search-match circle {
+  stroke-width: 3px !important;
+  stroke: #333 !important;
+}
+</style>
+</head>
+<body>
+
+<a id="back-link" href="../../index.html">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+  Back to book
+</a>
+
+<div id="header">
+  <h1>Evidence Web</h1>
+  <div class="subtitle">Mapping Darwin's empirical foundations across six domains of evidence</div>
+</div>
+
+<div id="search-container">
+  <input type="text" id="search-input" placeholder="Search evidence...">
+  <span id="search-count"></span>
+</div>
+
+<div id="breadcrumb"></div>
+
+<div id="legend">
+  <h3>Evidence Domains</h3>
+  <div class="legend-item" data-domain="domestication">
+    <div class="legend-dot" style="background:var(--domestication)"></div>
+    Domestication
+  </div>
+  <div class="legend-item" data-domain="variation">
+    <div class="legend-dot" style="background:var(--variation)"></div>
+    Variation & Selection
+  </div>
+  <div class="legend-item" data-domain="geology">
+    <div class="legend-dot" style="background:var(--geology)"></div>
+    Geology & Fossils
+  </div>
+  <div class="legend-item" data-domain="biogeography">
+    <div class="legend-dot" style="background:var(--biogeography)"></div>
+    Biogeography
+  </div>
+  <div class="legend-item" data-domain="morphology">
+    <div class="legend-dot" style="background:var(--morphology)"></div>
+    Morphology & Embryology
+  </div>
+  <div class="legend-item" data-domain="behavior">
+    <div class="legend-dot" style="background:var(--behavior)"></div>
+    Behavior & Instinct
+  </div>
+</div>
+
+<div id="instructions">
+  <strong>Click</strong> a domain to explore its evidence types<br>
+  <strong>Click</strong> a type to see individual observations<br>
+  <strong>Click</strong> an observation to read Darwin's words<br>
+  <strong>Double-click</strong> background to zoom out
+</div>
+
+<div id="detail-panel">
+  <button id="detail-close">&times;</button>
+  <div id="detail-domain"></div>
+  <div id="detail-title"></div>
+  <div id="detail-description"></div>
+  <div id="detail-quote"></div>
+  <div id="detail-connections"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+<script>
+// ========== DATA ==========
+const COLORS = {
+  domestication: '#c2703e',
+  variation: '#8e6c3e',
+  geology: '#6b7f5e',
+  biogeography: '#4a7c8c',
+  morphology: '#7a5c8c',
+  behavior: '#a85a5a'
+};
+
+const DOMAIN_LABELS = {
+  domestication: 'Domestication',
+  variation: 'Variation & Selection',
+  geology: 'Geology & Fossils',
+  biogeography: 'Biogeography',
+  morphology: 'Morphology & Embryology',
+  behavior: 'Behavior & Instinct'
+};
+
+const evidenceData = {
+  domestication: {
+    label: 'Domestication',
+    description: 'Darwin opens his argument with the most accessible evidence: the extraordinary variation produced under domestication, demonstrating the raw power of selection to reshape living forms.',
+    subtypes: {
+      pigeon_breeding: {
+        label: 'Pigeon Breeding',
+        description: 'Darwin\'s own extensive study of domestic pigeons, demonstrating that breeds as different as carriers, tumblers, pouters, and fantails all descend from the rock-pigeon (Columba livia).',
+        evidence: [
+          {
+            label: 'All breeds descend from rock-pigeon',
+            description: 'Darwin argues from multiple lines of reasoning that all domestic pigeon breeds, despite their extraordinary differences, descend from Columba livia.',
+            quote: 'Great as the differences are between the breeds of pigeons, I am fully convinced that the common opinion of naturalists is correct, namely, that all have descended from the rock-pigeon (Columba livia).',
+            claims: ['descent_with_modification', 'power_of_selection']
+          },
+          {
+            label: 'Reversion to ancestral blue colouring',
+            description: 'When distinct breeds are crossed, offspring sometimes revert to the blue colouring and wing-bars of the wild rock-pigeon, proving common ancestry.',
+            quote: 'I crossed some uniformly white fantails with some uniformly black barbs, and they produced mottled brown and black birds; these I again crossed together, and one grandchild of the pure white fantail and pure black barb was of as beautiful a blue colour, with the white rump, double black wing-bar, and barred and white-edged tail-feathers, as any wild rock-pigeon!',
+            claims: ['descent_with_modification', 'inheritance']
+          },
+          {
+            label: 'Skeletal variation across breeds',
+            description: 'Darwin meticulously catalogued differences in skeletal structure, vertebrae number, rib count, and bone proportions across pigeon breeds.',
+            quote: 'In the skeletons of the several breeds, the development of the bones of the face in length and breadth and curvature differs enormously. The shape, as well as the breadth and length of the ramus of the lower jaw, varies in a highly remarkable manner.',
+            claims: ['variation', 'power_of_selection']
+          },
+          {
+            label: 'Perfect fertility between breeds',
+            description: 'All domestic pigeon breeds interbreed freely and produce fertile offspring, unlike what would be expected if they were separate species.',
+            quote: 'The hybrids or mongrels from between all the domestic breeds of pigeons are perfectly fertile. I can state this from my own observations, purposely made on the most distinct breeds.',
+            claims: ['species_as_varieties']
+          }
+        ]
+      },
+      artificial_selection: {
+        label: 'Artificial Selection',
+        description: 'The deliberate selection by breeders of slight variations over many generations, producing dramatic cumulative change.',
+        evidence: [
+          {
+            label: 'Breeders as sculptors of form',
+            description: 'Darwin quotes breeders who describe animal organisation as "plastic" material they can shape at will through careful selection.',
+            quote: 'Youatt, who was probably better acquainted with the works of agriculturalists than almost any other individual... speaks of the principle of selection as "that which enables the agriculturist, not only to modify the character of his flock, but to change it altogether. It is the magician\'s wand, by means of which he may summon into life whatever form and mould he pleases."',
+            claims: ['power_of_selection']
+          },
+          {
+            label: 'Sebright\'s feather experiments',
+            description: 'The renowned breeder Sir John Sebright demonstrated the speed at which selection could produce visible changes in pigeons.',
+            quote: 'That most skilful breeder, Sir John Sebright, used to say, with respect to pigeons, that "he would produce any given feather in three years, but it would take him six years to obtain head and beak."',
+            claims: ['power_of_selection']
+          },
+          {
+            label: 'Saxon merino sheep selection',
+            description: 'In Saxony, sheep selection had become so refined it was practised as a professional trade, with sheep studied like paintings by connoisseurs.',
+            quote: 'In Saxony the importance of the principle of selection in regard to merino sheep is so fully recognised, that men follow it as a trade: the sheep are placed on a table and are studied, like a picture by a connoisseur; this is done three times at intervals of months, and the sheep are each time marked and classed, so that the very best may ultimately be selected for breeding.',
+            claims: ['power_of_selection']
+          }
+        ]
+      },
+      unconscious_selection: {
+        label: 'Unconscious Selection',
+        description: 'Selection practised unintentionally by breeders who simply keep the best animals, accumulating change over centuries without a deliberate plan.',
+        evidence: [
+          {
+            label: 'Divergence of Leicester sheep flocks',
+            description: 'Two flocks bred from the same original stock for fifty years diverged so much they appeared to be different varieties, despite neither breeder intending to alter the breed.',
+            quote: 'The two flocks of Leicester sheep kept by Mr. Buckley and Mr. Burgess... "have been purely bred from the original stock of Mr. Bakewell for upwards of fifty years. There is not a suspicion existing in the mind of any one at all acquainted with the subject that the owner of either of them has deviated in any one instance from the pure blood of Mr. Bakewell\'s flock, and yet the difference between the sheep possessed by these two gentlemen is so great that they have the appearance of being quite different varieties."',
+            claims: ['power_of_selection', 'divergence_of_character']
+          },
+          {
+            label: 'Gooseberry size increase over time',
+            description: 'Records of gooseberry exhibitions showed a steady increase in fruit size over decades, produced by the cumulative effect of selection.',
+            quote: 'To give a very trifling instance, the steadily-increasing size of the common gooseberry may be quoted.',
+            claims: ['power_of_selection']
+          },
+          {
+            label: 'King Charles\'s spaniel modification',
+            description: 'The breed had been unconsciously altered so much since the time of King Charles that it no longer resembled its historical portraits.',
+            quote: 'There is reason to believe that King Charles\'s spaniel has been unconsciously modified to a large extent since the time of that monarch.',
+            claims: ['power_of_selection']
+          }
+        ]
+      },
+      domestic_variation: {
+        label: 'Variation under Domestication',
+        description: 'The fundamental observation that domestic animals and plants show far greater variation than their wild counterparts, providing the raw material for selection.',
+        evidence: [
+          {
+            label: 'Domestic duck bone proportions',
+            description: 'Darwin personally measured how domestication changed the skeletal proportions of ducks through habitual disuse of wings and increased walking.',
+            quote: 'I find in the domestic duck that the bones of the wing weigh less and the bones of the leg more, in proportion to the whole skeleton, than do the same bones in the wild-duck; and I presume that this change may be safely attributed to the domestic duck flying much less, and walking more, than its wild parent.',
+            claims: ['use_and_disuse', 'variation']
+          },
+          {
+            label: 'Correlation of growth: blue-eyed deaf cats',
+            description: 'Darwin documented striking examples of correlated variation, where selecting for one trait inadvertently modifies others.',
+            quote: 'Cats with blue eyes are invariably deaf; colour and constitutional peculiarities go together... Hairless dogs have imperfect teeth; long-haired and coarse-haired animals are apt to have, as is asserted, long or many horns.',
+            claims: ['correlation_of_growth', 'variation']
+          },
+          {
+            label: 'Effects of conditions on reproduction',
+            description: 'Changed conditions of life affect the reproductive system most powerfully, causing the variability upon which selection acts.',
+            quote: 'Nothing is more easy than to tame an animal, and few things more difficult than to get it to breed freely under confinement, even in the many cases when the male and female unite.',
+            claims: ['variation']
+          }
+        ]
+      }
+    }
+  },
+  variation: {
+    label: 'Variation & Selection',
+    description: 'Darwin demonstrates that variation exists in nature, that populations increase geometrically, and that the resulting struggle for existence drives natural selection of the fittest variations.',
+    subtypes: {
+      natural_variation: {
+        label: 'Variation in Nature',
+        description: 'Extensive evidence that wild species vary, with the boundary between varieties and species being blurred and arbitrary.',
+        evidence: [
+          {
+            label: '182 disputed British plant forms',
+            description: 'H.C. Watson identified 182 British plants considered varieties by some botanists but ranked as full species by others.',
+            quote: 'Mr. H. C. Watson, to whom I lie under deep obligation for assistance of all kinds, has marked for me 182 British plants, which are generally considered as varieties, but which have all been ranked by botanists as species.',
+            claims: ['species_as_varieties']
+          },
+          {
+            label: 'Babington vs Bentham species counts',
+            description: 'Two eminent botanists counted wildly different numbers of British species, disagreeing on 139 forms -- showing how arbitrary the species/variety boundary is.',
+            quote: 'Under genera, including the most polymorphic forms, Mr. Babington gives 251 species, whereas Mr. Bentham gives only 112,--a difference of 139 doubtful forms!',
+            claims: ['species_as_varieties']
+          },
+          {
+            label: 'Larger genera produce more varieties',
+            description: 'Darwin\'s statistical tabulation of twelve floras showed that species in large genera produce disproportionately more varieties.',
+            quote: 'I have arranged the plants of twelve countries, and the coleopterous insects of two districts, into two nearly equal masses... and it has invariably proved to be the case that a larger proportion of the species on the side of the larger genera present varieties.',
+            claims: ['species_as_varieties', 'variation']
+          },
+          {
+            label: 'Galapagos bird variation',
+            description: 'Darwin was struck by the arbitrary boundary between species and varieties when comparing birds from different Galapagos islands.',
+            quote: 'When comparing, and seeing others compare, the birds from the separate islands of the Galapagos Archipelago, both one with another, and with those from the American mainland, I was much struck how entirely vague and arbitrary is the distinction between species and varieties.',
+            claims: ['species_as_varieties', 'biogeographic_affinity']
+          }
+        ]
+      },
+      struggle_for_existence: {
+        label: 'Struggle for Existence',
+        description: 'Evidence that all organisms produce far more offspring than can survive, creating intense competition that drives selection.',
+        evidence: [
+          {
+            label: 'Elephant population calculation',
+            description: 'Even the slowest breeding animal would fill the earth if unchecked, demonstrating the universal pressure of geometric increase.',
+            quote: 'The elephant is reckoned to be the slowest breeder of all known animals... it will be under the mark to assume that it breeds when thirty years old, and goes on breeding till ninety years old, bringing forth three pair of young in this interval; if this be so, at the end of the fifth century there would be alive fifteen million elephants.',
+            claims: ['struggle_for_existence']
+          },
+          {
+            label: 'Seedling destruction experiment',
+            description: 'Darwin personally tracked seedlings in a cleared plot and found the vast majority destroyed by natural enemies.',
+            quote: 'On a piece of ground three feet long and two wide, dug and cleared, and where there could be no choking from other plants, I marked all the seedlings of our native weeds as they came up, and out of the 357 no less than 295 were destroyed, chiefly by slugs and insects.',
+            claims: ['struggle_for_existence']
+          },
+          {
+            label: 'Staffordshire heath enclosure',
+            description: 'Enclosing a barren heath and planting Scotch fir dramatically transformed the entire ecosystem, demonstrating cascading ecological relationships.',
+            quote: 'In Staffordshire, on the estate of a relation where I had ample means of investigation, there was a large and extremely barren heath, which had never been touched by the hand of man; but several hundred acres of exactly the same nature had been enclosed twenty-five years previously and planted with Scotch fir. The change in the native vegetation of the planted part of the heath was most remarkable.',
+            claims: ['struggle_for_existence', 'complex_relations']
+          },
+          {
+            label: 'Cats-mice-bees-clover chain',
+            description: 'Darwin\'s famous example of an ecological chain linking cats to the frequency of clover flowers through mice and bees.',
+            quote: 'The number of humble-bees in any district depends in a great degree on the number of field-mice, which destroy their combs and nests... Now the number of mice is largely dependent, as every one knows, on the number of cats... Hence it is quite credible that the presence of a feline animal in large numbers in a district might determine, through the intervention first of mice and then of bees, the frequency of certain flowers in that district!',
+            claims: ['complex_relations', 'struggle_for_existence']
+          },
+          {
+            label: 'Winter of 1854-55 bird mortality',
+            description: 'Darwin\'s direct observation of massive climate-driven mortality in his own garden.',
+            quote: 'I estimated that the winter of 1854-55 destroyed four-fifths of the birds in my own grounds; and this is a tremendous destruction, when we remember that ten per cent. is an extraordinarily severe mortality from epidemics with man.',
+            claims: ['struggle_for_existence']
+          }
+        ]
+      },
+      naturalised_species: {
+        label: 'Naturalised Species',
+        description: 'Introduced species spreading rapidly demonstrate both the geometric increase potential and the role of competition.',
+        evidence: [
+          {
+            label: 'European plants overwhelming La Plata',
+            description: 'Introduced European plants had taken over vast areas of South American grassland, demonstrating competitive displacement.',
+            quote: 'Several of the plants now most numerous over the wide plains of La Plata, clothing square leagues of surface almost to the exclusion of all other plants, have been introduced from Europe.',
+            claims: ['struggle_for_existence', 'naturalisation']
+          },
+          {
+            label: 'Feral cattle and horses in South America',
+            description: 'Domestic animals gone wild multiplied at incredible rates, proving the power of geometric increase when conditions permit.',
+            quote: 'If the statements of the rate of increase of slow-breeding cattle and horses in South America, and latterly in Australia, had not been well authenticated, they would have been quite incredible.',
+            claims: ['struggle_for_existence']
+          }
+        ]
+      }
+    }
+  },
+  geology: {
+    label: 'Geology & Fossils',
+    description: 'Darwin marshals geological evidence for vast timescales, the imperfection of the fossil record, and the pattern of slow species succession that his theory predicts.',
+    subtypes: {
+      deep_time: {
+        label: 'Deep Time',
+        description: 'Evidence for the immense duration of geological time, essential for the slow operation of natural selection.',
+        evidence: [
+          {
+            label: 'British sedimentary strata: 72,584 feet',
+            description: 'Professor Ramsay\'s measurements of British formations demonstrate the enormous thickness of accumulated sediment.',
+            quote: 'Professor Ramsay has given me the maximum thickness... of each formation in different parts of Great Britain; and this is the result: Palaeozoic strata 57,154 feet; Secondary strata 13,190 feet; Tertiary strata 2,240 feet -- making altogether 72,584 feet; that is, very nearly thirteen and three-quarters British miles.',
+            claims: ['deep_time']
+          },
+          {
+            label: 'Denudation of the Weald: 300 million years',
+            description: 'Darwin estimated the time required to erode away the great dome of chalk that once covered the Weald of southern England.',
+            quote: 'At this rate, on the above data, the denudation of the Weald must have required 306,662,400 years; or say three hundred million years.',
+            claims: ['deep_time']
+          },
+          {
+            label: 'Craven fault: invisible 3000 ft displacement',
+            description: 'Enormous geological displacements, completely smoothed away by erosion, testify to vast time.',
+            quote: 'The Craven fault, for instance, extends for upwards of 30 miles, and along this line the vertical displacement of the strata has varied from 600 to 3000 feet... yet in these cases there is nothing on the surface to show such prodigious movements.',
+            claims: ['deep_time']
+          }
+        ]
+      },
+      imperfect_record: {
+        label: 'Imperfection of the Record',
+        description: 'Darwin explains why the fossil record is far more incomplete than commonly supposed, answering the objection of missing transitional forms.',
+        evidence: [
+          {
+            label: 'Gaps between formations',
+            description: 'Formations are separated by vast unrecorded intervals, during which most evolutionary change occurred.',
+            quote: 'The frequent and great changes in the mineralogical composition of consecutive formations, generally implying great changes in the geography of the surrounding lands... accords with the belief of vast intervals of time having elapsed between each formation.',
+            claims: ['imperfect_record']
+          },
+          {
+            label: 'Nova Scotia: 68 fossil forest levels',
+            description: 'Ancient forests preserved at 68 different levels within 1400 feet of strata reveal enormous hidden time intervals.',
+            quote: 'Messrs. Lyell and Dawson found carboniferous beds 1400 feet thick in Nova Scotia, with ancient root-bearing strata, one above the other, at no less than sixty-eight different levels.',
+            claims: ['imperfect_record', 'deep_time']
+          },
+          {
+            label: 'South American coast: missing recent deposits',
+            description: 'Darwin\'s own observation that along hundreds of miles of recently uplifted coast, virtually no geological record was being preserved.',
+            quote: 'Scarcely any fact struck me more when examining many hundred miles of the South American coasts, which have been upraised several hundred feet within the recent period, than the absence of any recent deposits sufficiently extensive to last for even a short geological period.',
+            claims: ['imperfect_record']
+          }
+        ]
+      },
+      fossil_succession: {
+        label: 'Fossil Succession',
+        description: 'Patterns in the fossil record that accord with descent with modification: gradual appearance, extinction, and affinity between successive forms.',
+        evidence: [
+          {
+            label: 'Silurian Lingula persists to present',
+            description: 'Some forms have persisted almost unchanged for vast periods, while related forms changed dramatically -- as the theory predicts.',
+            quote: 'The Silurian Lingula differs but little from the living species of this genus; whereas most of the other Silurian Molluscs and all the Crustaceans have changed greatly.',
+            claims: ['descent_with_modification', 'differential_rates']
+          },
+          {
+            label: 'South American fossil horse',
+            description: 'Darwin\'s discovery of an extinct horse in La Plata, alongside giant extinct mammals but co-existing with living shellfish, illustrating extinction.',
+            quote: 'When I found in La Plata the tooth of a horse embedded with the remains of Mastodon, Megatherium, Toxodon, and other extinct monsters, which all co-existed with still living shells at a very late geological period, I was filled with astonishment.',
+            claims: ['extinction']
+          },
+          {
+            label: 'Owen\'s fossil links between orders',
+            description: 'Owen\'s discovery of intermediate fossil forms connecting groups previously thought entirely distinct.',
+            quote: 'Cuvier ranked the Ruminants and Pachyderms, as the two most distinct orders of mammals; but Owen has discovered so many fossil links, that he has had to alter the whole classification of these two orders.',
+            claims: ['descent_with_modification']
+          },
+          {
+            label: 'Parallel succession worldwide',
+            description: 'The same general succession of life forms is found on different continents, despite different physical conditions.',
+            quote: 'The fact of the forms of life changing almost simultaneously throughout the world... Thus our European Chalk formation can be recognised in many distant parts of the world, under the most different climates.',
+            claims: ['descent_with_modification']
+          }
+        ]
+      }
+    }
+  },
+  biogeography: {
+    label: 'Biogeography',
+    description: 'Darwin demonstrates that the distribution of species across the globe is explained not by physical conditions but by barriers to migration and descent from common ancestors.',
+    subtypes: {
+      island_faunas: {
+        label: 'Island Faunas',
+        description: 'Oceanic islands display distinctive patterns: few species but many endemics, related to the nearest mainland, with certain groups entirely absent.',
+        evidence: [
+          {
+            label: 'Galapagos: American stamp',
+            description: 'Nearly all Galapagos species are unique but unmistakeably related to South American forms, not to those of similar islands elsewhere.',
+            quote: 'Here almost every product of the land and water bears the unmistakeable stamp of the American continent. There are twenty-six land birds, and twenty-five of these are ranked by Mr. Gould as distinct species, supposed to have been created here; yet the close affinity of most of these birds to American species in every character, in their habits, gestures, and tones of voice, was manifest.',
+            claims: ['biogeographic_affinity', 'descent_with_modification']
+          },
+          {
+            label: 'Galapagos vs Cape Verde: same conditions, different life',
+            description: 'Two archipelagos with similar physical conditions harbour utterly different faunas, related to their respective nearest continents.',
+            quote: 'There is a considerable degree of resemblance in the volcanic nature of the soil, in climate, height, and size of the islands, between the Galapagos and Cape de Verde Archipelagos: but what an entire and absolute difference in their inhabitants! The inhabitants of the Cape de Verde Islands are related to those of Africa, like those of the Galapagos to America.',
+            claims: ['biogeographic_affinity']
+          },
+          {
+            label: 'No frogs on oceanic islands',
+            description: 'The complete absence of amphibians from oceanic islands, despite thriving when introduced, is explained by their inability to cross salt water.',
+            quote: 'Batrachians (frogs, toads, newts) have never been found on any of the many islands with which the great oceans are studded... as these animals and their spawn are known to be immediately killed by sea-water, on my view we can see that there would be great difficulty in their transportal across the sea.',
+            claims: ['dispersal_barriers']
+          },
+          {
+            label: 'Bats but no terrestrial mammals on islands',
+            description: 'Oceanic islands have endemic bats but no native land mammals, explicable only if colonisation required crossing oceans.',
+            quote: 'Why, it may be asked, has the supposed creative force produced bats and no other mammals on remote islands? On my view this question can easily be answered; for no terrestrial mammal can be transported across a wide space of sea, but bats can fly across.',
+            claims: ['dispersal_barriers', 'biogeographic_affinity']
+          },
+          {
+            label: 'Three Galapagos mocking-thrush species',
+            description: 'Each Galapagos island has its own unique but closely related mocking-thrush species.',
+            quote: 'There are three closely-allied species of mocking-thrush, each confined to its own island.',
+            claims: ['biogeographic_affinity', 'divergence_of_character']
+          }
+        ]
+      },
+      oceanic_barriers: {
+        label: 'Oceanic Barriers',
+        description: 'Barriers explain why similar climates on different continents harbour completely different organisms.',
+        evidence: [
+          {
+            label: 'Isthmus of Panama: two utterly different faunas',
+            description: 'A narrow strip of land separates marine faunas that share hardly a single species, demonstrating the power of barriers.',
+            quote: 'No two marine faunas are more distinct, with hardly a fish, shell, or crab in common, than those of the eastern and western shores of South and Central America; yet these great faunas are separated only by the narrow, but impassable, isthmus of Panama.',
+            claims: ['dispersal_barriers']
+          },
+          {
+            label: 'Same latitude, different fauna across continents',
+            description: 'Australia, South Africa, and South America at the same latitude have utterly different organisms despite similar conditions.',
+            quote: 'If we compare large tracts of land in Australia, South Africa, and western South America, between latitudes 25 and 35, we shall find parts extremely similar in all their conditions, yet it would not be possible to point out three faunas and floras more utterly dissimilar.',
+            claims: ['dispersal_barriers', 'biogeographic_affinity']
+          },
+          {
+            label: 'Wallace Line in the Malay Archipelago',
+            description: 'A deep ocean channel separates two completely different mammalian faunas in the Malay Archipelago.',
+            quote: 'The great Malay Archipelago... is traversed near Celebes by a space of deep ocean; and this space separates two widely distinct mammalian faunas.',
+            claims: ['dispersal_barriers']
+          }
+        ]
+      },
+      glacial_dispersal: {
+        label: 'Glacial Period Dispersal',
+        description: 'The Glacial period explains how identical Arctic-Alpine plants appear on distant mountain summits across the world.',
+        evidence: [
+          {
+            label: 'Alpine plants identical on distant mountains',
+            description: 'The same species appear on the Alps, Pyrenees, Scotland, and American mountains, explained by southward migration during the Ice Age.',
+            quote: 'It is indeed a remarkable fact to see so many of the same plants living on the snowy regions of the Alps or Pyrenees, and in the extreme northern parts of Europe; but it is far more remarkable, that the plants on the White Mountains, in the United States of America, are all the same with those of Labrador, and nearly all the same, as we hear from Asa Gray, with those on the loftiest mountains of Europe.',
+            claims: ['glacial_dispersal', 'migration']
+          },
+          {
+            label: 'Erratic boulders in the Azores',
+            description: 'Ice-transported boulders in the Azores suggest that seeds could also have been carried by icebergs.',
+            quote: 'Sir C. Lyell wrote to M. Hartung to inquire whether he had observed erratic boulders on these islands, and he answered that he had found large fragments of granite and other rocks, which do not occur in the archipelago.',
+            claims: ['glacial_dispersal', 'dispersal_mechanisms']
+          }
+        ]
+      },
+      seed_dispersal: {
+        label: 'Seed Dispersal Experiments',
+        description: 'Darwin\'s own experiments on how seeds might cross oceans, demonstrating practical mechanisms for long-distance dispersal.',
+        evidence: [
+          {
+            label: 'Seeds surviving 137 days in salt water',
+            description: 'Darwin experimentally tested the survival of seeds in seawater, finding many could survive long enough for ocean transport.',
+            quote: 'To my surprise I found that out of 87 kinds, 64 germinated after an immersion of 28 days, and a few survived an immersion of 137 days.',
+            claims: ['dispersal_mechanisms']
+          },
+          {
+            label: 'Dried hazel-nuts floating 90 days',
+            description: 'Darwin discovered that dried plant material floated much longer than green, providing a mechanism for ocean transport.',
+            quote: 'Ripe hazel-nuts sank immediately, but when dried, they floated for 90 days and afterwards when planted they germinated.',
+            claims: ['dispersal_mechanisms']
+          },
+          {
+            label: 'Seeds in bird crops surviving 18 hours',
+            description: 'Seeds in a bird\'s crop could travel 500 miles before being regurgitated or excreted, still viable.',
+            quote: 'After a bird has found and devoured a large supply of food, it is positively asserted that all the grains do not pass into the gizzard for 12 or even 18 hours. A bird in this interval might easily be blown to the distance of 500 miles.',
+            claims: ['dispersal_mechanisms']
+          },
+          {
+            label: 'Pond mud: 537 plants from a breakfast cup',
+            description: 'Darwin demonstrated the extraordinary density of seeds in pond mud, easily transported on the feet of wading birds.',
+            quote: 'I took in February three table-spoonfuls of mud from three different points, beneath water, on the edge of a little pond; this mud when dry weighed only 6 3/4 ounces; I kept it covered up in my study for six months, pulling up and counting each plant as it grew; the plants were of many kinds, and were altogether 537 in number; and yet the viscid mud was all contained in a breakfast cup!',
+            claims: ['dispersal_mechanisms']
+          },
+          {
+            label: 'Seeds in earth on birds\' feet',
+            description: 'Darwin personally removed soil containing seeds from the feet of birds.',
+            quote: 'I removed twenty-two grains of dry argillaceous earth from one foot of a partridge, and in this earth there was a pebble quite as large as the seed of a vetch.',
+            claims: ['dispersal_mechanisms']
+          }
+        ]
+      }
+    }
+  },
+  morphology: {
+    label: 'Morphology & Embryology',
+    description: 'The shared structural plans across vastly different organisms, embryonic resemblances, and rudimentary organs all point to descent from common ancestors.',
+    subtypes: {
+      homologous_structures: {
+        label: 'Homologous Structures',
+        description: 'The same bones arranged in the same pattern serve wildly different functions across mammals -- grasping, digging, swimming, flying.',
+        evidence: [
+          {
+            label: 'Hand, wing, paddle, leg: one pattern',
+            description: 'The forelimbs of man, bat, porpoise, and horse all share the same skeletal architecture despite radically different functions.',
+            quote: 'What can be more curious than that the hand of a man, formed for grasping, that of a mole for digging, the leg of the horse, the paddle of the porpoise, and the wing of the bat, should all be constructed on the same pattern, and should include the same bones, in the same relative positions?',
+            claims: ['unity_of_type', 'descent_with_modification']
+          },
+          {
+            label: 'Insect mouth parts: infinite variations on one plan',
+            description: 'The proboscis of a moth, the folded tongue of a bee, and the great jaws of a beetle are all modifications of the same basic parts.',
+            quote: 'What can be more different than the immensely long spiral proboscis of a sphinx-moth, the curious folded one of a bee or bug, and the great jaws of a beetle?--yet all these organs, serving for such different purposes, are formed by infinitely numerous modifications of an upper lip, mandibles, and two pairs of maxillae.',
+            claims: ['unity_of_type', 'descent_with_modification']
+          }
+        ]
+      },
+      embryonic_resemblance: {
+        label: 'Embryonic Resemblance',
+        description: 'Embryos of different species in the same class are strikingly similar, even when the adults are wildly different.',
+        evidence: [
+          {
+            label: 'Agassiz\'s unlabelled vertebrate embryo',
+            description: 'Agassiz could not identify whether an unlabelled embryo was a mammal, bird, or reptile -- so similar are vertebrate embryos.',
+            quote: 'Agassiz, namely, that having forgotten to ticket the embryo of some vertebrate animal, he cannot now tell whether it be that of a mammal, bird, or reptile.',
+            claims: ['embryonic_resemblance', 'descent_with_modification']
+          },
+          {
+            label: 'Pigeon breeds identical as nestlings',
+            description: 'Darwin measured nestling pigeons of different breeds and found their proportional differences incomparably less than in adults.',
+            quote: 'When the nestling birds of these several breeds were placed in a row, though most of them could be distinguished from each other, yet their proportional differences in the above specified several points were incomparably less than in the full-grown birds.',
+            claims: ['embryonic_resemblance', 'inheritance']
+          },
+          {
+            label: 'Cirripede larva reveals crustacean nature',
+            description: 'Barnacles, which look nothing like crustaceans as adults, are unmistakeably crustacean in their larval stage.',
+            quote: 'Even the illustrious Cuvier did not perceive that a barnacle was, as it certainly is, a crustacean; but a glance at the larva shows this to be the case in an unmistakeable manner.',
+            claims: ['embryonic_resemblance', 'descent_with_modification']
+          },
+          {
+            label: 'Mammalian embryo with branchial slits',
+            description: 'Air-breathing mammal embryos develop gill-like structures, revealing their aquatic ancestry.',
+            quote: 'We may cease marvelling at the embryo of an air-breathing mammal or bird having branchial slits and arteries running in loops, like those in a fish which has to breathe the air dissolved in water.',
+            claims: ['embryonic_resemblance', 'descent_with_modification']
+          }
+        ]
+      },
+      rudimentary_organs: {
+        label: 'Rudimentary Organs',
+        description: 'Organs that are useless or vestigial in their current bearers but reveal ancestral function -- bearing "the stamp of inutility."',
+        evidence: [
+          {
+            label: 'Teeth in foetal whales',
+            description: 'Whale foetuses develop teeth that are reabsorbed before birth, revealing toothed ancestors.',
+            quote: 'The presence of teeth in foetal whales, which when grown up have not a tooth in their heads; and the presence of teeth, which never cut through the gums, in the upper jaws of our unborn calves.',
+            claims: ['rudimentary_organs', 'descent_with_modification']
+          },
+          {
+            label: 'Wings under soldered wing-covers of beetles',
+            description: 'Many island beetles have reduced wings permanently sealed beneath fused wing-cases, bearing the stamp of former function.',
+            quote: 'Nothing can be plainer than that wings are formed for flight, yet in how many insects do we see wings so reduced in size as to be utterly incapable of flight, and not rarely lying under wing-cases, firmly soldered together!',
+            claims: ['rudimentary_organs', 'use_and_disuse']
+          },
+          {
+            label: 'Rudimentary pelvis and hind limbs in snakes',
+            description: 'Snakes retain vestigial pelvic bones, revealing limbed ancestors.',
+            quote: 'In very many snakes one lobe of the lungs is rudimentary; in other snakes there are rudiments of the pelvis and hind limbs.',
+            claims: ['rudimentary_organs', 'descent_with_modification']
+          },
+          {
+            label: 'Male mammals with rudimentary mammae',
+            description: 'Males of all mammals retain functionless nipples, sometimes capable of producing milk.',
+            quote: 'Rudimentary mammae are very general in the males of mammals... many instances are on record of these organs having become well developed in full-grown males, and having secreted milk.',
+            claims: ['rudimentary_organs']
+          },
+          {
+            label: 'Blind cave animals',
+            description: 'Animals in dark caves have reduced, useless eyes covered with skin, from disuse over generations.',
+            quote: 'When we look at the burrowing tucutucu, which is occasionally blind, and then at certain moles, which are habitually blind and have their eyes covered with skin; or when we look at the blind animals inhabiting the dark caves of America and Europe.',
+            claims: ['rudimentary_organs', 'use_and_disuse']
+          }
+        ]
+      },
+      classification: {
+        label: 'Classification as Genealogy',
+        description: 'The hierarchical structure of biological classification -- groups within groups -- is exactly what descent with modification predicts.',
+        evidence: [
+          {
+            label: 'Natural system is genealogical',
+            description: 'Darwin argues that the nested hierarchy of classification reveals a tree of common descent, not a divine plan.',
+            quote: 'I believe that something more is included; and that propinquity of descent,--the only known cause of the similarity of organic beings,--is the bond, hidden as it is by various degrees of modification, which is partially revealed to us by our classifications.',
+            claims: ['descent_with_modification']
+          },
+          {
+            label: 'Rudimentary organs useful for classification',
+            description: 'Paradoxically, useless structures are among the most valuable for revealing true relationships.',
+            quote: 'Rudimentary organs may be compared with the letters in a word, still retained in the spelling, but become useless in the pronunciation, but which serve as a clue in seeking for its derivation.',
+            claims: ['rudimentary_organs', 'descent_with_modification']
+          }
+        ]
+      }
+    }
+  },
+  behavior: {
+    label: 'Behavior & Instinct',
+    description: 'Darwin shows that instincts, like physical structures, can be explained by natural selection acting on inherited behavioral variations.',
+    subtypes: {
+      bee_cells: {
+        label: 'Hive-Bee Cell Construction',
+        description: 'The mathematically perfect hexagonal cells of the hive-bee, built by a graduated series of instincts from simple to complex.',
+        evidence: [
+          {
+            label: 'Gradation from humble-bee to hive-bee',
+            description: 'Darwin traces a complete gradation from the rough cells of humble-bees through Melipona to the perfect hexagons of hive-bees.',
+            quote: 'At one end of a short series we have humble-bees, which use their old cocoons to hold honey, sometimes adding to them short tubes of wax... At the other end of the series we have the cells of the hive-bee, placed in a double layer: each cell, as is well known, is an hexagonal prism.',
+            claims: ['gradation_of_instinct', 'natural_selection']
+          },
+          {
+            label: 'Vermilion wax experiment',
+            description: 'Darwin\'s ingenious experiment painting wax with vermilion to observe how bees construct cells by excavating intersecting spheres.',
+            quote: 'I then put into the hive, instead of a thick, square piece of wax, a thin and narrow, knife-edged ridge, coloured with vermilion. The bees instantly began on both sides to excavate little basins near to each other.',
+            claims: ['gradation_of_instinct']
+          },
+          {
+            label: 'Wax economy as selective advantage',
+            description: 'The selective advantage of hexagonal cells: they use the least wax for maximum honey storage, and wax is enormously costly to produce.',
+            quote: 'It has been experimentally found that no less than from twelve to fifteen pounds of dry sugar are consumed by a hive of bees for the secretion of each pound of wax; so that a prodigious quantity of fluid nectar must be collected and consumed by the bees in a hive for the secretion of the wax necessary for the construction of their combs.',
+            claims: ['natural_selection']
+          }
+        ]
+      },
+      slave_making_ants: {
+        label: 'Slave-Making Ants',
+        description: 'Darwin\'s detailed personal observations of the extraordinary slave-making instinct in ants, showing gradation between species.',
+        evidence: [
+          {
+            label: 'Formica sanguinea: Darwin\'s field observations',
+            description: 'Darwin spent years personally observing slave-making ants, documenting their raids and the behaviour of enslaved workers.',
+            quote: 'I tried to approach the subject in a sceptical frame of mind... I opened fourteen nests of F. sanguinea, and found a few slaves in all.',
+            claims: ['gradation_of_instinct']
+          },
+          {
+            label: 'Gradation from F. sanguinea to F. rufescens',
+            description: 'Two ant species show degrees of dependence on slaves -- from partial to absolute -- demonstrating how the instinct could evolve incrementally.',
+            quote: 'Formica sanguinea, on the other hand, possesses much fewer slaves, and in the early part of the summer extremely few... F. rufescens... is absolutely dependent on its slaves; without their aid, the species would certainly become extinct in a single year.',
+            claims: ['gradation_of_instinct', 'natural_selection']
+          },
+          {
+            label: 'Huber\'s helpless masters experiment',
+            description: 'Huber\'s experiment showing F. rufescens masters could not feed themselves or care for their larvae without slaves.',
+            quote: 'When Huber shut up thirty of them without a slave, but with plenty of the food which they like best, and with their larvae and pupae to stimulate them to work, they did nothing; they could not even feed themselves, and many perished of hunger. Huber then introduced a single slave (F. fusca), and she instantly set to work, fed and saved the survivors.',
+            claims: ['gradation_of_instinct']
+          }
+        ]
+      },
+      cuckoo_instinct: {
+        label: 'Cuckoo & Parasitic Instincts',
+        description: 'The cuckoo\'s habit of laying eggs in other birds\' nests, explained as an evolved elaboration of an occasional ancestral behaviour.',
+        evidence: [
+          {
+            label: 'American vs European cuckoo',
+            description: 'The American cuckoo makes its own nest but occasionally lays in others\' nests, showing the possible ancestral state of the European cuckoo\'s obligate parasitism.',
+            quote: 'The American cuckoo is in this predicament; for she makes her own nest and has eggs and young successively hatched, all at the same time.',
+            claims: ['gradation_of_instinct']
+          },
+          {
+            label: 'Parasitic bees: structure modified with instinct',
+            description: 'Parasitic bees have lost not only the nesting instinct but also the physical apparatus for collecting pollen.',
+            quote: 'Many bees are parasitic, and always lay their eggs in the nests of bees of other kinds... for they do not possess the pollen-collecting apparatus which would be necessary if they had to store food for their own young.',
+            claims: ['gradation_of_instinct', 'use_and_disuse']
+          }
+        ]
+      },
+      domestic_instincts: {
+        label: 'Domestic Instincts',
+        description: 'Inherited behavioral traits in domestic animals that demonstrate instinct can be modified by selection.',
+        evidence: [
+          {
+            label: 'Pointer dogs pointing without training',
+            description: 'Young pointer dogs instinctively point at game without any training, demonstrating inherited behavioral modification.',
+            quote: 'It cannot be doubted that young pointers (I have myself seen a striking instance) will sometimes point and even back other dogs the very first time that they are taken out.',
+            claims: ['inherited_instinct', 'power_of_selection']
+          },
+          {
+            label: 'Tumbler pigeons: inherited acrobatics',
+            description: 'Young tumbler pigeons perform their characteristic aerial tumbling without ever seeing another pigeon do it.',
+            quote: 'No one would ever have thought of teaching, or probably could have taught, the tumbler-pigeon to tumble,--an action which, as I have witnessed, is performed by young birds, that have never seen a pigeon tumble.',
+            claims: ['inherited_instinct']
+          },
+          {
+            label: 'Aphid-ant mutualism experiment',
+            description: 'Darwin\'s personal experiment showing that aphids voluntarily excrete honeydew only when stimulated by ant antennae, not by a hair.',
+            quote: 'I removed all the ants from a group of about a dozen aphides on a dock-plant... I watched them for some time through a lens, but not one excreted; I then tickled and stroked them with a hair... but not one excreted. Afterwards I allowed an ant to visit them, and it immediately seemed, by its eager way of running about, to be well aware what a rich flock it had discovered.',
+            claims: ['complex_relations', 'inherited_instinct']
+          }
+        ]
+      },
+      neuter_insects: {
+        label: 'Neuter Insect Castes',
+        description: 'The existence of sterile worker castes in ants, with different body forms, poses a challenge Darwin answers through family-level selection.',
+        evidence: [
+          {
+            label: 'Driver ant worker size gradation',
+            description: 'Darwin examined workers of the driver ant that ranged from tiny to enormous, with correspondingly different jaw structures.',
+            quote: 'The difference was the same as if we were to see a set of workmen building a house of whom many were five feet four inches high, and many sixteen feet high; but we must suppose that the larger workmen had heads four instead of three times as big as those of the smaller men, and jaws nearly five times as big.',
+            claims: ['natural_selection', 'gradation_of_instinct']
+          },
+          {
+            label: 'Selection applied to the family',
+            description: 'Darwin\'s crucial insight that selection can act on families, not just individuals, explaining how sterile castes evolve.',
+            quote: 'A well-flavoured vegetable is cooked, and the individual is destroyed; but the horticulturist sows seeds of the same stock, and confidently expects to get nearly the same variety; breeders of cattle wish the flesh and fat to be well marbled together; the animal has been slaughtered, but the breeder goes with confidence to the same family.',
+            claims: ['natural_selection']
+          }
+        ]
+      }
+    }
+  }
+};
+
+// Theoretical claims that evidence supports
+const CLAIMS = {
+  descent_with_modification: 'Descent with Modification',
+  power_of_selection: 'Power of Selection',
+  species_as_varieties: 'Species as Permanent Varieties',
+  variation: 'Universal Variation',
+  struggle_for_existence: 'Struggle for Existence',
+  natural_selection: 'Natural Selection',
+  inheritance: 'Laws of Inheritance',
+  correlation_of_growth: 'Correlation of Growth',
+  use_and_disuse: 'Use and Disuse',
+  divergence_of_character: 'Divergence of Character',
+  complex_relations: 'Complex Ecological Relations',
+  biogeographic_affinity: 'Biogeographic Affinity',
+  dispersal_barriers: 'Dispersal Barriers',
+  dispersal_mechanisms: 'Means of Dispersal',
+  glacial_dispersal: 'Glacial Period Dispersal',
+  migration: 'Migration',
+  naturalisation: 'Naturalisation',
+  deep_time: 'Deep Geological Time',
+  imperfect_record: 'Imperfect Geological Record',
+  extinction: 'Extinction',
+  differential_rates: 'Differential Rates of Change',
+  unity_of_type: 'Unity of Type',
+  embryonic_resemblance: 'Embryonic Resemblance',
+  rudimentary_organs: 'Rudimentary Organs',
+  gradation_of_instinct: 'Gradation of Instinct',
+  inherited_instinct: 'Inherited Instinct'
+};
+
+// ========== GRAPH ENGINE ==========
+const width = window.innerWidth;
+const height = window.innerHeight;
+
+const svg = d3.select('body').append('svg')
+  .attr('width', width)
+  .attr('height', height);
+
+const defs = svg.append('defs');
+
+// Subtle radial gradient for nodes
+Object.entries(COLORS).forEach(([key, color]) => {
+  const grad = defs.append('radialGradient')
+    .attr('id', `grad-${key}`)
+    .attr('cx', '35%').attr('cy', '35%');
+  grad.append('stop').attr('offset', '0%').attr('stop-color', d3.color(color).brighter(0.8));
+  grad.append('stop').attr('offset', '100%').attr('stop-color', color);
+});
+
+const container = svg.append('g');
+
+const zoom = d3.zoom()
+  .scaleExtent([0.2, 5])
+  .on('zoom', (e) => container.attr('transform', e.transform));
+svg.call(zoom);
+
+let simulation;
+let currentLevel = 'domains';
+let currentDomain = null;
+let currentSubtype = null;
+let navigationHistory = [];
+
+function getNodes() {
+  const nodes = [];
+  const links = [];
+
+  if (currentLevel === 'domains') {
+    Object.entries(evidenceData).forEach(([key, domain]) => {
+      const subtypeCount = Object.keys(domain.subtypes).length;
+      let evidenceCount = 0;
+      Object.values(domain.subtypes).forEach(st => evidenceCount += st.evidence.length);
+      nodes.push({
+        id: key,
+        label: domain.label,
+        domain: key,
+        level: 'domain',
+        radius: 40 + evidenceCount * 1.5,
+        count: evidenceCount,
+        subtypeCount: subtypeCount,
+        description: domain.description
+      });
+    });
+    // Add links between domains that share theoretical claims
+    const domainKeys = Object.keys(evidenceData);
+    for (let i = 0; i < domainKeys.length; i++) {
+      for (let j = i + 1; j < domainKeys.length; j++) {
+        const claimsA = new Set();
+        const claimsB = new Set();
+        Object.values(evidenceData[domainKeys[i]].subtypes).forEach(st =>
+          st.evidence.forEach(e => e.claims.forEach(c => claimsA.add(c))));
+        Object.values(evidenceData[domainKeys[j]].subtypes).forEach(st =>
+          st.evidence.forEach(e => e.claims.forEach(c => claimsB.add(c))));
+        const shared = [...claimsA].filter(c => claimsB.has(c)).length;
+        if (shared > 0) {
+          links.push({
+            source: domainKeys[i],
+            target: domainKeys[j],
+            strength: shared * 0.15,
+            shared
+          });
+        }
+      }
+    }
+  } else if (currentLevel === 'subtypes' && currentDomain) {
+    const domain = evidenceData[currentDomain];
+    // Center node for domain
+    nodes.push({
+      id: currentDomain,
+      label: domain.label,
+      domain: currentDomain,
+      level: 'domain-center',
+      radius: 30,
+      description: domain.description
+    });
+    Object.entries(domain.subtypes).forEach(([key, subtype]) => {
+      nodes.push({
+        id: key,
+        label: subtype.label,
+        domain: currentDomain,
+        level: 'subtype',
+        radius: 22 + subtype.evidence.length * 4,
+        count: subtype.evidence.length,
+        description: subtype.description
+      });
+      links.push({
+        source: currentDomain,
+        target: key,
+        strength: 0.6
+      });
+    });
+    // Cross-links between subtypes sharing claims
+    const stKeys = Object.keys(domain.subtypes);
+    for (let i = 0; i < stKeys.length; i++) {
+      for (let j = i + 1; j < stKeys.length; j++) {
+        const claimsA = new Set();
+        const claimsB = new Set();
+        domain.subtypes[stKeys[i]].evidence.forEach(e => e.claims.forEach(c => claimsA.add(c)));
+        domain.subtypes[stKeys[j]].evidence.forEach(e => e.claims.forEach(c => claimsB.add(c)));
+        const shared = [...claimsA].filter(c => claimsB.has(c)).length;
+        if (shared > 0) {
+          links.push({ source: stKeys[i], target: stKeys[j], strength: shared * 0.1, shared });
+        }
+      }
+    }
+  } else if (currentLevel === 'evidence' && currentDomain && currentSubtype) {
+    const domain = evidenceData[currentDomain];
+    const subtype = domain.subtypes[currentSubtype];
+    // Center node for subtype
+    nodes.push({
+      id: currentSubtype,
+      label: subtype.label,
+      domain: currentDomain,
+      level: 'subtype-center',
+      radius: 24,
+      description: subtype.description
+    });
+    subtype.evidence.forEach((ev, i) => {
+      const evId = `${currentSubtype}-ev-${i}`;
+      nodes.push({
+        id: evId,
+        label: ev.label,
+        domain: currentDomain,
+        level: 'evidence',
+        radius: 14 + ev.claims.length * 2,
+        evidenceIndex: i,
+        quote: ev.quote,
+        description: ev.description,
+        claims: ev.claims
+      });
+      links.push({
+        source: currentSubtype,
+        target: evId,
+        strength: 0.5
+      });
+    });
+    // Cross-link evidence sharing claims
+    for (let i = 0; i < subtype.evidence.length; i++) {
+      for (let j = i + 1; j < subtype.evidence.length; j++) {
+        const shared = subtype.evidence[i].claims.filter(c => subtype.evidence[j].claims.includes(c)).length;
+        if (shared > 0) {
+          links.push({
+            source: `${currentSubtype}-ev-${i}`,
+            target: `${currentSubtype}-ev-${j}`,
+            strength: shared * 0.08,
+            shared
+          });
+        }
+      }
+    }
+  }
+
+  return { nodes, links };
+}
+
+function renderGraph() {
+  container.selectAll('*').remove();
+
+  const { nodes, links } = getNodes();
+
+  if (simulation) simulation.stop();
+
+  simulation = d3.forceSimulation(nodes)
+    .force('charge', d3.forceManyBody().strength(d => -(d.radius * 8 + 50)))
+    .force('center', d3.forceCenter(width / 2, height / 2))
+    .force('collision', d3.forceCollide(d => d.radius + 12))
+    .force('link', d3.forceLink(links).id(d => d.id).distance(d => {
+      if (currentLevel === 'domains') return 200;
+      if (currentLevel === 'subtypes') return 140;
+      return 100;
+    }).strength(d => d.strength || 0.3))
+    .force('x', d3.forceX(width / 2).strength(0.04))
+    .force('y', d3.forceY(height / 2).strength(0.04));
+
+  const linkG = container.append('g');
+  const linkElements = linkG.selectAll('line')
+    .data(links)
+    .join('line')
+    .attr('class', 'link')
+    .attr('stroke', '#9a8a72')
+    .attr('stroke-width', d => Math.max(1, (d.shared || 1) * 0.8));
+
+  const nodeG = container.append('g');
+  const nodeElements = nodeG.selectAll('g')
+    .data(nodes)
+    .join('g')
+    .attr('class', 'node')
+    .call(d3.drag()
+      .on('start', (e, d) => { if (!e.active) simulation.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; })
+      .on('drag', (e, d) => { d.fx = e.x; d.fy = e.y; })
+      .on('end', (e, d) => { if (!e.active) simulation.alphaTarget(0); d.fx = null; d.fy = null; })
+    );
+
+  nodeElements.append('circle')
+    .attr('r', d => d.radius)
+    .attr('fill', d => `url(#grad-${d.domain})`)
+    .attr('stroke', d => d3.color(COLORS[d.domain]).darker(0.3))
+    .attr('stroke-width', d => d.level.includes('center') ? 2.5 : 1.5)
+    .attr('opacity', d => {
+      if (d.level === 'domain') return 0.88;
+      if (d.level.includes('center')) return 0.65;
+      if (d.level === 'subtype') return 0.82;
+      return 0.78;
+    });
+
+  // Count badges for domains and subtypes
+  nodeElements.filter(d => d.count && d.level === 'domain')
+    .append('text')
+    .attr('class', 'node-label')
+    .attr('dy', d => -d.radius * 0.15)
+    .attr('font-size', d => Math.min(28, d.radius * 0.55))
+    .attr('font-weight', '600')
+    .text(d => d.count);
+
+  // Labels
+  nodeElements.append('text')
+    .attr('class', 'node-label')
+    .attr('dy', d => {
+      if (d.level === 'domain') return d.radius * 0.4;
+      if (d.level === 'evidence') return d.radius + 16;
+      return d.radius + 16;
+    })
+    .attr('font-size', d => {
+      if (d.level === 'domain') return '13px';
+      if (d.level === 'subtype') return '12px';
+      if (d.level.includes('center')) return '13px';
+      return '11px';
+    })
+    .attr('font-weight', d => (d.level === 'domain' || d.level.includes('center')) ? '600' : '400')
+    .text(d => {
+      if (d.level === 'domain') return d.label;
+      if (d.label.length > 30) return d.label.substring(0, 28) + '...';
+      return d.label;
+    });
+
+  // Subtype count
+  nodeElements.filter(d => d.count && d.level === 'subtype')
+    .append('text')
+    .attr('class', 'node-label')
+    .attr('dy', 5)
+    .attr('font-size', d => Math.min(18, d.radius * 0.6))
+    .attr('font-weight', '600')
+    .text(d => d.count);
+
+  // Click handlers
+  nodeElements.on('click', (event, d) => {
+    event.stopPropagation();
+    if (d.level === 'domain') {
+      currentDomain = d.id;
+      currentLevel = 'subtypes';
+      currentSubtype = null;
+      renderGraph();
+      updateBreadcrumb();
+    } else if (d.level === 'subtype') {
+      currentSubtype = d.id;
+      currentLevel = 'evidence';
+      renderGraph();
+      updateBreadcrumb();
+    } else if (d.level === 'evidence') {
+      showDetail(d);
+    } else if (d.level === 'domain-center') {
+      // Go back to domains
+      currentLevel = 'domains';
+      currentDomain = null;
+      currentSubtype = null;
+      renderGraph();
+      updateBreadcrumb();
+    } else if (d.level === 'subtype-center') {
+      // Go back to subtypes
+      currentLevel = 'subtypes';
+      currentSubtype = null;
+      renderGraph();
+      updateBreadcrumb();
+    }
+  });
+
+  // Hover highlight
+  nodeElements.on('mouseenter', (event, d) => {
+    const connectedIds = new Set([d.id]);
+    links.forEach(l => {
+      const sid = typeof l.source === 'object' ? l.source.id : l.source;
+      const tid = typeof l.target === 'object' ? l.target.id : l.target;
+      if (sid === d.id) connectedIds.add(tid);
+      if (tid === d.id) connectedIds.add(sid);
+    });
+    nodeElements.classed('dimmed', n => !connectedIds.has(n.id));
+    linkElements.classed('dimmed', l => {
+      const sid = typeof l.source === 'object' ? l.source.id : l.source;
+      const tid = typeof l.target === 'object' ? l.target.id : l.target;
+      return sid !== d.id && tid !== d.id;
+    });
+    linkElements.classed('highlight', l => {
+      const sid = typeof l.source === 'object' ? l.source.id : l.source;
+      const tid = typeof l.target === 'object' ? l.target.id : l.target;
+      return sid === d.id || tid === d.id;
+    });
+  }).on('mouseleave', () => {
+    nodeElements.classed('dimmed', false);
+    linkElements.classed('dimmed', false).classed('highlight', false);
+  });
+
+  simulation.on('tick', () => {
+    linkElements
+      .attr('x1', d => d.source.x)
+      .attr('y1', d => d.source.y)
+      .attr('x2', d => d.target.x)
+      .attr('y2', d => d.target.y);
+    nodeElements.attr('transform', d => `translate(${d.x},${d.y})`);
+  });
+
+  // Smooth zoom to fit
+  setTimeout(() => {
+    if (nodes.length === 0) return;
+    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+    nodes.forEach(n => {
+      if (n.x - n.radius < minX) minX = n.x - n.radius;
+      if (n.x + n.radius > maxX) maxX = n.x + n.radius;
+      if (n.y - n.radius < minY) minY = n.y - n.radius;
+      if (n.y + n.radius > maxY) maxY = n.y + n.radius;
+    });
+    const padding = 120;
+    const bw = maxX - minX + padding * 2;
+    const bh = maxY - minY + padding * 2;
+    const scale = Math.min(width / bw, height / bh, 1.5);
+    const cx = (minX + maxX) / 2;
+    const cy = (minY + maxY) / 2;
+    svg.transition().duration(750).call(
+      zoom.transform,
+      d3.zoomIdentity.translate(width / 2 - cx * scale, height / 2 - cy * scale).scale(scale)
+    );
+  }, 800);
+
+  // Store references for search
+  window._nodeElements = nodeElements;
+  window._linkElements = linkElements;
+  window._nodes = nodes;
+}
+
+// Double-click to go back
+svg.on('dblclick.zoom', null);
+svg.on('dblclick', () => {
+  if (currentLevel === 'evidence') {
+    currentLevel = 'subtypes';
+    currentSubtype = null;
+    renderGraph();
+    updateBreadcrumb();
+  } else if (currentLevel === 'subtypes') {
+    currentLevel = 'domains';
+    currentDomain = null;
+    currentSubtype = null;
+    renderGraph();
+    updateBreadcrumb();
+  }
+});
+
+// ========== DETAIL PANEL ==========
+function showDetail(d) {
+  const panel = document.getElementById('detail-panel');
+  const domainEl = document.getElementById('detail-domain');
+  const titleEl = document.getElementById('detail-title');
+  const descEl = document.getElementById('detail-description');
+  const quoteEl = document.getElementById('detail-quote');
+  const connEl = document.getElementById('detail-connections');
+
+  domainEl.style.color = COLORS[d.domain];
+  domainEl.textContent = DOMAIN_LABELS[d.domain];
+  titleEl.textContent = d.label;
+  descEl.textContent = d.description || '';
+
+  if (d.quote) {
+    quoteEl.style.display = 'block';
+    quoteEl.innerHTML = `<p>"${d.quote}"</p><div class="attribution">-- Charles Darwin, <em>On the Origin of Species</em> (1859)</div>`;
+  } else {
+    quoteEl.style.display = 'none';
+  }
+
+  // Show claims this evidence supports
+  if (d.claims && d.claims.length > 0) {
+    let html = '<h4>Theoretical Claims Supported</h4>';
+    d.claims.forEach(c => {
+      html += `<div class="connection-item">
+        <div class="conn-dot" style="background:${COLORS[d.domain]}"></div>
+        <div class="conn-label">${CLAIMS[c] || c}</div>
+      </div>`;
+    });
+
+    // Find related evidence from other domains
+    const relatedEvidence = [];
+    Object.entries(evidenceData).forEach(([domKey, dom]) => {
+      Object.entries(dom.subtypes).forEach(([stKey, st]) => {
+        st.evidence.forEach((ev, evIdx) => {
+          if (domKey === currentDomain && stKey === currentSubtype) return;
+          const shared = ev.claims.filter(c => d.claims.includes(c));
+          if (shared.length > 0) {
+            relatedEvidence.push({
+              label: ev.label,
+              domain: domKey,
+              domainLabel: dom.label,
+              shared: shared.length
+            });
+          }
+        });
+      });
+    });
+    relatedEvidence.sort((a, b) => b.shared - a.shared);
+
+    if (relatedEvidence.length > 0) {
+      html += '<h4 style="margin-top:16px">Related Evidence from Other Domains</h4>';
+      relatedEvidence.slice(0, 8).forEach(re => {
+        html += `<div class="connection-item">
+          <div class="conn-dot" style="background:${COLORS[re.domain]}"></div>
+          <div class="conn-label">${re.label}<br><span style="font-size:11px;color:var(--text-light)">${re.domainLabel}</span></div>
+        </div>`;
+      });
+    }
+
+    connEl.innerHTML = html;
+    connEl.style.display = 'block';
+  } else {
+    connEl.style.display = 'none';
+  }
+
+  panel.classList.add('open');
+}
+
+document.getElementById('detail-close').addEventListener('click', () => {
+  document.getElementById('detail-panel').classList.remove('open');
+});
+
+// ========== BREADCRUMB ==========
+function updateBreadcrumb() {
+  const bc = document.getElementById('breadcrumb');
+  let html = '<span onclick="goToLevel(\'domains\')">All Domains</span>';
+
+  if (currentDomain) {
+    html += '<span class="sep"> / </span>';
+    if (currentLevel === 'subtypes') {
+      html += `<span class="current">${evidenceData[currentDomain].label}</span>`;
+    } else {
+      html += `<span onclick="goToLevel('subtypes')">${evidenceData[currentDomain].label}</span>`;
+    }
+  }
+
+  if (currentSubtype && currentDomain) {
+    html += '<span class="sep"> / </span>';
+    html += `<span class="current">${evidenceData[currentDomain].subtypes[currentSubtype].label}</span>`;
+  }
+
+  bc.innerHTML = html;
+}
+
+window.goToLevel = function(level) {
+  if (level === 'domains') {
+    currentLevel = 'domains';
+    currentDomain = null;
+    currentSubtype = null;
+  } else if (level === 'subtypes') {
+    currentLevel = 'subtypes';
+    currentSubtype = null;
+  }
+  renderGraph();
+  updateBreadcrumb();
+  document.getElementById('detail-panel').classList.remove('open');
+};
+
+// ========== SEARCH ==========
+const searchInput = document.getElementById('search-input');
+const searchCount = document.getElementById('search-count');
+
+searchInput.addEventListener('input', () => {
+  const query = searchInput.value.toLowerCase().trim();
+  if (!query) {
+    searchCount.textContent = '';
+    if (window._nodeElements) {
+      window._nodeElements.classed('search-match', false).classed('dimmed', false);
+      window._linkElements && window._linkElements.classed('dimmed', false);
+    }
+    return;
+  }
+
+  if (!window._nodes) return;
+
+  const matches = new Set();
+  // Search current visible nodes
+  window._nodes.forEach(n => {
+    if (n.label.toLowerCase().includes(query) ||
+        (n.description && n.description.toLowerCase().includes(query)) ||
+        (n.quote && n.quote.toLowerCase().includes(query))) {
+      matches.add(n.id);
+    }
+  });
+
+  // Also count matches across all data
+  let totalMatches = 0;
+  Object.values(evidenceData).forEach(dom => {
+    if (dom.label.toLowerCase().includes(query)) totalMatches++;
+    Object.values(dom.subtypes).forEach(st => {
+      if (st.label.toLowerCase().includes(query)) totalMatches++;
+      st.evidence.forEach(ev => {
+        if (ev.label.toLowerCase().includes(query) ||
+            ev.description.toLowerCase().includes(query) ||
+            ev.quote.toLowerCase().includes(query)) {
+          totalMatches++;
+        }
+      });
+    });
+  });
+
+  searchCount.textContent = `${totalMatches} match${totalMatches !== 1 ? 'es' : ''}`;
+
+  if (window._nodeElements) {
+    window._nodeElements.classed('search-match', n => matches.has(n.id));
+    if (matches.size > 0) {
+      window._nodeElements.classed('dimmed', n => !matches.has(n.id));
+    } else {
+      window._nodeElements.classed('dimmed', false);
+    }
+  }
+});
+
+// ========== LEGEND INTERACTION ==========
+document.querySelectorAll('.legend-item').forEach(item => {
+  item.addEventListener('click', () => {
+    const domain = item.dataset.domain;
+    if (currentLevel === 'domains') {
+      currentDomain = domain;
+      currentLevel = 'subtypes';
+      currentSubtype = null;
+      renderGraph();
+      updateBreadcrumb();
+    }
+  });
+});
+
+// ========== RESIZE ==========
+window.addEventListener('resize', () => {
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  svg.attr('width', w).attr('height', h);
+});
+
+// ========== INIT ==========
+renderGraph();
+updateBreadcrumb();
+</script>
+</body>
+</html>

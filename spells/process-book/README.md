@@ -37,9 +37,10 @@ pick which ones to build. Lenses are built in parallel for speed.
 /process-book path/to/book.txt
 ```
 
-## Examples of generated lenses
+## Examples of generated lenses for books
 
 - [Art of war](https://anvaka.github.io/spell-book/spells/process-book/examples/art-of-war/index.html)
+- [On the Origin of Species](https://anvaka.github.io/spell-book/spells/process-book/examples/on-the-origin-of-species/index.html)
 
 ## Install
 

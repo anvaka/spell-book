@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>On the Origin of Species — An Interactive Exploration</title>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #faf6f0;
+  --parchment: #f0e8d8;
+  --warm-white: #fffdf9;
+  --ink: #2c2416;
+  --ink-light: #5c4f3d;
+  --ink-faint: #8a7d6b;
+  --ink-ghost: #b8ad9e;
+  --accent-green: #4a7a5c;
+  --accent-green-light: rgba(74, 122, 92, 0.08);
+  --accent-gold: #b8862d;
+  --accent-red: #a0422a;
+  --accent-blue: #3b6b8a;
+  --accent-purple: #6b4f8a;
+  --accent-teal: #3a7a7a;
+  --shadow-soft: rgba(44, 36, 22, 0.06);
+  --shadow-med: rgba(44, 36, 22, 0.12);
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+
+body {
+  font-family: 'Crimson Text', Georgia, 'Times New Roman', serif;
+  background: var(--cream);
+  color: var(--ink);
+  line-height: 1.65;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ===== TREE CANVAS BACKGROUND ===== */
+#tree-canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.45;
+}
+
+/* ===== HERO ===== */
+.hero {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem 4rem;
+  text-align: center;
+}
+
+.hero-ornament {
+  width: 60px;
+  height: 1px;
+  background: var(--ink-ghost);
+  margin-bottom: 2rem;
+  position: relative;
+}
+.hero-ornament::before {
+  content: '';
+  position: absolute;
+  top: -3px; left: 50%;
+  transform: translateX(-50%);
+  width: 7px; height: 7px;
+  background: var(--ink-ghost);
+  border-radius: 50%;
+}
+
+.hero-author {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 1.2rem;
+}
+
+.hero-title {
+  font-family: 'Crimson Text', Georgia, serif;
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  font-weight: 700;
+  line-height: 1.18;
+  color: var(--ink);
+  max-width: 700px;
+  margin-bottom: 0.4rem;
+}
+
+.hero-subtitle {
+  font-family: 'Crimson Text', Georgia, serif;
+  font-size: clamp(1rem, 2.5vw, 1.35rem);
+  font-weight: 400;
+  font-style: italic;
+  color: var(--ink-light);
+  max-width: 550px;
+  margin-bottom: 2.5rem;
+}
+
+.hero-year {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  color: var(--ink-ghost);
+  margin-bottom: 2.5rem;
+}
+
+.hero-summary {
+  font-size: 1.12rem;
+  line-height: 1.75;
+  color: var(--ink-light);
+  max-width: 620px;
+  margin-bottom: 3rem;
+}
+
+.hero-summary em {
+  color: var(--ink);
+  font-style: italic;
+}
+
+.hero-cta {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: gentle-bounce 3s ease-in-out infinite;
+  cursor: default;
+}
+
+.hero-cta svg {
+  width: 16px; height: 16px;
+  stroke: var(--ink-ghost);
+}
+
+@keyframes gentle-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(6px); }
+}
+
+/* ===== EPIGRAPH ===== */
+.epigraph-section {
+  position: relative;
+  z-index: 1;
+  padding: 3rem 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+.epigraph {
+  max-width: 560px;
+  text-align: center;
+  padding: 2.5rem 2rem;
+  border-top: 1px solid rgba(44, 36, 22, 0.1);
+  border-bottom: 1px solid rgba(44, 36, 22, 0.1);
+}
+
+.epigraph blockquote {
+  font-size: 1.15rem;
+  font-style: italic;
+  line-height: 1.75;
+  color: var(--ink-light);
+  margin-bottom: 1rem;
+}
+
+.epigraph cite {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 400;
+  font-style: normal;
+  letter-spacing: 0.08em;
+  color: var(--ink-ghost);
+}
+
+/* ===== SECTION INTRO ===== */
+.explore-intro {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 4rem 2rem 1rem;
+}
+
+.explore-intro h2 {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 1rem;
+}
+
+.explore-intro p {
+  font-size: 1.08rem;
+  color: var(--ink-light);
+  max-width: 540px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+/* ===== LENS CARDS ===== */
+.lenses {
+  position: relative;
+  z-index: 1;
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 5rem;
+}
+
+.lens-card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  padding: 2rem 2.2rem;
+  margin-bottom: 1px;
+  background: transparent;
+  border-radius: 0;
+  transition: all 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+  border-left: 3px solid transparent;
+  cursor: pointer;
+}
+
+.lens-card:first-child {
+  border-top: 1px solid rgba(44, 36, 22, 0.07);
+}
+
+.lens-card + .lens-card {
+  border-top: 1px solid rgba(44, 36, 22, 0.07);
+}
+
+.lens-card:last-child {
+  border-bottom: 1px solid rgba(44, 36, 22, 0.07);
+}
+
+.lens-card:hover {
+  background: rgba(255, 253, 249, 0.7);
+  border-left-color: var(--card-accent, var(--accent-green));
+  transform: translateX(4px);
+}
+
+.lens-card:active {
+  transform: translateX(2px);
+}
+
+.lens-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 0.6rem;
+}
+
+.lens-icon {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--card-accent-bg, var(--accent-green-light));
+  margin-top: 2px;
+}
+
+.lens-icon svg {
+  width: 18px;
+  height: 18px;
+  stroke: var(--card-accent, var(--accent-green));
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.lens-name {
+  font-family: 'Crimson Text', Georgia, serif;
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.25;
+}
+
+.lens-viz-type {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--card-accent, var(--accent-green));
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+.lens-description {
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: var(--ink-light);
+  margin-bottom: 0.7rem;
+  padding-left: 52px;
+}
+
+.lens-depth {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 400;
+  color: var(--ink-ghost);
+  padding-left: 52px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lens-depth svg {
+  width: 12px; height: 12px;
+  stroke: var(--ink-ghost);
+  fill: none;
+  stroke-width: 1.5;
+}
+
+.lens-arrow {
+  position: absolute;
+  right: 2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.lens-arrow svg {
+  width: 20px; height: 20px;
+  stroke: var(--card-accent, var(--ink-ghost));
+  fill: none;
+  stroke-width: 1.5;
+}
+
+.lens-card:hover .lens-arrow {
+  opacity: 1;
+  transform: translateY(-50%) translateX(3px);
+}
+
+/* Card accent colors */
+.lens-card[data-accent="red"] { --card-accent: #a0422a; --card-accent-bg: rgba(160, 66, 42, 0.08); }
+.lens-card[data-accent="blue"] { --card-accent: #3b6b8a; --card-accent-bg: rgba(59, 107, 138, 0.08); }
+.lens-card[data-accent="green"] { --card-accent: #4a7a5c; --card-accent-bg: rgba(74, 122, 92, 0.08); }
+.lens-card[data-accent="gold"] { --card-accent: #b8862d; --card-accent-bg: rgba(184, 134, 45, 0.08); }
+.lens-card[data-accent="purple"] { --card-accent: #6b4f8a; --card-accent-bg: rgba(107, 79, 138, 0.08); }
+.lens-card[data-accent="teal"] { --card-accent: #3a7a7a; --card-accent-bg: rgba(58, 122, 122, 0.08); }
+.lens-card[data-accent="amber"] { --card-accent: #9a6a20; --card-accent-bg: rgba(154, 106, 32, 0.08); }
+.lens-card[data-accent="earth"] { --card-accent: #7a6040; --card-accent-bg: rgba(122, 96, 64, 0.08); }
+
+/* ===== CLOSING ===== */
+.closing {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 2rem 2rem 5rem;
+}
+
+.closing blockquote {
+  font-size: 1.1rem;
+  font-style: italic;
+  line-height: 1.75;
+  color: var(--ink-faint);
+  max-width: 600px;
+  margin: 0 auto 1rem;
+}
+
+.closing cite {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 400;
+  font-style: normal;
+  letter-spacing: 0.08em;
+  color: var(--ink-ghost);
+}
+
+/* ===== ANIMATIONS ===== */
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 640px) {
+  .hero { padding: 2rem 1.5rem 3rem; min-height: 90vh; }
+  .hero-summary { font-size: 1rem; }
+  .lens-card { padding: 1.5rem 1.2rem; }
+  .lens-description { padding-left: 0; }
+  .lens-depth { padding-left: 0; }
+  .lens-icon { display: none; }
+  .lens-arrow { right: 1rem; }
+  .epigraph { padding: 2rem 1rem; }
+  .epigraph blockquote { font-size: 1.02rem; }
+}
+
+@media (max-width: 380px) {
+  .hero-title { font-size: 1.75rem; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="tree-canvas"></canvas>
+
+<section class="hero">
+  <div class="hero-ornament"></div>
+  <div class="hero-author">Charles Darwin</div>
+  <h1 class="hero-title">On the Origin of Species</h1>
+  <div class="hero-subtitle">by Means of Natural Selection, or the Preservation of Favoured Races in the Struggle for Life</div>
+  <div class="hero-year">First published 24 November 1859</div>
+  <p class="hero-summary">
+    In what Darwin himself called <em>"one long argument,"</em> this book transformed our understanding of life on Earth.
+    Beginning with the familiar variations of domestic breeds and moving outward through vast reaches of geological time and geographic space,
+    Darwin assembled evidence from dozens of fields to show that all living things are connected through
+    <em>descent with modification</em> shaped by <em>natural selection</em> &mdash; a vision of life as a great branching tree,
+    growing endlessly from a single tangled bank.
+  </p>
+  <div class="hero-cta">
+    <span>Explore below</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path d="M12 5v14M5 12l7 7 7-7"/>
+    </svg>
+  </div>
+</section>
+
+<section class="epigraph-section">
+  <div class="epigraph fade-in">
+    <blockquote>
+      "There is grandeur in this view of life, with its several powers, having been originally breathed into a few forms or into one;
+      and that, whilst this planet has gone cycling on according to the fixed law of gravity,
+      from so simple a beginning endless forms most beautiful and most wonderful have been, and are being, evolved."
+    </blockquote>
+    <cite>The final sentence of On the Origin of Species</cite>
+  </div>
+</section>
+
+<section class="explore-intro fade-in">
+  <h2>Eight Lenses</h2>
+  <p>
+    Each lens below reveals a different dimension of Darwin's masterwork &mdash;
+    its rhetoric, its evidence, its creatures, its metaphors, its geography,
+    its legacy, its prophecies, and its cultural aftershocks.
+    Choose any path into the text.
+  </p>
+</section>
+
+<section class="lenses" id="lenses">
+
+  <a href="./lenses/narrative/index.html" class="lens-card fade-in" data-accent="red">
+    <div class="lens-header">
+      <div class="lens-icon">
+        <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M8 7h8M8 11h6"/></svg>
+      </div>
+      <div>
+        <div class="lens-name">The Long Argument</div>
+        <div class="lens-viz-type">Scrollable timeline with 14 chapters</div>
+      </div>
+    </div>
+    <p class="lens-description">
+      Traces the book's sequential rhetorical architecture as Darwin builds his case chapter by chapter,
+      weaving evidence, anticipating objections, and constructing what he himself calls "one long argument."
+    </p>
+    <div class="lens-depth">
+      <svg viewBox="0 0 24 24"><path d="M2 12h4l3-9 4 18 3-9h4"/></svg>
+      <span>14 chapters as argument arc &rarr; sub-arguments &rarr; rhetorical patterns &rarr; pivotal sentences</span>
+    </div>
+    <div class="lens-arrow"><svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+  </a>
+
+  <a href="./lenses/web-of-evidence/index.html" class="lens-card fade-in" data-accent="green">
+    <div class="lens-header">
+      <div class="lens-icon">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/><circle cx="5" cy="6" r="1.5"/><circle cx="19" cy="6" r="1.5"/><circle cx="5" cy="18" r="1.5"/><circle cx="19" cy="18" r="1.5"/><path d="M7 7l3 3M14 9l3-2M7 17l3-3M14 15l3 2"/></svg>
+      </div>
+      <div>
+        <div class="lens-name">Evidence Web</div>
+        <div class="lens-viz-type">Force-directed graph with 70 pieces of evidence</div>
+      </div>
+    </div>
+    <p class="lens-description">
+      Maps the hundreds of empirical observations, experiments, and cited authorities Darwin deploys,
+      revealing how evidence from radically different domains &mdash; pigeon breeding, geology, embryology &mdash;
+      converges on a single theory.
+    </p>
+    <div class="lens-depth">
+      <svg viewBox="0 0 24 24"><path d="M2 12h4l3-9 4 18 3-9h4"/></svg>
+      <span>6 evidence domains &rarr; subtypes &rarr; individual observations &rarr; quoted passages</span>
+    </div>
+    <div class="lens-arrow"><svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+  </a>
+
+  <a href="./lenses/organism-atlas/index.html" class="lens-card fade-in" data-accent="gold">
+    <div class="lens-header">
+      <div class="lens-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><path d="M9 9h.01M15 9h.01"/></svg>
+      </div>
+      <div>
+        <div class="lens-name">Organism Atlas</div>
+        <div class="lens-viz-type">Searchable catalog with 42 organisms and Wikipedia images</div>
+      </div>
+    </div>
+    <p class="lens-description">
+      Charts every species, breed, and organism Darwin mentions &mdash; from pigeons to barnacles to orchids to elephants &mdash;
+      revealing Darwin as a working naturalist whose theory grew from intimate knowledge of specific creatures.
+    </p>
+    <div class="lens-depth">
+      <svg viewBox="0 0 24 24"><path d="M2 12h4l3-9 4 18 3-9h4"/></svg>
+      <span>6 taxonomic groups &rarr; organisms with images &rarr; argumentative roles &rarr; quoted passages</span>
+    </div>
+    <div class="lens-arrow"><svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+  </a>
+
+  <a href="./lenses/metaphor-map/index.html" class="lens-card fade-in" data-accent="purple">
+    <div class="lens-header">
+      <div class="lens-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 3l1.5 4.5H18l-3.5 2.8 1.3 4.2L12 11.8l-3.8 2.7 1.3-4.2L6 7.5h4.5z"/></svg>
+      </div>
+      <div>
+        <div class="lens-name">Darwin's Metaphors</div>
+        <div class="lens-viz-type">Constellation map with 7 metaphor families</div>
+      </div>
+    </div>
+    <p class="lens-description">
+      Traces the figurative language Darwin uses to make invisible processes visible &mdash;
+      the "entangled bank," the "Tree of Life," nature as "daily and hourly scrutinising" &mdash;
+      metaphors that shaped how generations understand evolution.
+    </p>
+    <div class="lens-depth">
+      <svg viewBox="0 0 24 24"><path d="M2 12h4l3-9 4 18 3-9h4"/></svg>
+      <span>7 metaphor families &rarr; individual metaphors &rarr; passages with analysis &rarr; close reading</span>
+    </div>
+    <div class="lens-arrow"><svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+  </a>
+
+  <a href="./lenses/geography-of-argument/index.html" class="lens-card fade-in" data-accent="teal">
+    <div class="lens-header">
+      <div class="lens-icon">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 4 10 15 15 0 0 1-4 10 15 15 0 0 1-4-10A15 15 0 0 1 12 2z"/></svg>
+      </div>
+      <div>
+        <div class="lens-name">Darwin's World Map</div>
+        <div class="lens-viz-type">Interactive map with 50 locations and vintage styling</div>
+      </div>
+    </div>
+    <p class="lens-description">
+      Maps every geographic location Darwin references &mdash; from the Galapagos to the Malay Archipelago
+      to the caves of Kentucky &mdash; tracing the global synthesis shaped by his five-year Beagle voyage
+      and vast correspondence network.
+    </p>
+    <div class="lens-depth">
+      <svg viewBox="0 0 24 24"><path d="M2 12h4l3-9 4 18 3-9h4"/></svg>
+      <span>Continental regions &rarr; specific locations &rarr; evidence per location &rarr; quoted passages</span>
+    </div>
+    <div class="lens-arrow"><svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+  </a>
+
+  <a href="./lenses/darwin-was-right/index.html" class="lens-card fade-in" data-accent="blue">
+    <div class="lens-header">
+      <div class="lens-icon">
+        <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      </div>
+      <div>
+        <div class="lens-name">Darwin Was Right (And Wrong)</div>
+        <div class="lens-viz-type">Expandable scorecard with 31 claims and verdict badges</div>
+      </div>
+    </div>
+    <p class="lens-description">
+      For each major claim in the book, shows what modern science has confirmed, corrected, or expanded &mdash;
+      a 167-year scorecard connecting Darwin's 1859 arguments to breakthroughs from Mendel to DNA to CRISPR.
+    </p>
+    <div class="lens-depth">
+      <svg viewBox="0 0 24 24"><path d="M2 12h4l3-9 4 18 3-9h4"/></svg>
+      <span>6 categories &rarr; 31 claims with verdicts &rarr; Darwin vs modern science &rarr; key discoveries</span>
+    </div>
+    <div class="lens-arrow"><svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+  </a>
+
+  <a href="./lenses/cultural-shockwave/index.html" class="lens-card fade-in" data-accent="amber">
+    <div class="lens-header">
+      <div class="lens-icon">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="7" stroke-dasharray="2 3"/><circle cx="12" cy="12" r="10" stroke-dasharray="2 4"/></svg>
+      </div>
+      <div>
+        <div class="lens-name">Cultural Shockwave</div>
+        <div class="lens-viz-type">Radial timeline with 42 events across 7 cultural domains</div>
+      </div>
+    </div>
+    <p class="lens-description">
+      How the book rippled through religion, philosophy, politics, literature, and law &mdash;
+      from the 1860 Oxford debate to modern creationism trials. Few books have so profoundly reshaped human civilization.
+    </p>
+    <div class="lens-depth">
+      <svg viewBox="0 0 24 24"><path d="M2 12h4l3-9 4 18 3-9h4"/></svg>
+      <span>7 cultural domains &rarr; chronological events &rarr; detailed accounts &rarr; connections to passages</span>
+    </div>
+    <div class="lens-arrow"><svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+  </a>
+
+  <a href="./lenses/fossils-found-since/index.html" class="lens-card fade-in" data-accent="earth">
+    <div class="lens-header">
+      <div class="lens-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M6 8l2 3M16 13l2 3M4 14h3M17 7h3M8 19l1-3M15 8l1-3"/><circle cx="12" cy="12" r="4"/></svg>
+      </div>
+      <div>
+        <div class="lens-name">Fossils Found Since</div>
+        <div class="lens-viz-type">Geological strata with 31 fossils across 8 evolutionary transitions</div>
+      </div>
+    </div>
+    <p class="lens-description">
+      The transitional fossils Darwin desperately wished for &mdash; Archaeopteryx, Tiktaalik, whale ancestors &mdash;
+      mapped against his laments about the imperfect geological record. Paleontology has answered him beyond his wildest hopes.
+    </p>
+    <div class="lens-depth">
+      <svg viewBox="0 0 24 24"><path d="M2 12h4l3-9 4 18 3-9h4"/></svg>
+      <span>8 evolutionary transitions &rarr; fossils with discovery dates &rarr; paired gap/bridge views &rarr; descriptions</span>
+    </div>
+    <div class="lens-arrow"><svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+  </a>
+
+</section>
+
+<section class="closing fade-in">
+  <blockquote>
+    "It is interesting to contemplate an entangled bank, clothed with many plants of many kinds,
+    with birds singing on the bushes, with various insects flitting about, and with worms crawling through the damp earth,
+    and to reflect that these elaborately constructed forms, so different from each other, and dependent on each other in so complex a manner,
+    have all been produced by laws acting around us."
+  </blockquote>
+  <cite>Charles Darwin, On the Origin of Species, closing paragraph</cite>
+</section>
+
+<script>
+// ===== TREE OF LIFE BACKGROUND =====
+// A subtle, generative branching tree that grows behind the content
+(function() {
+  const canvas = document.getElementById('tree-canvas');
+  const ctx = canvas.getContext('2d');
+  let w, h, branches = [], grown = false;
+  const DPR = Math.min(window.devicePixelRatio || 1, 2);
+
+  function resize() {
+    w = window.innerWidth;
+    h = document.documentElement.scrollHeight;
+    canvas.width = w * DPR;
+    canvas.height = h * DPR;
+    canvas.style.width = w + 'px';
+    canvas.style.height = h + 'px';
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    if (grown) drawTree();
+  }
+
+  // Seeded random for consistency
+  let seed = 42;
+  function seededRandom() {
+    seed = (seed * 16807 + 0) % 2147483647;
+    return (seed - 1) / 2147483646;
+  }
+
+  function generateBranches() {
+    branches = [];
+    seed = 42;
+
+    const startX = w * 0.5;
+    const startY = h - 40;
+    const maxDepth = 10;
+    const initialLength = Math.min(h * 0.08, 90);
+
+    function branch(x, y, angle, length, depth, thickness) {
+      if (depth > maxDepth || length < 3) return;
+
+      const endX = x + Math.cos(angle) * length;
+      const endY = y + Math.sin(angle) * length;
+
+      branches.push({
+        x1: x, y1: y, x2: endX, y2: endY,
+        thickness: thickness,
+        depth: depth,
+        alpha: Math.max(0.04, 0.22 - depth * 0.018)
+      });
+
+      const numBranches = depth < 3 ? (seededRandom() > 0.3 ? 2 : 3) : (seededRandom() > 0.5 ? 2 : 1);
+      const spread = 0.35 + seededRandom() * 0.25;
+      const shrink = 0.68 + seededRandom() * 0.15;
+
+      if (numBranches >= 2) {
+        branch(endX, endY, angle - spread + seededRandom() * 0.15, length * shrink, depth + 1, thickness * 0.72);
+        branch(endX, endY, angle + spread - seededRandom() * 0.15, length * shrink, depth + 1, thickness * 0.72);
+      }
+      if (numBranches >= 3) {
+        branch(endX, endY, angle + (seededRandom() - 0.5) * 0.3, length * shrink * 0.9, depth + 1, thickness * 0.6);
+      }
+    }
+
+    // Main trunk
+    const trunkTop = startY - initialLength * 2.5;
+    branches.push({
+      x1: startX, y1: startY, x2: startX, y2: trunkTop,
+      thickness: 5, depth: 0, alpha: 0.15
+    });
+
+    // Main crown branches
+    branch(startX, trunkTop, -Math.PI / 2 - 0.5, initialLength, 1, 3.5);
+    branch(startX, trunkTop, -Math.PI / 2 + 0.5, initialLength, 1, 3.5);
+    branch(startX, trunkTop, -Math.PI / 2 - 0.15, initialLength * 1.1, 1, 3);
+    branch(startX, trunkTop, -Math.PI / 2 + 0.15, initialLength * 0.95, 1, 2.8);
+
+    // Side roots
+    branch(startX, trunkTop + initialLength * 1.2, -Math.PI / 2 - 0.9, initialLength * 0.7, 2, 2.5);
+    branch(startX, trunkTop + initialLength * 1.2, -Math.PI / 2 + 0.85, initialLength * 0.65, 2, 2.5);
+
+    grown = true;
+  }
+
+  function drawTree() {
+    ctx.clearRect(0, 0, w, h);
+    for (const b of branches) {
+      ctx.beginPath();
+      ctx.moveTo(b.x1, b.y1);
+      ctx.lineTo(b.x2, b.y2);
+      ctx.strokeStyle = 'rgba(74, 122, 92, ' + b.alpha + ')';
+      ctx.lineWidth = b.thickness;
+      ctx.lineCap = 'round';
+      ctx.stroke();
+    }
+
+    // Subtle leaf dots at branch tips (depth >= 7)
+    for (const b of branches) {
+      if (b.depth >= 7 && b.thickness < 1.5) {
+        ctx.beginPath();
+        ctx.arc(b.x2, b.y2, 1.5 + seededRandom() * 2, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(74, 122, 92, ' + (0.06 + seededRandom() * 0.06) + ')';
+        ctx.fill();
+      }
+    }
+  }
+
+  function init() {
+    resize();
+    generateBranches();
+    drawTree();
+  }
+
+  // Debounce resize
+  let resizeTimer;
+  window.addEventListener('resize', function() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function() {
+      generateBranches();
+      resize();
+    }, 200);
+  });
+
+  // Recalculate when content loads (fonts etc)
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(function() {
+      setTimeout(init, 100);
+    });
+  } else {
+    window.addEventListener('load', function() { setTimeout(init, 100); });
+  }
+
+  init();
+
+  // Observe document height changes to resize canvas
+  let lastHeight = 0;
+  function checkHeight() {
+    const newH = document.documentElement.scrollHeight;
+    if (Math.abs(newH - lastHeight) > 50) {
+      lastHeight = newH;
+      generateBranches();
+      resize();
+    }
+    requestAnimationFrame(checkHeight);
+  }
+  checkHeight();
+})();
+
+// ===== FADE-IN ON SCROLL =====
+(function() {
+  const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, {
+    threshold: 0.1,
+    rootMargin: '0px 0px -40px 0px'
+  });
+
+  document.querySelectorAll('.fade-in').forEach(function(el) {
+    observer.observe(el);
+  });
+})();
+</script>
+</body>
+</html>

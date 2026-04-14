@@ -1,0 +1,1509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Darwin's World Map — On the Origin of Species</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Source+Sans+Pro:wght@300;400;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Crimson Text', Georgia, serif;
+    background: #f5f0e8;
+    color: #2c2416;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* Top navigation bar */
+  .top-bar {
+    background: #3a2f24;
+    color: #e8dcc8;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 20px;
+    height: 48px;
+    z-index: 1100;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  .top-bar a {
+    color: #d4c5a9;
+    text-decoration: none;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 14px;
+    transition: color 0.2s;
+  }
+  .top-bar a:hover { color: #fff; }
+  .top-bar .back-link::before { content: '\2190\00a0'; }
+  .top-bar h1 {
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: #f0e6d2;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+  }
+
+  /* Main layout */
+  .main-container {
+    display: flex;
+    height: calc(100vh - 48px);
+    position: relative;
+  }
+
+  /* Map area */
+  #map {
+    flex: 1;
+    height: 100%;
+    z-index: 1;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    width: 420px;
+    height: 100%;
+    background: #faf6ef;
+    border-left: 1px solid #d4c5a9;
+    overflow-y: auto;
+    z-index: 1000;
+    transition: transform 0.3s ease;
+    box-shadow: -3px 0 12px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+  }
+  .sidebar.collapsed {
+    transform: translateX(100%);
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  .sidebar-toggle {
+    position: absolute;
+    right: 420px;
+    top: 12px;
+    z-index: 1001;
+    background: #3a2f24;
+    color: #e8dcc8;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 13px;
+    border-radius: 4px 0 0 4px;
+    transition: right 0.3s ease, background 0.2s;
+  }
+  .sidebar-toggle:hover { background: #5a4a38; }
+  .sidebar-toggle.collapsed-toggle { right: 0; border-radius: 4px 0 0 4px; }
+
+  .sidebar-header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid #e0d5c3;
+    background: #f5f0e8;
+  }
+  .sidebar-header h2 {
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 22px;
+    color: #3a2f24;
+    margin-bottom: 4px;
+  }
+  .sidebar-header .subtitle {
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 13px;
+    color: #8a7a66;
+  }
+
+  .sidebar-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0;
+  }
+
+  /* Welcome panel */
+  .welcome-panel {
+    padding: 24px;
+  }
+  .welcome-panel h3 {
+    font-size: 18px;
+    color: #3a2f24;
+    margin-bottom: 12px;
+  }
+  .welcome-panel p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #5a4a38;
+    margin-bottom: 12px;
+  }
+  .stat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 16px 0;
+  }
+  .stat-box {
+    background: #f0eadd;
+    padding: 12px;
+    border-radius: 6px;
+    text-align: center;
+  }
+  .stat-box .number {
+    font-size: 28px;
+    font-weight: 700;
+    color: #3a2f24;
+    display: block;
+  }
+  .stat-box .label {
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #8a7a66;
+  }
+
+  /* Location detail panel */
+  .location-detail {
+    display: none;
+  }
+  .location-detail.active { display: block; }
+
+  .loc-header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid #e0d5c3;
+    background: #f5f0e8;
+  }
+  .loc-header .back-btn {
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 13px;
+    color: #8a7a66;
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-bottom: 8px;
+    padding: 0;
+  }
+  .loc-header .back-btn:hover { color: #3a2f24; }
+  .loc-header h2 {
+    font-size: 22px;
+    color: #3a2f24;
+    margin-bottom: 2px;
+  }
+  .loc-header .region {
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 13px;
+    color: #8a7a66;
+  }
+
+  .loc-meta {
+    padding: 16px 24px;
+    border-bottom: 1px solid #e0d5c3;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .meta-item {
+    flex: 1;
+    min-width: 80px;
+  }
+  .meta-item .val {
+    font-size: 20px;
+    font-weight: 700;
+    color: #3a2f24;
+  }
+  .meta-item .lbl {
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #8a7a66;
+  }
+
+  .evidence-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    margin: 2px 4px 2px 0;
+  }
+
+  .loc-argument {
+    padding: 16px 24px;
+    border-bottom: 1px solid #e0d5c3;
+  }
+  .loc-argument h4 {
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #8a7a66;
+    margin-bottom: 8px;
+  }
+  .loc-argument p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #3a2f24;
+  }
+
+  .loc-passages {
+    padding: 16px 24px 24px;
+  }
+  .loc-passages h4 {
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #8a7a66;
+    margin-bottom: 12px;
+  }
+
+  .passage {
+    background: #f0eadd;
+    border-left: 3px solid #c4a86c;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    border-radius: 0 6px 6px 0;
+  }
+  .passage blockquote {
+    font-size: 15px;
+    line-height: 1.65;
+    color: #3a2f24;
+    font-style: italic;
+    margin-bottom: 8px;
+  }
+  .passage .ch-ref {
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 12px;
+    color: #8a7a66;
+  }
+
+  /* Legend */
+  .legend-panel {
+    position: absolute;
+    bottom: 24px;
+    left: 16px;
+    z-index: 1000;
+    background: rgba(250, 246, 239, 0.95);
+    border-radius: 8px;
+    padding: 14px 18px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    border: 1px solid #d4c5a9;
+    max-width: 220px;
+  }
+  .legend-panel h4 {
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #8a7a66;
+    margin-bottom: 8px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 5px;
+    cursor: pointer;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 13px;
+    color: #3a2f24;
+    transition: opacity 0.2s;
+  }
+  .legend-item.dimmed { opacity: 0.35; }
+  .legend-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    border: 1.5px solid rgba(0,0,0,0.2);
+  }
+
+  /* Filter bar */
+  .filter-bar {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    display: flex;
+    gap: 6px;
+    background: rgba(250, 246, 239, 0.95);
+    padding: 8px 14px;
+    border-radius: 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    border: 1px solid #d4c5a9;
+  }
+  .filter-btn {
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 12px;
+    padding: 5px 14px;
+    border-radius: 16px;
+    border: 1.5px solid #d4c5a9;
+    background: transparent;
+    color: #5a4a38;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .filter-btn.active {
+    background: #3a2f24;
+    color: #f0e6d2;
+    border-color: #3a2f24;
+  }
+  .filter-btn:hover:not(.active) {
+    border-color: #8a7a66;
+    background: #f0eadd;
+  }
+
+  /* Custom markers */
+  .custom-marker {
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.8);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+    transition: transform 0.15s;
+    cursor: pointer;
+  }
+  .custom-marker:hover {
+    transform: scale(1.25);
+    z-index: 10000 !important;
+  }
+
+  /* Cluster overrides */
+  .marker-cluster-small {
+    background-color: rgba(193, 166, 123, 0.6) !important;
+  }
+  .marker-cluster-small div {
+    background-color: rgba(193, 166, 123, 0.8) !important;
+    color: #3a2f24 !important;
+    font-family: 'Source Sans Pro', sans-serif !important;
+    font-weight: 600 !important;
+  }
+  .marker-cluster-medium {
+    background-color: rgba(162, 132, 90, 0.6) !important;
+  }
+  .marker-cluster-medium div {
+    background-color: rgba(162, 132, 90, 0.8) !important;
+    color: #fff !important;
+    font-family: 'Source Sans Pro', sans-serif !important;
+    font-weight: 600 !important;
+  }
+  .marker-cluster-large {
+    background-color: rgba(115, 88, 55, 0.6) !important;
+  }
+  .marker-cluster-large div {
+    background-color: rgba(115, 88, 55, 0.8) !important;
+    color: #fff !important;
+    font-family: 'Source Sans Pro', sans-serif !important;
+    font-weight: 600 !important;
+  }
+
+  /* Leaflet tile adjustments for vintage feel */
+  .leaflet-tile {
+    filter: sepia(35%) saturate(80%) brightness(105%) contrast(95%);
+  }
+
+  /* Scrollbar styling */
+  .sidebar-content::-webkit-scrollbar { width: 6px; }
+  .sidebar-content::-webkit-scrollbar-track { background: transparent; }
+  .sidebar-content::-webkit-scrollbar-thumb { background: #c4b89a; border-radius: 3px; }
+
+  /* Mobile */
+  @media (max-width: 800px) {
+    .sidebar { width: 100%; position: absolute; right: 0; top: 0; }
+    .sidebar-toggle { right: 0; }
+    .sidebar-toggle:not(.collapsed-toggle) { display: none; }
+    .filter-bar { flex-wrap: wrap; max-width: 90vw; }
+    .top-bar h1 { font-size: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a class="back-link" href="../../index.html">Back to book</a>
+  <h1>Darwin's World Map</h1>
+  <span style="width:100px"></span>
+</div>
+
+<div class="main-container">
+  <div id="map"></div>
+
+  <button class="sidebar-toggle" id="sidebarToggle" title="Toggle sidebar">&#9664;</button>
+
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h2>Darwin's World Map</h2>
+      <div class="subtitle">Geographic argument in <em>On the Origin of Species</em> (1859)</div>
+    </div>
+    <div class="sidebar-content" id="sidebarContent">
+      <!-- Welcome panel -->
+      <div class="welcome-panel" id="welcomePanel">
+        <h3>Exploring Darwin's Global Evidence</h3>
+        <p>Darwin's argument for natural selection drew on observations from every continent. This map plots every geographic location he references in <em>On the Origin of Species</em>, revealing how his global travels and vast correspondence network built the empirical foundation of his theory.</p>
+        <div class="stat-grid">
+          <div class="stat-box"><span class="number" id="totalLocations">0</span><span class="label">Locations</span></div>
+          <div class="stat-box"><span class="number" id="totalMentions">0</span><span class="label">References</span></div>
+          <div class="stat-box"><span class="number" id="totalChapters">14</span><span class="label">Chapters</span></div>
+          <div class="stat-box"><span class="number" id="totalTypes">5</span><span class="label">Evidence types</span></div>
+        </div>
+        <p>Click any marker on the map to explore the evidence Darwin draws from that location. Use the filter bar to isolate types of evidence. Zoom in to see clusters expand into individual sites.</p>
+        <p style="font-size:14px; color:#8a7a66; margin-top:8px;">Colors indicate the primary type of evidence: <strong style="color:#c25450">biogeography</strong>, <strong style="color:#6b8e5e">geology/paleontology</strong>, <strong style="color:#c4913e">domestication</strong>, <strong style="color:#5b7ea3">natural selection</strong>, and <strong style="color:#8e6b99">ecology</strong>.</p>
+      </div>
+
+      <!-- Location detail (hidden by default) -->
+      <div class="location-detail" id="locationDetail">
+        <div class="loc-header">
+          <button class="back-btn" id="backToWelcome">&larr; Back to overview</button>
+          <h2 id="locName"></h2>
+          <div class="region" id="locRegion"></div>
+        </div>
+        <div class="loc-meta" id="locMeta"></div>
+        <div class="loc-argument" id="locArgument">
+          <h4>Darwin's Argument</h4>
+          <p id="locArgumentText"></p>
+        </div>
+        <div class="loc-passages" id="locPassages">
+          <h4>Passages from the Text</h4>
+          <div id="passagesList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Legend -->
+  <div class="legend-panel" id="legendPanel">
+    <h4>Evidence Type</h4>
+    <div class="legend-item" data-type="biogeography" onclick="toggleFilter('biogeography')">
+      <div class="legend-dot" style="background:#c25450"></div>Biogeography
+    </div>
+    <div class="legend-item" data-type="geology" onclick="toggleFilter('geology')">
+      <div class="legend-dot" style="background:#6b8e5e"></div>Geology &amp; Paleontology
+    </div>
+    <div class="legend-item" data-type="domestication" onclick="toggleFilter('domestication')">
+      <div class="legend-dot" style="background:#c4913e"></div>Domestication
+    </div>
+    <div class="legend-item" data-type="selection" onclick="toggleFilter('selection')">
+      <div class="legend-dot" style="background:#5b7ea3"></div>Natural Selection
+    </div>
+    <div class="legend-item" data-type="ecology" onclick="toggleFilter('ecology')">
+      <div class="legend-dot" style="background:#8e6b99"></div>Ecology
+    </div>
+  </div>
+
+  <!-- Filter bar -->
+  <div class="filter-bar" id="filterBar">
+    <button class="filter-btn active" data-type="all" onclick="setFilter('all')">All</button>
+    <button class="filter-btn" data-type="biogeography" onclick="setFilter('biogeography')">Biogeography</button>
+    <button class="filter-btn" data-type="geology" onclick="setFilter('geology')">Geology</button>
+    <button class="filter-btn" data-type="domestication" onclick="setFilter('domestication')">Domestication</button>
+    <button class="filter-btn" data-type="selection" onclick="setFilter('selection')">Selection</button>
+    <button class="filter-btn" data-type="ecology" onclick="setFilter('ecology')">Ecology</button>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<script>
+// ========================================
+// LOCATION DATA
+// ========================================
+const LOCATIONS = [
+  // ---- SOUTH AMERICA ----
+  {
+    name: "Galapagos Archipelago",
+    lat: -0.83, lng: -91.1,
+    region: "South America (Pacific)",
+    mentions: 18,
+    chapters: [2, 11, 12, 13, 14],
+    types: ["biogeography"],
+    argument: "The Galapagos Archipelago is Darwin's single most powerful piece of biogeographic evidence. Each island hosts its own species of mocking-thrush and finch, yet all bear an unmistakable 'American stamp,' proving colonization from the mainland followed by modification in isolation. The fact that the volcanic islands' flora and fauna resemble South America rather than ecologically similar Cape Verde Islands demolishes the idea that species are created to fit climate.",
+    passages: [
+      { text: "Here almost every product of the land and water bears the unmistakeable stamp of the American continent. There are twenty-six land birds, and twenty-five of these are ranked by Mr. Gould as distinct species, supposed to have been created here; yet the close affinity of most of these birds to American species in every character, in their habits, gestures, and tones of voice, was manifest.", ch: "Ch. 12" },
+      { text: "Thus the several islands of the Galapagos Archipelago are tenanted, as I have elsewhere shown, in a quite marvellous manner, by very closely related species; so that the inhabitants of each separate island, though mostly distinct, are related in an incomparably closer degree to each other than to the inhabitants of any other part of the world.", ch: "Ch. 12" },
+      { text: "The really surprising fact in this case of the Galapagos Archipelago, and in a lesser degree in some analogous instances, is that the new species formed in the separate islands have not quickly spread to the other islands.", ch: "Ch. 12" },
+      { text: "In the Galapagos Archipelago, many even of the birds, though so well adapted for flying from island to island, are distinct on each; thus there are three closely-allied species of mocking-thrush, each confined to its own island.", ch: "Ch. 12" }
+    ]
+  },
+  {
+    name: "La Plata (River Plate region)",
+    lat: -34.6, lng: -58.4,
+    region: "South America",
+    mentions: 12,
+    chapters: [3, 6, 10, 11],
+    types: ["geology", "biogeography"],
+    argument: "The plains of La Plata provide Darwin with critical evidence from both paleontology and biogeography. There he found a fossil horse tooth embedded with Mastodon and Megatherium remains -- proving that horses existed in South America and went extinct long before the Spaniards re-introduced them. The region also illustrates continental affinity: La Plata is populated by uniquely American rodents (agouti, bizcacha) rather than the ecologically equivalent hares and rabbits of the Old World.",
+    passages: [
+      { text: "When I found in La Plata the tooth of a horse embedded with the remains of Mastodon, Megatherium, Toxodon, and other extinct monsters, which all co-existed with still living shells at a very late geological period, I was filled with astonishment.", ch: "Ch. 10" },
+      { text: "On these same plains of La Plata, we see the agouti and bizcacha, animals having nearly the same habits as our hares and rabbits and belonging to the same order of Rodents, but they plainly display an American type of structure.", ch: "Ch. 11" },
+      { text: "On the plains of La Plata, where not a tree grows, there is a woodpecker, which in every essential part of its organisation, even in its colouring, in the harsh tone of its voice, and undulatory flight, told me plainly of its close blood-relationship to our common species; yet it is a woodpecker which never climbs a tree!", ch: "Ch. 6" }
+    ]
+  },
+  {
+    name: "Tierra del Fuego",
+    lat: -54.5, lng: -69.0,
+    region: "South America",
+    mentions: 6,
+    chapters: [1, 4, 6, 10, 11],
+    types: ["biogeography", "ecology"],
+    argument: "Tierra del Fuego provides evidence for the global extent of the glacial period, the deep history of human-animal interaction, and anomalous adaptations. Darwin notes that forty to fifty flowering plants there are shared with enormously distant Europe, explicable only through glacial-period dispersal. The petrel Puffinuria berardi, found in the quiet sounds of Tierra del Fuego, has habits completely unlike a petrel -- diving like an auk -- demonstrating how species modify their habits.",
+    passages: [
+      { text: "In the quiet Sounds of Tierra del Fuego, the Puffinuria berardi, in its general habits, in its astonishing power of diving, its manner of swimming, and of flying when unwillingly it takes flight, would be mistaken by any one for an auk or grebe; nevertheless, it is essentially a petrel.", ch: "Ch. 6" },
+      { text: "Between forty and fifty of the flowering plants of Tierra del Fuego, forming no inconsiderable part of its scanty flora, are common to Europe, enormously remote as these two points are.", ch: "Ch. 11" },
+      { text: "We can understand how it is that neither Australia, the Cape of Good Hope, nor any other region, has been a centre of creation for the old domesticated animals... savages, like those of Tierra del Fuego or Australia, who possess a semi-domestic dog, may not have existed in Egypt?", ch: "Ch. 1" }
+    ]
+  },
+  {
+    name: "Cordillera (Andes)",
+    lat: -15.0, lng: -72.0,
+    region: "South America",
+    mentions: 6,
+    chapters: [10, 11],
+    types: ["biogeography", "geology"],
+    argument: "Darwin uses the Andes to show how mountain barriers create distinct faunas on either side, and how alpine species relate to lowland relatives on the same continent. He describes finding an alpine species of bizcacha high in the Cordillera, demonstrating that South American mountain fauna is characteristically American rather than convergent with Old World alpine species.",
+    passages: [
+      { text: "We ascend the lofty peaks of the Cordillera and we find an alpine species of bizcacha; we look to the waters, and we do not find the beaver or musk-rat, but the coypu and capybara, rodents of the American type.", ch: "Ch. 11" },
+      { text: "In the Cordillera of Equatorial South America... and on both sides of the southern extremity of the continent... it is difficult to avoid believing that the temperature of the whole world was at this period simultaneously cooler.", ch: "Ch. 11" }
+    ]
+  },
+  {
+    name: "Straits of Magellan",
+    lat: -53.5, lng: -71.0,
+    region: "South America",
+    mentions: 3,
+    chapters: [11],
+    types: ["biogeography"],
+    argument: "The plains near the Straits of Magellan host one species of Rhea (American ostrich), while a different species inhabits the La Plata region to the north. Darwin uses this as a vivid example of how successive, closely-related species replace each other across a continent, demonstrating common descent rather than independent creation.",
+    passages: [
+      { text: "The plains near the Straits of Magellan are inhabited by one species of Rhea (American ostrich), and northward the plains of La Plata by another species of the same genus; and not by a true ostrich or emeu, like those found in Africa and Australia under the same latitude.", ch: "Ch. 11" }
+    ]
+  },
+  {
+    name: "Brazil (caves and highlands)",
+    lat: -15.8, lng: -47.9,
+    region: "South America",
+    mentions: 5,
+    chapters: [10, 11],
+    types: ["geology"],
+    argument: "The caves of Brazil, investigated by Lund and Clausen, revealed fossil mammals closely allied to living South American species. This proved the 'law of succession of types' -- that extinct species on any continent are related to the living species of that same continent, not to species elsewhere. On the highest mountains of Brazil, European plant genera occur, supporting the glacial dispersal theory.",
+    passages: [
+      { text: "Lund and Clausen in the caves of Brazil... Mr. Woodward has shown that the same law holds good with the sea-shells.", ch: "Ch. 10" },
+      { text: "On the highest mountains of Brazil, some few European genera were found by Gardner, which do not exist in the wide intervening hot countries.", ch: "Ch. 11" }
+    ]
+  },
+  {
+    name: "Paraguay",
+    lat: -23.4, lng: -58.4,
+    region: "South America",
+    mentions: 3,
+    chapters: [3],
+    types: ["ecology"],
+    argument: "Paraguay provides Darwin with a striking case of ecological interconnection: a fly that lays its eggs in the navels of newborn cattle prevents cattle from running wild there, even though they thrive both north and south. This chain of dependencies (flies, insectivorous birds, hawks) illustrates how indirect ecological relationships shape the struggle for existence.",
+    passages: [
+      { text: "Perhaps Paraguay offers the most curious instance of this; for here neither cattle nor horses nor dogs have ever run wild, though they swarm southward and northward in a feral state; and Azara and Rengger have shown that this is caused by the greater number in Paraguay of a certain fly, which lays its eggs in the navels of these animals when first born.", ch: "Ch. 3" }
+    ]
+  },
+  {
+    name: "Chile (central)",
+    lat: -33.4, lng: -70.6,
+    region: "South America",
+    mentions: 3,
+    chapters: [7, 11],
+    types: ["geology", "biogeography"],
+    argument: "Darwin was astonished by evidence of glacial action in central Chile, far from the polar regions, supporting his argument that the entire world was simultaneously cooler during the Glacial period. This global cooling was essential to his theory of how identical species dispersed across continents.",
+    passages: [
+      { text: "In central Chile I was astonished at the structure of a vast mound of detritus... crossing over the Cordillera, I observed the same phenomenon.", ch: "Ch. 11" }
+    ]
+  },
+  // ---- OCEANIC ISLANDS (ATLANTIC) ----
+  {
+    name: "Madeira",
+    lat: 32.65, lng: -16.9,
+    region: "Atlantic Islands",
+    mentions: 16,
+    chapters: [2, 5, 9, 11, 12],
+    types: ["selection", "biogeography"],
+    argument: "Madeira is Darwin's prime example of natural selection producing wingless beetles. Of 550 beetle species, 200 cannot fly. Darwin explains this as selection against flight on a windy island: beetles that flew were blown out to sea and killed, while those that stayed grounded survived. The proportion of wingless beetles is even higher on the more exposed Dezertas islets. Madeira also demonstrates that island-to-island colonization is rare -- Porto Santo shells have not colonized Madeira despite annual stone transport.",
+    passages: [
+      { text: "Mr. Wollaston has discovered the remarkable fact that 200 beetles, out of the 550 species inhabiting Madeira, are so far deficient in wings that they cannot fly; and that of the twenty-nine endemic genera, no less than twenty-three genera have all their species in this condition!", ch: "Ch. 5" },
+      { text: "The beetles in Madeira, as observed by Mr. Wollaston, lie much concealed, until the wind lulls and the sun shines; that the proportion of wingless beetles is larger on the exposed Dezertas than in Madeira itself.", ch: "Ch. 5" },
+      { text: "Madeira and the adjoining islet of Porto Santo possess many distinct but representative land-shells... although large quantities of stone are annually transported from Porto Santo to Madeira, yet this latter island has not become colonised by the Porto Santo species.", ch: "Ch. 12" }
+    ]
+  },
+  {
+    name: "Azores",
+    lat: 37.75, lng: -25.68,
+    region: "Atlantic Islands",
+    mentions: 5,
+    chapters: [5, 11, 12],
+    types: ["biogeography"],
+    argument: "The Azores demonstrate that even extremely remote islands receive occasional colonists. Frogs introduced there multiplied to become a nuisance, showing the islands are physically suited for life that can't cross saltwater on its own. Darwin uses this to argue that absence of certain groups on oceanic islands reflects dispersal barriers, not unsuitability.",
+    passages: [
+      { text: "In the Azores, from the large number of the species of insects which are peculiar to these islands, the number of species found in Europe proper must be small.", ch: "Ch. 11" },
+      { text: "Frogs have been introduced into Madeira, the Azores, and Mauritius, and have multiplied so as to become a nuisance.", ch: "Ch. 12" }
+    ]
+  },
+  {
+    name: "Cape Verde Islands",
+    lat: 16.0, lng: -24.0,
+    region: "Atlantic Islands",
+    mentions: 5,
+    chapters: [12],
+    types: ["biogeography"],
+    argument: "The Cape Verde Islands form Darwin's most devastating contrast with the Galapagos. Despite similar volcanic soil, climate, and island size, the Cape Verdes' inhabitants resemble Africa while the Galapagos' resemble South America. This demolishes the argument that species are created to match physical conditions, and instead proves that proximity determines colonization and thus biogeographic affinity.",
+    passages: [
+      { text: "The inhabitants of the Cape de Verde Islands are related to those of Africa, like those of the Galapagos to America. I believe this grand fact can receive no sort of explanation on the ordinary view of independent creation.", ch: "Ch. 12" },
+      { text: "There is a considerable degree of resemblance in the volcanic nature of the soil, in climate, height, and size of the islands, between the Galapagos and Cape de Verde Archipelagos: but what an entire and absolute difference in their inhabitants!", ch: "Ch. 12" }
+    ]
+  },
+  {
+    name: "Bermuda",
+    lat: 32.3, lng: -64.78,
+    region: "Atlantic Islands",
+    mentions: 4,
+    chapters: [12],
+    types: ["biogeography"],
+    argument: "Darwin contrasts Bermuda with the Galapagos: Bermuda, at a similar distance from North America, has no endemic land birds because migratory birds constantly arrive. The Galapagos, receiving fewer visitors, developed unique species. This shows that the rate of immigration determines whether isolation produces new species.",
+    passages: [
+      { text: "Bermuda, on the other hand, which lies at about the same distance from North America as the Galapagos Islands do from South America, and which has a very peculiar soil, does not possess one endemic land bird; and we know from Mr. J. M. Jones's admirable account of Bermuda, that very many North American birds, during their great annual migrations, visit either periodically or occasionally this island.", ch: "Ch. 12" }
+    ]
+  },
+  {
+    name: "Falkland Islands",
+    lat: -51.75, lng: -59.0,
+    region: "South America (Atlantic)",
+    mentions: 3,
+    chapters: [12],
+    types: ["biogeography"],
+    argument: "The Falkland Islands are the nearest exception to Darwin's rule that no terrestrial mammal inhabits an island more than 300 miles from a continent. Their wolf-like fox may have been transported by icebergs. Darwin uses the Falklands to support his theory that mammal distribution on islands reflects dispersal ability, not special creation.",
+    passages: [
+      { text: "The Falkland Islands, which are inhabited by a wolf-like fox, come nearest to an exception; but this group cannot be considered as oceanic, as it lies on a bank connected with the mainland; moreover, icebergs formerly brought boulders to its western shores, and they may have formerly transported foxes.", ch: "Ch. 12" }
+    ]
+  },
+  {
+    name: "St. Helena",
+    lat: -15.96, lng: -5.71,
+    region: "Atlantic Islands",
+    mentions: 2,
+    chapters: [12],
+    types: ["biogeography"],
+    argument: "St. Helena is an extremely isolated Atlantic island whose original endemic flora was largely destroyed by introduced species. Darwin references it as part of the pattern of oceanic island biogeography, showing how isolation produces endemic forms vulnerable to mainland competitors.",
+    passages: [
+      { text: "Almost all oceanic islands, even the most isolated and smallest, are inhabited by land-shells, generally by endemic species, but sometimes by species found elsewhere.", ch: "Ch. 12" }
+    ]
+  },
+  {
+    name: "Ascension Island",
+    lat: -7.95, lng: -14.36,
+    region: "Atlantic Islands",
+    mentions: 2,
+    chapters: [12],
+    types: ["biogeography"],
+    argument: "Ascension Island, with barely half a dozen aboriginal plant species, illustrates Darwin's point about how barren remote volcanic islands can be. Their scarcity of endemic species is explained by extreme isolation and the difficulty of natural colonization.",
+    passages: [
+      { text: "The barren island of Ascension aboriginally possessed under half-a-dozen flowering plants; yet many have now become naturalised on it.", ch: "Ch. 12" }
+    ]
+  },
+  // ---- EUROPE ----
+  {
+    name: "England (Down House, Kent)",
+    lat: 51.33, lng: 0.05,
+    region: "Europe",
+    mentions: 20,
+    chapters: [1, 3, 4, 5, 6, 7, 8, 11, 12],
+    types: ["ecology", "domestication"],
+    argument: "England, and specifically Darwin's home county of Kent, is the site of many of his key ecological observations. His famous cats-mice-bumblebees-clover chain showing indirect ecological relationships was observed in English parishes. The pigeon-breeding community of London provided critical evidence for artificial selection. The Weald of Kent-Sussex demonstrated deep geological time through vast denudation.",
+    passages: [
+      { text: "I have very little doubt, that if the whole genus of humble-bees became extinct or very rare in England, the heartsease and red clover would become very rare, or wholly disappear.", ch: "Ch. 3" },
+      { text: "Near villages and small towns I have found the nests of humble-bees more numerous than elsewhere, which I attribute to the number of cats that destroy the mice.", ch: "Ch. 3" },
+      { text: "It is an admirable lesson to stand on the North Downs and to look at the distant South Downs; for, remembering that at no great distance to the west the northern and southern escarpments meet and close, one can safely picture to oneself the great dome of rocks which must have covered up the Weald.", ch: "Ch. 9" }
+    ]
+  },
+  {
+    name: "Scotland",
+    lat: 56.5, lng: -4.2,
+    region: "Europe",
+    mentions: 5,
+    chapters: [3, 11],
+    types: ["geology", "ecology"],
+    argument: "The mountains of Scotland provide dramatic physical evidence of the Glacial period through their scored flanks and polished surfaces. Alpine plants of Scotland are closely related to northern Scandinavian flora, supporting Darwin's theory of glacial dispersal. He also records how one species of thrush (missel-thrush) has displaced another in parts of Scotland.",
+    passages: [
+      { text: "The ruins of a house burnt by fire do not tell their tale more plainly, than do the mountains of Scotland and Wales, with their scored flanks, polished surfaces, and perched boulders, of the icy streams with which their valleys were lately filled.", ch: "Ch. 11" },
+      { text: "The Alpine plants, for example, of Scotland, as remarked by Mr. H. C. Watson, and those of the Pyrenees, as remarked by Ramond, are more especially allied to the plants of northern Scandinavia.", ch: "Ch. 11" }
+    ]
+  },
+  {
+    name: "The Weald (Kent-Sussex)",
+    lat: 51.05, lng: 0.5,
+    region: "Europe",
+    mentions: 7,
+    chapters: [9],
+    types: ["geology"],
+    argument: "Darwin uses the denudation of the Weald -- the vast erosion of rock between the North and South Downs -- as evidence for the immensity of geological time. Though he considered his original estimate of 300 million years excessive, the key argument was that natural processes, given enough time, can accomplish changes that seem impossible over shorter periods.",
+    passages: [
+      { text: "It is an admirable lesson to stand on the North Downs and to look at the distant South Downs; for, remembering that at no great distance to the west the northern and southern escarpments meet and close, one can safely picture to oneself the great dome of rocks which must have covered up the Weald within so limited a period as since the latter part of the Chalk formation.", ch: "Ch. 9" }
+    ]
+  },
+  {
+    name: "Alps",
+    lat: 46.5, lng: 8.2,
+    region: "Europe",
+    mentions: 5,
+    chapters: [11],
+    types: ["biogeography"],
+    argument: "Alpine plants identical to Arctic species living on the Alps demonstrate glacial-period dispersal. As the ice retreated, arctic species were stranded on mountain-tops, becoming isolated populations that sometimes diverged into new forms. The Alps are a key example of this vertical isolation.",
+    passages: [
+      { text: "It is indeed a remarkable fact to see so many of the same plants living on the snowy regions of the Alps or Pyrenees, and in the extreme northern parts of Europe.", ch: "Ch. 11" },
+      { text: "The climate of Europe changed, that in Northern Italy, gigantic moraines, left by old glaciers, are now clothed by the vine and maize.", ch: "Ch. 11" }
+    ]
+  },
+  {
+    name: "Pyrenees",
+    lat: 42.65, lng: 0.33,
+    region: "Europe",
+    mentions: 4,
+    chapters: [11],
+    types: ["biogeography"],
+    argument: "The Pyrenees host alpine plants allied to northern Scandinavian species, just as Scotland's mountains do. Darwin uses this parallel to demonstrate that glacial-period southward migration, followed by post-glacial retreat to mountaintops, explains the distribution of identical species on widely separated mountain ranges.",
+    passages: [
+      { text: "Those of the Pyrenees, as remarked by Ramond, are more especially allied to the plants of northern Scandinavia.", ch: "Ch. 11" }
+    ]
+  },
+  {
+    name: "Northern Italy",
+    lat: 45.5, lng: 9.2,
+    region: "Europe",
+    mentions: 2,
+    chapters: [11],
+    types: ["geology"],
+    argument: "In Northern Italy, gigantic moraines left by ancient glaciers are now clothed by vine and maize. Darwin cites this as evidence of the dramatic climate change since the Glacial period, reinforcing his argument about the vastness of geological time.",
+    passages: [
+      { text: "So greatly has the climate of Europe changed, that in Northern Italy, gigantic moraines, left by old glaciers, are now clothed by the vine and maize.", ch: "Ch. 11" }
+    ]
+  },
+  {
+    name: "Norway",
+    lat: 62.0, lng: 10.0,
+    region: "Europe",
+    mentions: 3,
+    chapters: [5, 6],
+    types: ["selection"],
+    argument: "Darwin cites the tameness of magpies in Norway as evidence that wariness in animals is not innate but arises from natural selection through persecution. In England, where magpies are hunted, they are wary; in Norway, where they are not molested, they are tame.",
+    passages: [
+      { text: "The magpie, so wary in England, is tame in Norway, as is the hooded crow in Egypt.", ch: "Ch. 6" }
+    ]
+  },
+  {
+    name: "Spain",
+    lat: 40.4, lng: -3.7,
+    region: "Europe",
+    mentions: 3,
+    chapters: [1, 11],
+    types: ["domestication"],
+    argument: "Darwin references Spain in connection with domesticated breeds, noting that the Spanish pointer originated there, yet Mr. Borrow saw no native dog in Spain resembling the English pointer. This illustrates how breeds diverge dramatically under different selective pressures.",
+    passages: [
+      { text: "Though the old Spanish pointer certainly came from Spain, Mr. Borrow has not seen, as I am informed by him, any native dog in Spain like our pointer.", ch: "Ch. 1" }
+    ]
+  },
+  {
+    name: "Switzerland",
+    lat: 46.8, lng: 8.2,
+    region: "Europe",
+    mentions: 6,
+    chapters: [7, 9],
+    types: ["ecology"],
+    argument: "Darwin draws on Swiss observations of slave-making ants (Formica sanguinea) to compare behavioral differences between the same species in different countries. In Switzerland, slave ants do more work than in England, demonstrating how instincts can vary geographically within a single species.",
+    passages: [
+      { text: "Both in Switzerland and England the slaves seem to have the exclusive care of the larvae... In Switzerland the masters alone usually leave the nest to collect building materials and food for their community.", ch: "Ch. 7" }
+    ]
+  },
+  {
+    name: "France",
+    lat: 46.6, lng: 2.2,
+    region: "Europe",
+    mentions: 5,
+    chapters: [1, 10, 11],
+    types: ["geology"],
+    argument: "Darwin draws on Prestwich's geological work comparing Eocene deposits between England and France, showing that although many species appear in the same order on both sides of the Channel, the formations themselves are not perfectly parallel -- evidence for the incompleteness of the geological record.",
+    passages: [
+      { text: "Mr. Prestwich, in his admirable Memoirs on the eocene deposits of England and France, is able to draw a close general parallelism between the successive stages in England with those in France, although he finds in both a number of species not common to both countries.", ch: "Ch. 10" }
+    ]
+  },
+  {
+    name: "Russia",
+    lat: 55.75, lng: 37.6,
+    region: "Europe / Asia",
+    mentions: 4,
+    chapters: [9, 10],
+    types: ["geology"],
+    argument: "Darwin references Murchison's work on Russia to illustrate the wide gaps in geological formations. The Silurian deposits spread over immense territories in Russia demonstrate both the vastness of geological time and the incompleteness of the record.",
+    passages: [
+      { text: "What wide gaps there are in the successive formations of Russia!", ch: "Ch. 9" },
+      { text: "In the several successive palaeozoic formations of Russia, Western Europe, and North America, a similar parallelism in the forms of life has been observed.", ch: "Ch. 10" }
+    ]
+  },
+  // ---- AFRICA ----
+  {
+    name: "Cape of Good Hope",
+    lat: -33.9, lng: 18.4,
+    region: "Africa",
+    mentions: 8,
+    chapters: [2, 11],
+    types: ["biogeography"],
+    argument: "The Cape of Good Hope hosts one of the world's richest plant floras. Darwin uses it as a case where climate alone cannot explain species distribution -- though South Africa, South America, and Australia share similar climates, their floras are utterly distinct. The feeble but real affinity between the flora of the Cape and southwestern Australia puzzled Darwin and remains one of his acknowledged unsolved problems.",
+    passages: [
+      { text: "If we compare large tracts of land in Australia, South Africa, and western South America, between latitudes 25 and 35 degrees, we shall find parts extremely similar in all their conditions, yet it would not be possible to point out three faunas and floras more utterly dissimilar.", ch: "Ch. 11" },
+      { text: "The affinity, which, though feeble, I am assured by Dr. Hooker is real, between the flora of the south-western corner of Australia and of the Cape of Good Hope, is a far more remarkable case, and is at present inexplicable.", ch: "Ch. 12" }
+    ]
+  },
+  {
+    name: "Abyssinia (Ethiopian Highlands)",
+    lat: 9.0, lng: 38.7,
+    region: "Africa",
+    mentions: 2,
+    chapters: [11],
+    types: ["biogeography"],
+    argument: "On the mountains of Abyssinia, Darwin reports European plant forms and some representatives of the Cape flora, supporting his argument that the glacial cooling drove temperate species toward the equator, where they persist today on tropical mountaintops.",
+    passages: [
+      { text: "On the mountains of Abyssinia, several European forms and some few representatives of the peculiar flora of the Cape of Good Hope occur.", ch: "Ch. 11" }
+    ]
+  },
+  {
+    name: "Egypt",
+    lat: 29.98, lng: 31.13,
+    region: "Africa",
+    mentions: 3,
+    chapters: [1, 6],
+    types: ["domestication"],
+    argument: "Egypt's ancient monuments show that domestic animals have varied for thousands of years. Darwin uses Egyptian evidence to argue for the deep antiquity of selective breeding, while noting the tameness of the hooded crow there (versus European wariness) as evidence that behavioral traits are shaped by local selective pressures.",
+    passages: [
+      { text: "Hardly any of them can have varied since the period of the ancient Egyptians... We know, on the evidence given on the monuments of Egypt, much diversity in the breeds.", ch: "Ch. 1" },
+      { text: "The magpie, so wary in England, is tame in Norway, as is the hooded crow in Egypt.", ch: "Ch. 6" }
+    ]
+  },
+  // ---- ASIA ----
+  {
+    name: "Malay Archipelago",
+    lat: -2.0, lng: 117.0,
+    region: "Southeast Asia",
+    mentions: 12,
+    chapters: ["Intro", 5, 6, 9, 11, 12],
+    types: ["biogeography"],
+    argument: "The Malay Archipelago is where Alfred Russel Wallace independently conceived natural selection. Darwin uses the deep-sea channel near Celebes (the future 'Wallace Line') to show that depth of intervening sea, not distance alone, determines mammalian affinity between islands. Islands on the same shallow submarine bank share the same mammals; those separated by deep water have distinct faunas -- powerful evidence that land connections determined mammalian distribution.",
+    passages: [
+      { text: "Mr. Wallace, who is now studying the natural history of the Malay archipelago, has arrived at almost exactly the same general conclusions that I have on the origin of species.", ch: "Intro" },
+      { text: "The Malay Archipelago is of about the size of Europe from the North Cape to the Mediterranean, and from Britain to Russia... The Malay Archipelago is one of the richest regions of the whole world.", ch: "Ch. 9" },
+      { text: "Mr. Windsor Earl has made some striking observations... in regard to the great Malay Archipelago, which is traversed near Celebes by a space of deep ocean; and this space separates two widely distinct mammalian faunas.", ch: "Ch. 12" }
+    ]
+  },
+  {
+    name: "Celebes (Sulawesi)",
+    lat: -1.5, lng: 120.7,
+    region: "Southeast Asia",
+    mentions: 3,
+    chapters: [12],
+    types: ["biogeography"],
+    argument: "Celebes marks the boundary of two distinct mammalian faunas. A space of deep ocean near Celebes separates Asian-type mammals to the west from Australian-type mammals to the east -- the famous 'Wallace Line.' This shows that sea depth, not mere distance, determines biogeographic boundaries.",
+    passages: [
+      { text: "The great Malay Archipelago, which is traversed near Celebes by a space of deep ocean; and this space separates two widely distinct mammalian faunas.", ch: "Ch. 12" }
+    ]
+  },
+  {
+    name: "India",
+    lat: 21.0, lng: 78.0,
+    region: "Asia",
+    mentions: 10,
+    chapters: [1, 3, 5, 10, 11],
+    types: ["domestication", "biogeography"],
+    argument: "India provides Darwin with evidence about the antiquity and diversity of domestication. Indian cattle descend from a different aboriginal stock than European cattle, proving multiple domestication events. The Kattywar breed of horses shows striped legs, a reversion to ancestral character. The peninsula of India and the heights of Ceylon host plants identical to European species, supporting the glacial dispersal hypothesis.",
+    passages: [
+      { text: "In the north-west part of India the Kattywar breed of horses is so generally striped, that, as I hear from Colonel Poole, who examined the breed for the Indian Government, a horse without stripes is not considered as purely-bred.", ch: "Ch. 5" },
+      { text: "On the heights of Ceylon, and on the volcanic cones of Java, many plants occur, either identically the same or representing each other, and at the same time representing plants of Europe, not found in the intervening hot lowlands.", ch: "Ch. 11" }
+    ]
+  },
+  {
+    name: "Ceylon (Sri Lanka)",
+    lat: 7.87, lng: 80.77,
+    region: "Asia",
+    mentions: 3,
+    chapters: [5, 11],
+    types: ["biogeography"],
+    argument: "On the heights of Ceylon, plants identical to European species occur, despite the immense distance and intervening tropics. Darwin uses this to support the theory that glacial-period cooling pushed temperate plants equatorward, where they survive today on tropical mountaintops.",
+    passages: [
+      { text: "On the heights of Ceylon, and on the volcanic cones of Java, many plants occur, either identically the same or representing each other, and at the same time representing plants of Europe.", ch: "Ch. 11" }
+    ]
+  },
+  {
+    name: "Java",
+    lat: -7.5, lng: 110.0,
+    region: "Southeast Asia",
+    mentions: 3,
+    chapters: [11],
+    types: ["biogeography"],
+    argument: "The plant genera found on the loftier peaks of Java so closely resemble European species that Darwin writes they 'raise a picture of a collection made on a hill in Europe!' This is among his most striking evidence for glacial dispersal, showing that tropical mountaintops preserve temperate-zone refugees.",
+    passages: [
+      { text: "A list of the genera collected on the loftier peaks of Java raises a picture of a collection made on a hill in Europe!", ch: "Ch. 11" }
+    ]
+  },
+  {
+    name: "Borneo",
+    lat: 1.0, lng: 114.5,
+    region: "Southeast Asia",
+    mentions: 3,
+    chapters: [11],
+    types: ["biogeography"],
+    argument: "Australian plant forms grow on the mountain summits of Borneo, an island in the heart of the tropics. This unexpected pattern supports Darwin's argument that glacial cooling created migration pathways between temperate zones of different hemispheres, leaving relict populations stranded on equatorial mountains.",
+    passages: [
+      { text: "Still more striking is the fact that southern Australian forms are clearly represented by plants growing on the summits of the mountains of Borneo.", ch: "Ch. 11" }
+    ]
+  },
+  {
+    name: "Japan",
+    lat: 36.2, lng: 138.25,
+    region: "Asia",
+    mentions: 3,
+    chapters: [11],
+    types: ["biogeography"],
+    argument: "Darwin notes that Australian forms scattered across India extend as far north as Japan, demonstrating the vast extent of glacial-period plant dispersal. He also cites close relations between marine crustaceans of Japan and those of distant regions, showing that ocean currents and past land bridges shaped marine biogeography.",
+    passages: [
+      { text: "Some of these Australian forms... extend along the heights of the peninsula of Malacca, and are thinly scattered, on the one hand over India and on the other as far north as Japan.", ch: "Ch. 11" }
+    ]
+  },
+  {
+    name: "Himalaya",
+    lat: 28.0, lng: 84.0,
+    region: "Asia",
+    mentions: 2,
+    chapters: [11],
+    types: ["biogeography"],
+    argument: "On the Himalaya, Darwin reports plants representing European species that don't grow in the hot lowlands between. This is further evidence for the glacial-dispersal theory explaining disjunct distributions of temperate plants on tropical mountain ranges.",
+    passages: [
+      { text: "On the Himalaya, and on the isolated mountain-ranges of the peninsula of India, on the heights of Ceylon, and on the volcanic cones of Java, many plants occur, either identically the same or representing each other, and at the same time representing plants of Europe.", ch: "Ch. 11" }
+    ]
+  },
+  {
+    name: "Siberia",
+    lat: 62.0, lng: 100.0,
+    region: "Asia",
+    mentions: 4,
+    chapters: [11],
+    types: ["geology", "biogeography"],
+    argument: "Frozen mammals in Siberia, along with the nature of mountain vegetation, prove that the region was affected by the Glacial period. Plants on the mountains of Siberia are allied to arctic species, supporting the universality of glacial-period dispersal. The continuity of land through Siberia between Europe and eastern America was crucial for the migration of circumpolar species.",
+    passages: [
+      { text: "We may infer, from the frozen mammals and nature of the mountain vegetation, that Siberia was similarly affected [by glaciation].", ch: "Ch. 11" },
+      { text: "There is almost continuous land from western Europe, through Siberia, to eastern America. And to this continuity of the circumpolar land... I attribute the necessary amount of uniformity in the sub-arctic and northern temperate productions of the Old and New Worlds.", ch: "Ch. 11" }
+    ]
+  },
+  // ---- AUSTRALASIA ----
+  {
+    name: "Australia",
+    lat: -25.3, lng: 133.8,
+    region: "Australasia",
+    mentions: 18,
+    chapters: [1, 3, 4, 9, 10, 11, 12],
+    types: ["biogeography"],
+    argument: "Australia provides Darwin with one of his most powerful biogeographic arguments. Its marsupial fauna is utterly distinct from the placental mammals of other continents at similar latitudes. The fossil mammals from Australian caves were closely allied to living Australian species, proving the law of succession of types. Even the southeastern and southwestern corners of Australia, under nearly identical conditions but connected by continuous land, host distinct species, showing that pre-occupation by existing inhabitants prevents homogenization.",
+    passages: [
+      { text: "Professor Owen has shown that the fossil mammals from the Australian caves were closely allied to the living marsupials.", ch: "Ch. 10" },
+      { text: "Whether the Australian marsupials, which are divided into groups differing but little from each other, and feebly representing our carnivorous, ruminant, and rodent mammals, could successfully compete with these well-pronounced orders... I do not think that any one could have answered this.", ch: "Ch. 4" },
+      { text: "The south-east and south-west corners of Australia have nearly the same physical conditions, and are united by continuous land, yet they are inhabited by a vast number of distinct mammals, birds, and plants.", ch: "Ch. 12" }
+    ]
+  },
+  {
+    name: "New Zealand",
+    lat: -41.3, lng: 174.8,
+    region: "Australasia",
+    mentions: 14,
+    chapters: [4, 6, 11, 12],
+    types: ["biogeography"],
+    argument: "New Zealand is Darwin's key case for island biogeography combined with glacial dispersal. Its crustacea are more closely related to Britain (its antipode!) than to any other part of the world. Its flora contains strong Australian and South American elements, explicable through past connections via now-submerged Antarctic islands. British plants set free in New Zealand have overrun the native vegetation, suggesting (controversially) that some regional floras are 'weaker' than others.",
+    passages: [
+      { text: "It is certainly a wonderful fact that New Zealand should have a closer resemblance in its crustacea to Great Britain, its antipode, than to any other part of the world.", ch: "Ch. 11" },
+      { text: "New Zealand in its endemic plants is much more closely related to Australia, the nearest mainland, than to any other region: and this is what might have been expected; but it is also plainly related to South America, which, although the next nearest continent, is so enormously remote, that the fact becomes an anomaly.", ch: "Ch. 12" },
+      { text: "If all the productions of Great Britain were set free in New Zealand, that in the course of time a multitude of British forms would become thoroughly naturalized there.", ch: "Ch. 4" }
+    ]
+  },
+  {
+    name: "Tasmania",
+    lat: -42.0, lng: 146.5,
+    region: "Australasia",
+    mentions: 2,
+    chapters: [11],
+    types: ["biogeography"],
+    argument: "Tasmania hosts northern forms of fish on its shores, an anomaly that supports Darwin's glacial-dispersal theory. Species from the northern hemisphere migrated south during the Glacial period and persisted in southern localities.",
+    passages: [
+      { text: "Sir J. Richardson also speaks of the reappearance on the shores of New Zealand, Tasmania, etc., of northern forms of fish.", ch: "Ch. 11" }
+    ]
+  },
+  {
+    name: "Norfolk Island",
+    lat: -29.04, lng: 167.95,
+    region: "Australasia",
+    mentions: 1,
+    chapters: [12],
+    types: ["biogeography"],
+    argument: "Norfolk Island possesses its own peculiar bat species, supporting Darwin's argument that aerial mammals can colonize remote islands while terrestrial mammals cannot. The presence of endemic bats (and absence of other mammals) is expected under dispersal theory but inexplicable under independent creation.",
+    passages: [
+      { text: "Norfolk Island, the Viti Archipelago, the Bonin Islands, the Caroline and Marianne Archipelagoes, and Mauritius, all possess their peculiar bats.", ch: "Ch. 12" }
+    ]
+  },
+  // ---- NORTH AMERICA ----
+  {
+    name: "United States",
+    lat: 39.0, lng: -98.5,
+    region: "North America",
+    mentions: 15,
+    chapters: [2, 3, 5, 6, 9, 10, 11],
+    types: ["biogeography", "geology"],
+    argument: "The United States provides Darwin with key evidence across multiple areas. Erratic boulders and scored rocks prove the Glacial period affected North America. The identity of White Mountain plants with Labrador and European species demonstrates glacial-period dispersal. The flora of the northern US, as analyzed by Asa Gray, showed greater affinity to European flora than expected, explained by former land connections through the Arctic during warmer Pliocene periods.",
+    passages: [
+      { text: "The plants on the White Mountains, in the United States of America, are all the same with those of Labrador, and nearly all the same, as we hear from Asa Gray, with those on the loftiest mountains of Europe.", ch: "Ch. 11" },
+      { text: "Throughout a large part of the United States, erratic boulders, and rocks scored by drifted icebergs and coast-ice, plainly reveal a former cold period.", ch: "Ch. 11" }
+    ]
+  },
+  {
+    name: "Kentucky Caves",
+    lat: 37.2, lng: -86.1,
+    region: "North America",
+    mentions: 3,
+    chapters: [5],
+    types: ["selection"],
+    argument: "The caves of Kentucky contain blind animals -- cave-rats with immense but useless eyes, blind cave-fish, and eyeless cave-insects. Darwin argues that these blindness cases arise from disuse aided by natural selection. Crucially, the cave-insects of America and Europe are not closely related, proving they descended from local surface species rather than being specially created for cave life.",
+    passages: [
+      { text: "Several animals, belonging to the most different classes, which inhabit the caves of Styria and of Kentucky, are blind. In some of the crabs the foot-stalk for the eye remains, though the eye is gone; the stand for the telescope is there, though the telescope with its glasses has been lost.", ch: "Ch. 5" },
+      { text: "We must suppose that American animals, having ordinary powers of vision, slowly migrated by successive generations from the outer world into the deeper and deeper recesses of the Kentucky caves, as did European animals into the caves of Europe.", ch: "Ch. 5" }
+    ]
+  },
+  {
+    name: "Mississippi River",
+    lat: 29.0, lng: -89.3,
+    region: "North America",
+    mentions: 3,
+    chapters: [9],
+    types: ["geology"],
+    argument: "Darwin uses the rate of sediment deposited by the Mississippi to estimate geological time scales. The 600-foot accumulation of sediment near the mouth of the Mississippi over the glacial period demonstrates how natural processes operating over vast time periods can produce enormous geological formations.",
+    passages: [
+      { text: "Some have estimated that sediment is deposited by the great Mississippi... during some part of the glacial period, sediment may have accumulated near the mouth of the Mississippi to a thickness of 600 feet.", ch: "Ch. 9" }
+    ]
+  },
+  {
+    name: "Isthmus of Panama",
+    lat: 9.0, lng: -79.5,
+    region: "Central America",
+    mentions: 2,
+    chapters: [11],
+    types: ["biogeography"],
+    argument: "The Isthmus of Panama forms a narrow but impassable barrier between two utterly distinct marine faunas on the Atlantic and Pacific sides. Darwin uses this as primary evidence that barriers, not climate, determine species distribution. Despite the narrowness of the land bridge, hardly a fish, shell, or crab is shared between the two oceans.",
+    passages: [
+      { text: "No two marine faunas are more distinct, with hardly a fish, shell, or crab in common, than those of the eastern and western shores of South and Central America; yet these great faunas are separated only by the narrow, but impassable, isthmus of Panama.", ch: "Ch. 11" }
+    ]
+  },
+  // ---- INDIAN OCEAN ----
+  {
+    name: "Mauritius",
+    lat: -20.35, lng: 57.55,
+    region: "Indian Ocean",
+    mentions: 3,
+    chapters: [12],
+    types: ["biogeography"],
+    argument: "Mauritius possesses its own peculiar bat species, supporting Darwin's argument about aerial versus terrestrial mammal dispersal to islands. Frogs introduced to Mauritius have multiplied, showing the island is physically hospitable to groups absent from it naturally, proving that oceanic barriers, not unsuitable conditions, exclude certain organisms.",
+    passages: [
+      { text: "Norfolk Island, the Viti Archipelago, the Bonin Islands, the Caroline and Marianne Archipelagoes, and Mauritius, all possess their peculiar bats.", ch: "Ch. 12" },
+      { text: "Frogs have been introduced into Madeira, the Azores, and Mauritius, and have multiplied so as to become a nuisance.", ch: "Ch. 12" }
+    ]
+  },
+  {
+    name: "Kerguelen Land",
+    lat: -49.28, lng: 69.35,
+    region: "Indian Ocean (Subantarctic)",
+    mentions: 3,
+    chapters: [11, 12],
+    types: ["biogeography"],
+    argument: "Kerguelen Land, though closer to Africa, has plants closely related to South American species. Darwin explains this apparent anomaly through iceberg-mediated dispersal: seeds brought with earth and stones on icebergs drifted by prevailing currents from America. This elegantly supports dispersal theory over special creation.",
+    passages: [
+      { text: "The plants of Kerguelen Land, though standing nearer to Africa than to America, are related, and that very closely, as we know from Dr. Hooker's account, to those of America: but on the view that this island has been mainly stocked by seeds brought with earth and stones on icebergs, drifted by the prevailing currents, this anomaly disappears.", ch: "Ch. 12" }
+    ]
+  },
+  // ---- PACIFIC ----
+  {
+    name: "Pacific Islands (general)",
+    lat: -10.0, lng: -170.0,
+    region: "Pacific Ocean",
+    mentions: 5,
+    chapters: [11, 12],
+    types: ["biogeography"],
+    argument: "Darwin uses Pacific islands to argue for oceanic dispersal. The eastern Pacific islands harbor a totally distinct fauna from American shores despite proximity, demonstrating the power of open-ocean barriers. Yet further west, island-hopping enables greater similarity, showing that stepping-stone islands facilitate colonization.",
+    passages: [
+      { text: "Westward of the shores of America, a wide space of open ocean extends, with not an island as a halting-place for emigrants; here we have a barrier of another kind, and as soon as this is passed we meet in the eastern islands of the Pacific, with another and totally distinct fauna.", ch: "Ch. 11" }
+    ]
+  },
+  // ---- ADDITIONAL EUROPEAN / NEAR EAST ----
+  {
+    name: "Canary Islands",
+    lat: 28.1, lng: -15.4,
+    region: "Atlantic Islands",
+    mentions: 2,
+    chapters: [2],
+    types: ["biogeography"],
+    argument: "Darwin groups the Canary Islands with other Atlantic island groups to argue that the degree of endemism depends on the distance from the mainland and the strength of barriers to dispersal.",
+    passages: [
+      { text: "Whether, for instance, a broad and nearly impassable area, such as that between the Continent and the Azores, or Madeira, or the Canaries, or Ireland, be sufficient?", ch: "Ch. 2" }
+    ]
+  },
+  {
+    name: "Iceland",
+    lat: 64.96, lng: -19.02,
+    region: "Europe (North Atlantic)",
+    mentions: 2,
+    chapters: [11],
+    types: ["biogeography"],
+    argument: "Iceland's position in the North Atlantic, along with its fauna and flora, illustrates the near-continuous circumpolar land bridge that facilitated migration of arctic species between the Old and New Worlds during the Glacial period.",
+    passages: [
+      { text: "If we exclude the northern parts where the circumpolar land is almost continuous... all authors agree that one of the most fundamental divisions in geographical distribution is that between the New and Old Worlds.", ch: "Ch. 11" }
+    ]
+  },
+  {
+    name: "London",
+    lat: 51.51, lng: -0.12,
+    region: "Europe",
+    mentions: 5,
+    chapters: [1, 2],
+    types: ["domestication"],
+    argument: "London's pigeon-fancying clubs were critical to Darwin's argument for artificial selection. The extraordinary diversity of domestic pigeon breeds, all descended from the rock pigeon, demonstrated that selection by breeders could produce variation as dramatic as that between natural species.",
+    passages: [
+      { text: "I have visited several eminent fanciers, and have been permitted to join two of the London Pigeon Clubs. The diversity of the breeds is something astonishing.", ch: "Ch. 1" }
+    ]
+  },
+  {
+    name: "Mediterranean Sea",
+    lat: 35.0, lng: 18.0,
+    region: "Europe / Africa",
+    mentions: 5,
+    chapters: [1, 9, 11],
+    types: ["biogeography"],
+    argument: "Darwin references the Mediterranean both as a biogeographic barrier and as a site of deep-water species and migration corridors. The annual mass migration of quails across the Mediterranean demonstrates that even significant barriers can be crossed, providing a mechanism for species dispersal.",
+    passages: [
+      { text: "We all know the enormous number of quails which annually cross the Mediterranean; and can we doubt that other birds occasionally cross?", ch: "Ch. 11" }
+    ]
+  },
+  {
+    name: "Styria (Austrian caves)",
+    lat: 47.2, lng: 15.2,
+    region: "Europe",
+    mentions: 2,
+    chapters: [5],
+    types: ["selection"],
+    argument: "The caves of Styria in Austria contain blind cave-dwelling animals, parallel to those of Kentucky. Darwin argues the blind animals of each region descended from their respective local surface fauna, not from a common cave-adapted ancestor, because American and European cave species are only as related as their surface relatives.",
+    passages: [
+      { text: "Several animals, belonging to the most different classes, which inhabit the caves of Styria and of Kentucky, are blind.", ch: "Ch. 5" }
+    ]
+  },
+  {
+    name: "Porto Santo",
+    lat: 33.07, lng: -16.34,
+    region: "Atlantic Islands",
+    mentions: 3,
+    chapters: [12],
+    types: ["biogeography"],
+    argument: "Porto Santo, a small islet near Madeira, hosts many distinct land-shells not found on neighboring Madeira, despite annual transport of stone between the islands. Darwin uses this as evidence that pre-occupation by native species effectively prevents colonization, showing that proximity alone is insufficient for species spread.",
+    passages: [
+      { text: "Madeira and the adjoining islet of Porto Santo possess many distinct but representative land-shells, some of which live in crevices of stone; and although large quantities of stone are annually transported from Porto Santo to Madeira, yet this latter island has not become colonised by the Porto Santo species.", ch: "Ch. 12" }
+    ]
+  },
+  {
+    name: "Dezertas (islets near Madeira)",
+    lat: 32.51, lng: -16.51,
+    region: "Atlantic Islands",
+    mentions: 2,
+    chapters: [5],
+    types: ["selection"],
+    argument: "The Dezertas, exposed rocky islets near Madeira, have an even higher proportion of wingless beetles than Madeira itself. This strengthens Darwin's argument that natural selection against flight is most intense where exposure to wind is greatest.",
+    passages: [
+      { text: "The proportion of wingless beetles is larger on the exposed Dezertas than in Madeira itself.", ch: "Ch. 5" }
+    ]
+  },
+  {
+    name: "Silla of Caraccas (Venezuela)",
+    lat: 10.5, lng: -66.9,
+    region: "South America",
+    mentions: 1,
+    chapters: [11],
+    types: ["biogeography"],
+    argument: "Humboldt found species belonging to genera characteristic of the Cordillera on the Silla of Caraccas, demonstrating that mountain-top floras across the Americas share a common Andean heritage, consistent with southward migration during glacial periods and subsequent isolation on mountain peaks.",
+    passages: [
+      { text: "So on the Silla of Caraccas the illustrious Humboldt long ago found species belonging to genera characteristic of the Cordillera.", ch: "Ch. 11" }
+    ]
+  },
+  {
+    name: "West Indies",
+    lat: 19.0, lng: -72.0,
+    region: "Central America / Caribbean",
+    mentions: 2,
+    chapters: [12],
+    types: ["biogeography"],
+    argument: "The West Indian Islands stand on a deeply submerged bank, nearly 1,000 fathoms deep. Their mammals are American in form but distinct in species and genera from mainland ones. Darwin uses the depth of the submerging bank to argue that these islands have been separated for an immense period, allowing more modification to occur.",
+    passages: [
+      { text: "The West Indian Islands stand on a deeply submerged bank, nearly 1000 fathoms in depth, and here we find American forms, but the species and even the genera are distinct.", ch: "Ch. 12" }
+    ]
+  },
+  {
+    name: "Scandinavia",
+    lat: 63.0, lng: 16.0,
+    region: "Europe",
+    mentions: 3,
+    chapters: [11],
+    types: ["biogeography"],
+    argument: "Alpine plants of Scotland and the Pyrenees are most closely related to the plants of northern Scandinavia, from which they descended during the southward migration of the Glacial period. Scandinavia served as the source region for many European mountain-top species.",
+    passages: [
+      { text: "The Alpine plants, for example, of Scotland, as remarked by Mr. H. C. Watson, and those of the Pyrenees, as remarked by Ramond, are more especially allied to the plants of northern Scandinavia.", ch: "Ch. 11" }
+    ]
+  },
+  {
+    name: "South America (continent)",
+    lat: -10.0, lng: -55.0,
+    region: "South America",
+    mentions: 25,
+    chapters: ["Intro", 1, 3, 5, 9, 10, 11, 12, 13, 14],
+    types: ["biogeography", "geology"],
+    argument: "South America as a whole is the continual touchstone of Darwin's argument. His voyage on the Beagle was focused there, and its fauna demonstrates the fundamental principle that life on each continent bears a common 'stamp.' Fossil and living species alike are characteristically American. The continent's role is acknowledged in the very first sentence of the book's argument, which describes the distribution of South American inhabitants as sparking his entire inquiry.",
+    passages: [
+      { text: "When on board H.M.S. 'Beagle,' as naturalist, I was much struck with certain facts in the distribution of the inhabitants of South America, and in the geological relations of the present to the past inhabitants of that continent.", ch: "Intro" },
+      { text: "In equatorial South America, in Tierra del Fuego, at the Cape of Good Hope, and in the peninsula of India... at these distant points of the northern and southern hemispheres, a host of the same and of closely allied species can be found.", ch: "Ch. 10" }
+    ]
+  }
+];
+
+// ========================================
+// EVIDENCE TYPE COLORS
+// ========================================
+const TYPE_COLORS = {
+  biogeography: "#c25450",
+  geology: "#6b8e5e",
+  domestication: "#c4913e",
+  selection: "#5b7ea3",
+  ecology: "#8e6b99"
+};
+
+const TYPE_LABELS = {
+  biogeography: "Biogeography",
+  geology: "Geology & Paleontology",
+  domestication: "Domestication",
+  selection: "Natural Selection",
+  ecology: "Ecology"
+};
+
+// ========================================
+// MAP INITIALIZATION
+// ========================================
+const map = L.map('map', {
+  center: [20, 0],
+  zoom: 2,
+  minZoom: 2,
+  maxZoom: 15,
+  zoomControl: true,
+  worldCopyJump: true
+});
+
+// Vintage-style tile layer (Stamen Watercolor if available, else OSM)
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  maxZoom: 19,
+}).addTo(map);
+
+// ========================================
+// MARKER CLUSTER GROUP
+// ========================================
+const clusterGroup = L.markerClusterGroup({
+  maxClusterRadius: 45,
+  spiderfyOnMaxZoom: true,
+  showCoverageOnHover: false,
+  zoomToBoundsOnClick: true,
+  iconCreateFunction: function(cluster) {
+    const count = cluster.getChildCount();
+    let size = 'small';
+    if (count > 10) size = 'medium';
+    if (count > 20) size = 'large';
+    return L.divIcon({
+      html: '<div>' + count + '</div>',
+      className: 'marker-cluster marker-cluster-' + size,
+      iconSize: L.point(40, 40)
+    });
+  }
+});
+
+// ========================================
+// CREATE MARKERS
+// ========================================
+let allMarkers = [];
+
+function getMarkerSize(mentions) {
+  if (mentions >= 15) return 22;
+  if (mentions >= 10) return 18;
+  if (mentions >= 5) return 14;
+  if (mentions >= 3) return 11;
+  return 9;
+}
+
+LOCATIONS.forEach((loc, idx) => {
+  const primaryType = loc.types[0];
+  const color = TYPE_COLORS[primaryType] || '#888';
+  const size = getMarkerSize(loc.mentions);
+
+  const icon = L.divIcon({
+    className: '',
+    html: `<div class="custom-marker" style="width:${size}px;height:${size}px;background:${color};" title="${loc.name}"></div>`,
+    iconSize: [size, size],
+    iconAnchor: [size/2, size/2]
+  });
+
+  const marker = L.marker([loc.lat, loc.lng], { icon: icon });
+  marker._locData = loc;
+  marker._locIdx = idx;
+  marker._primaryType = primaryType;
+
+  marker.on('click', function() {
+    showLocationDetail(this._locData);
+    map.panTo([loc.lat, loc.lng]);
+  });
+
+  allMarkers.push(marker);
+  clusterGroup.addLayer(marker);
+});
+
+map.addLayer(clusterGroup);
+
+// Update stats
+document.getElementById('totalLocations').textContent = LOCATIONS.length;
+const totalMentions = LOCATIONS.reduce((sum, l) => sum + l.mentions, 0);
+document.getElementById('totalMentions').textContent = totalMentions;
+
+// ========================================
+// FILTER FUNCTIONALITY
+// ========================================
+let activeFilter = 'all';
+
+function setFilter(type) {
+  activeFilter = type;
+
+  // Update filter buttons
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.type === type);
+  });
+
+  // Update legend items
+  document.querySelectorAll('.legend-item').forEach(item => {
+    if (type === 'all') {
+      item.classList.remove('dimmed');
+    } else {
+      item.classList.toggle('dimmed', item.dataset.type !== type);
+    }
+  });
+
+  // Rebuild cluster group
+  clusterGroup.clearLayers();
+  allMarkers.forEach(m => {
+    if (type === 'all' || m._locData.types.includes(type)) {
+      clusterGroup.addLayer(m);
+    }
+  });
+}
+
+function toggleFilter(type) {
+  if (activeFilter === type) {
+    setFilter('all');
+  } else {
+    setFilter(type);
+  }
+}
+
+// ========================================
+// SIDEBAR FUNCTIONALITY
+// ========================================
+const sidebar = document.getElementById('sidebar');
+const sidebarToggle = document.getElementById('sidebarToggle');
+const welcomePanel = document.getElementById('welcomePanel');
+const locationDetail = document.getElementById('locationDetail');
+let sidebarOpen = true;
+
+sidebarToggle.addEventListener('click', function() {
+  sidebarOpen = !sidebarOpen;
+  sidebar.classList.toggle('collapsed', !sidebarOpen);
+  sidebarToggle.classList.toggle('collapsed-toggle', !sidebarOpen);
+  sidebarToggle.innerHTML = sidebarOpen ? '&#9664;' : '&#9654;';
+  sidebarToggle.style.right = sidebarOpen ? '420px' : '0px';
+  setTimeout(() => map.invalidateSize(), 350);
+});
+
+document.getElementById('backToWelcome').addEventListener('click', function() {
+  welcomePanel.style.display = 'block';
+  locationDetail.classList.remove('active');
+});
+
+function showLocationDetail(loc) {
+  // Ensure sidebar is open
+  if (!sidebarOpen) {
+    sidebarOpen = true;
+    sidebar.classList.remove('collapsed');
+    sidebarToggle.classList.remove('collapsed-toggle');
+    sidebarToggle.innerHTML = '&#9664;';
+    sidebarToggle.style.right = '420px';
+    setTimeout(() => map.invalidateSize(), 350);
+  }
+
+  welcomePanel.style.display = 'none';
+  locationDetail.classList.add('active');
+
+  document.getElementById('locName').textContent = loc.name;
+  document.getElementById('locRegion').textContent = loc.region;
+
+  // Meta section
+  const metaHtml = `
+    <div class="meta-item">
+      <div class="val">${loc.mentions}</div>
+      <div class="lbl">References</div>
+    </div>
+    <div class="meta-item">
+      <div class="val">${loc.chapters.length}</div>
+      <div class="lbl">Chapters</div>
+    </div>
+    <div class="meta-item" style="flex:2">
+      <div>${loc.types.map(t => `<span class="evidence-badge" style="background:${TYPE_COLORS[t]}22;color:${TYPE_COLORS[t]};border:1px solid ${TYPE_COLORS[t]}44">${TYPE_LABELS[t]}</span>`).join('')}</div>
+      <div class="lbl" style="margin-top:4px">Evidence type</div>
+    </div>
+  `;
+  document.getElementById('locMeta').innerHTML = metaHtml;
+
+  // Argument
+  document.getElementById('locArgumentText').textContent = loc.argument;
+
+  // Passages
+  const passagesHtml = loc.passages.map(p => `
+    <div class="passage">
+      <blockquote>"${p.text}"</blockquote>
+      <div class="ch-ref">${p.ch} &mdash; <em>On the Origin of Species</em></div>
+    </div>
+  `).join('');
+  document.getElementById('passagesList').innerHTML = passagesHtml;
+
+  // Scroll to top
+  document.getElementById('sidebarContent').scrollTop = 0;
+}
+
+// ========================================
+// INITIAL VIEW - fit to markers
+// ========================================
+if (allMarkers.length > 0) {
+  const group = L.featureGroup(allMarkers);
+  map.fitBounds(group.getBounds().pad(0.1));
+}
+</script>
+</body>
+</html>

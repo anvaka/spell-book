@@ -1,0 +1,1576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Long Argument — On the Origin of Species</title>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #faf6f0;
+  --parchment: #f4ede3;
+  --warm-white: #fffdf9;
+  --ink: #2c2416;
+  --ink-light: #5c4f3d;
+  --ink-faint: #8a7d6b;
+  --ink-ghost: #b8ad9e;
+  --accent-red: #a0422a;
+  --accent-blue: #3b6b8a;
+  --accent-green: #4a7a5c;
+  --accent-gold: #b8862d;
+  --accent-purple: #6b4f8a;
+  --accent-teal: #3a7a7a;
+  --concession: #a0422a;
+  --analogy: #3b6b8a;
+  --evidence: #4a7a5c;
+  --hypothesis: #b8862d;
+  --objection: #8a3a3a;
+  --resolution: #3a7a5c;
+  --transition: #6b4f8a;
+  --timeline-line: #c9bfb0;
+  --shadow-soft: rgba(44, 36, 22, 0.08);
+  --shadow-med: rgba(44, 36, 22, 0.14);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Crimson Text', Georgia, 'Times New Roman', serif;
+  background: var(--cream);
+  color: var(--ink);
+  line-height: 1.65;
+  min-height: 100vh;
+}
+
+/* Back navigation */
+.back-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(250, 246, 240, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--timeline-line);
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.back-nav a {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-light);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.2s;
+}
+
+.back-nav a:hover { color: var(--accent-red); }
+
+.back-nav .nav-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  color: var(--ink-faint);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Header */
+.hero {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 60px 24px 40px;
+  text-align: center;
+}
+
+.hero .lens-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-red);
+  margin-bottom: 16px;
+}
+
+.hero h1 {
+  font-size: 2.6em;
+  font-weight: 700;
+  line-height: 1.15;
+  margin-bottom: 12px;
+  color: var(--ink);
+}
+
+.hero .subtitle {
+  font-size: 1.2em;
+  font-style: italic;
+  color: var(--ink-light);
+  margin-bottom: 24px;
+}
+
+.hero .description {
+  font-size: 1.05em;
+  color: var(--ink-light);
+  max-width: 640px;
+  margin: 0 auto 32px;
+  line-height: 1.7;
+}
+
+.hero .author-line {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  color: var(--ink-faint);
+}
+
+/* Legend */
+.legend {
+  max-width: 800px;
+  margin: 0 auto 20px;
+  padding: 0 24px;
+}
+
+.legend-inner {
+  background: var(--warm-white);
+  border: 1px solid var(--timeline-line);
+  border-radius: 8px;
+  padding: 20px 24px;
+}
+
+.legend-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 12px;
+}
+
+.legend-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 28px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  color: var(--ink-light);
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Instructions */
+.instructions {
+  max-width: 800px;
+  margin: 0 auto 40px;
+  padding: 0 24px;
+  text-align: center;
+}
+
+.instructions p {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  color: var(--ink-faint);
+  font-style: italic;
+}
+
+/* Timeline */
+.timeline {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+  position: relative;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 52px;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--timeline-line);
+  border-radius: 2px;
+}
+
+/* Arc label markers along the timeline */
+.arc-marker {
+  position: relative;
+  padding: 20px 0 10px 90px;
+}
+
+.arc-marker .arc-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-ghost);
+  position: relative;
+}
+
+.arc-marker .arc-label::before {
+  content: '';
+  position: absolute;
+  left: -48px;
+  top: 50%;
+  width: 28px;
+  height: 2px;
+  background: var(--ink-ghost);
+  transform: translateY(-50%);
+}
+
+/* Chapter nodes */
+.chapter-node {
+  position: relative;
+  padding-left: 90px;
+  margin-bottom: 8px;
+}
+
+.chapter-dot {
+  position: absolute;
+  left: 40px;
+  top: 20px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--warm-white);
+  border: 3px solid var(--accent-red);
+  z-index: 2;
+  transition: all 0.3s ease;
+}
+
+.chapter-node.expanded .chapter-dot {
+  background: var(--accent-red);
+  box-shadow: 0 0 0 4px rgba(160, 66, 42, 0.15);
+}
+
+.chapter-header {
+  background: var(--warm-white);
+  border: 1px solid var(--timeline-line);
+  border-radius: 8px;
+  padding: 20px 24px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  user-select: none;
+}
+
+.chapter-header:hover {
+  border-color: var(--ink-ghost);
+  box-shadow: 0 2px 12px var(--shadow-soft);
+}
+
+.chapter-node.expanded .chapter-header {
+  border-color: var(--accent-red);
+  box-shadow: 0 3px 16px var(--shadow-med);
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.chapter-number {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent-red);
+  margin-bottom: 4px;
+}
+
+.chapter-title {
+  font-size: 1.4em;
+  font-weight: 700;
+  line-height: 1.25;
+  margin-bottom: 8px;
+}
+
+.chapter-role {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  color: var(--ink-faint);
+  font-style: italic;
+  margin-bottom: 8px;
+}
+
+.chapter-summary {
+  font-size: 1em;
+  color: var(--ink-light);
+  line-height: 1.65;
+}
+
+.expand-hint {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  color: var(--ink-ghost);
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.2s;
+}
+
+.chapter-header:hover .expand-hint { color: var(--accent-red); }
+
+.chapter-node.expanded .expand-hint .hint-text { display: none; }
+.chapter-node:not(.expanded) .expand-hint .collapse-text { display: none; }
+
+/* Chapter body (level 2) */
+.chapter-body {
+  display: none;
+  background: var(--warm-white);
+  border: 1px solid var(--accent-red);
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  padding: 0 24px 24px;
+}
+
+.chapter-node.expanded .chapter-body { display: block; }
+
+.section-divider {
+  height: 1px;
+  background: var(--timeline-line);
+  margin: 20px 0;
+}
+
+/* Sub-argument sections (level 2) */
+.sub-argument {
+  margin-bottom: 4px;
+}
+
+.sub-arg-header {
+  padding: 14px 16px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.2s;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  user-select: none;
+}
+
+.sub-arg-header:hover { background: var(--parchment); }
+
+.rhetorical-badge {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+  margin-top: 3px;
+  white-space: nowrap;
+}
+
+.badge-analogy { background: rgba(59, 107, 138, 0.1); color: var(--analogy); }
+.badge-evidence { background: rgba(74, 122, 92, 0.1); color: var(--evidence); }
+.badge-hypothesis { background: rgba(184, 134, 45, 0.1); color: var(--hypothesis); }
+.badge-concession { background: rgba(160, 66, 42, 0.1); color: var(--concession); }
+.badge-objection { background: rgba(138, 58, 58, 0.1); color: var(--objection); }
+.badge-resolution { background: rgba(58, 122, 92, 0.1); color: var(--resolution); }
+.badge-transition { background: rgba(107, 79, 138, 0.1); color: var(--transition); }
+
+.sub-arg-content {
+  flex: 1;
+}
+
+.sub-arg-title {
+  font-size: 1.1em;
+  font-weight: 600;
+  line-height: 1.35;
+  margin-bottom: 4px;
+}
+
+.sub-arg-preview {
+  font-size: 0.95em;
+  color: var(--ink-light);
+  line-height: 1.6;
+}
+
+.sub-arg-expand-hint {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  color: var(--ink-ghost);
+  margin-top: 6px;
+}
+
+.sub-arg-header:hover .sub-arg-expand-hint { color: var(--accent-blue); }
+
+/* Level 3: detailed content */
+.sub-arg-detail {
+  display: none;
+  padding: 0 16px 16px 16px;
+  margin-left: 0;
+}
+
+.sub-argument.expanded .sub-arg-detail { display: block; }
+.sub-argument.expanded .sub-arg-preview { display: none; }
+.sub-argument.expanded .sub-arg-expand-hint { display: none; }
+.sub-argument.expanded .sub-arg-header { background: var(--parchment); border-radius: 6px 6px 0 0; }
+
+.detail-text {
+  font-size: 0.98em;
+  color: var(--ink-light);
+  line-height: 1.7;
+  margin-bottom: 16px;
+  padding: 0 16px;
+  background: var(--parchment);
+  border-radius: 0 0 6px 6px;
+  padding: 16px;
+}
+
+/* Level 4: pivotal quotes */
+.pivotal-quote {
+  margin: 16px 0;
+  padding: 16px 20px;
+  border-left: 3px solid var(--accent-gold);
+  background: rgba(184, 134, 45, 0.04);
+  border-radius: 0 6px 6px 0;
+}
+
+.pivotal-quote .quote-text {
+  font-style: italic;
+  font-size: 1.02em;
+  line-height: 1.7;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+
+.pivotal-quote .quote-analysis {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  color: var(--ink-faint);
+  line-height: 1.6;
+}
+
+.close-reading-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-gold);
+  margin-bottom: 8px;
+}
+
+/* Footer */
+.timeline-end {
+  position: relative;
+  padding-left: 90px;
+  padding-top: 20px;
+}
+
+.timeline-end-dot {
+  position: absolute;
+  left: 44px;
+  top: 20px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent-red);
+  z-index: 2;
+}
+
+.coda {
+  background: var(--warm-white);
+  border: 1px solid var(--timeline-line);
+  border-radius: 8px;
+  padding: 28px;
+}
+
+.coda .quote-text {
+  font-style: italic;
+  font-size: 1.15em;
+  line-height: 1.7;
+  color: var(--ink);
+  text-align: center;
+}
+
+.coda .attribution {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  color: var(--ink-faint);
+  text-align: center;
+  margin-top: 12px;
+}
+
+/* Responsive */
+@media (max-width: 700px) {
+  .hero h1 { font-size: 1.9em; }
+  .timeline::before { left: 28px; }
+  .chapter-node { padding-left: 56px; }
+  .chapter-dot { left: 16px; top: 18px; width: 22px; height: 22px; }
+  .arc-marker { padding-left: 56px; }
+  .arc-marker .arc-label::before { left: -36px; width: 20px; }
+  .timeline-end { padding-left: 56px; }
+  .timeline-end-dot { left: 20px; }
+  .legend-items { gap: 10px 20px; }
+  .chapter-header { padding: 16px; }
+}
+
+/* Animations */
+.chapter-body { animation: fadeSlideIn 0.3s ease; }
+.sub-arg-detail { animation: fadeSlideIn 0.25s ease; }
+
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+<body>
+
+<nav class="back-nav">
+  <a href="../../index.html">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Back to book
+  </a>
+  <span class="nav-title">The Long Argument</span>
+</nav>
+
+<header class="hero">
+  <div class="lens-label">Narrative Lens</div>
+  <h1>The Long Argument</h1>
+  <div class="subtitle">On the Origin of Species by Means of Natural Selection</div>
+  <p class="description">
+    Darwin himself called this book "one long argument." This lens traces
+    the sequential rhetorical architecture of that argument&mdash;chapter by chapter,
+    claim by claim&mdash;as Darwin weaves evidence, anticipates objections, and
+    builds his case for descent with modification through natural selection.
+  </p>
+  <div class="author-line">Charles Darwin &middot; First Edition, 1859</div>
+</header>
+
+<div class="legend">
+  <div class="legend-inner">
+    <div class="legend-title">Rhetorical Moves</div>
+    <div class="legend-items">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--analogy)"></div> Analogy</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--evidence)"></div> Evidence</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--hypothesis)"></div> Hypothesis</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--concession)"></div> Concession</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--objection)"></div> Objection</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--resolution)"></div> Resolution</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--transition)"></div> Transition</div>
+    </div>
+  </div>
+</div>
+
+<div class="instructions">
+  <p>Click any chapter to reveal its sub-arguments. Click sub-arguments to see close readings and pivotal sentences.</p>
+</div>
+
+<div class="timeline">
+
+<!-- ========= ARC: FOUNDATION ========= -->
+<div class="arc-marker"><div class="arc-label">Part I &mdash; Establishing the Foundation</div></div>
+
+<!-- INTRODUCTION -->
+<div class="chapter-node" id="ch-intro">
+  <div class="chapter-dot"></div>
+  <div class="chapter-header" onclick="toggleChapter('ch-intro')">
+    <div class="chapter-number">Introduction</div>
+    <div class="chapter-title">Framing the Question</div>
+    <div class="chapter-role">Rhetorical role: Sets the rhetorical stage &mdash; establishes authority, previews the argument, and announces the thesis</div>
+    <div class="chapter-summary">
+      Darwin opens with autobiography as ethos: twenty years of patient research, the convergence with Wallace,
+      and a candid admission that this is only an "Abstract." He then lays out the book's architecture
+      as a logical chain and delivers his thesis: species are not immutable, and natural selection is
+      the main means of their modification.
+    </div>
+    <div class="expand-hint">
+      <span class="hint-text">&#9662; Expand to see sub-arguments</span>
+      <span class="collapse-text">&#9652; Collapse</span>
+    </div>
+  </div>
+  <div class="chapter-body">
+    <div class="section-divider"></div>
+
+    <div class="sub-argument" id="intro-1">
+      <div class="sub-arg-header" onclick="toggleSubArg('intro-1')">
+        <span class="rhetorical-badge badge-evidence">Evidence</span>
+        <div class="sub-arg-content">
+          <div class="sub-arg-title">Autobiographical Ethos</div>
+          <div class="sub-arg-preview">Darwin establishes credibility through a timeline of careful, patient inquiry &mdash; from the Beagle voyage (1831-36) through twenty years of accumulation and reflection.</div>
+          <div class="sub-arg-expand-hint">&#9662; Close reading</div>
+        </div>
+      </div>
+      <div class="sub-arg-detail">
+        <div class="detail-text">
+          Darwin's opening sentences perform essential rhetorical work. He places himself aboard HMS Beagle, grounds his authority in direct observation, and immediately frames species origins as "that mystery of mysteries." The phrasing "I have not been hasty in coming to a decision" preempts accusations of rashness. The mention of Wallace creates urgency while establishing priority. The self-deprecating label "Abstract" lowers expectations, making the book's actual comprehensiveness a pleasant surprise.
+          <div class="pivotal-quote">
+            <div class="close-reading-label">Pivotal Sentence</div>
+            <div class="quote-text">"On my return home, it occurred to me, in 1837, that something might perhaps be made out on this question by patiently accumulating and reflecting on all sorts of facts which could possibly have any bearing on it."</div>
+            <div class="quote-analysis">The hedging language &mdash; "might perhaps," "something" &mdash; masks the revolutionary ambition beneath a veil of modesty. "Patiently accumulating" signals the empirical method that will distinguish Darwin's approach from speculative predecessors like the author of Vestiges.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sub-argument" id="intro-2">
+      <div class="sub-arg-header" onclick="toggleSubArg('intro-2')">
+        <span class="rhetorical-badge badge-transition">Transition</span>
+        <div class="sub-arg-content">
+          <div class="sub-arg-title">The Roadmap of the Argument</div>
+          <div class="sub-arg-preview">Darwin previews every chapter in sequence, revealing the logical chain: domestication leads to nature, nature to struggle, struggle to selection, then difficulties are addressed, and evidence from multiple fields converges.</div>
+          <div class="sub-arg-expand-hint">&#9662; Close reading</div>
+        </div>
+      </div>
+      <div class="sub-arg-detail">
+        <div class="detail-text">
+          The Introduction functions as a table of contents that is also an argument map. Darwin does not merely list topics; he reveals their logical dependencies. Chapters 1-4 build the mechanism; Chapter 5 handles complicating factors; Chapters 6-8 confront difficulties head-on; Chapters 9-10 address the geological record; 11-12 test the theory through geography; Chapter 13 draws on morphology, embryology, and rudimentary organs; and Chapter 14 recapitulates. This transparency is itself a rhetorical strategy: it signals confidence that the argument can withstand scrutiny at every link.
+          <div class="pivotal-quote">
+            <div class="close-reading-label">Pivotal Sentence</div>
+            <div class="quote-text">"A fair result can be obtained only by fully stating and balancing the facts and arguments on both sides of each question; and this cannot possibly be here done."</div>
+            <div class="quote-analysis">This candid acknowledgment of the book's limitations is a masterful preemptive move. By admitting he cannot present all the evidence, Darwin turns his "Abstract" into a promissory note for a larger work while inviting the reader to trust his judgment of the balance of evidence.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sub-argument" id="intro-3">
+      <div class="sub-arg-header" onclick="toggleSubArg('intro-3')">
+        <span class="rhetorical-badge badge-hypothesis">Hypothesis</span>
+        <div class="sub-arg-content">
+          <div class="sub-arg-title">The Thesis Statement</div>
+          <div class="sub-arg-preview">Darwin states his conclusion with bold clarity: species are not immutable, they descend from common ancestors, and natural selection is the chief means of modification.</div>
+          <div class="sub-arg-expand-hint">&#9662; Close reading</div>
+        </div>
+      </div>
+      <div class="sub-arg-detail">
+        <div class="detail-text">
+          The closing paragraphs of the Introduction deliver Darwin's thesis with a carefully calibrated mix of conviction and qualification. He acknowledges "much remaining as yet unexplained" but then makes his strongest claim &mdash; couched, characteristically, in the negative: "the view which most naturalists entertain... is erroneous."
+          <div class="pivotal-quote">
+            <div class="close-reading-label">Pivotal Sentence</div>
+            <div class="quote-text">"I am fully convinced that species are not immutable; but that those belonging to what are called the same genera are lineal descendants of some other and generally extinct species... Furthermore, I am convinced that Natural Selection has been the main but not exclusive means of modification."</div>
+            <div class="quote-analysis">The qualifier "but not exclusive" is crucial. Darwin hedges against the charge that he has a single all-explaining cause, leaving room for other factors (habit, use and disuse, correlation of growth). This measured language will become a hallmark of his rhetorical style throughout.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- CHAPTER I -->
+<div class="chapter-node" id="ch1">
+  <div class="chapter-dot"></div>
+  <div class="chapter-header" onclick="toggleChapter('ch1')">
+    <div class="chapter-number">Chapter I</div>
+    <div class="chapter-title">Variation Under Domestication</div>
+    <div class="chapter-role">Rhetorical role: The opening analogy &mdash; what man can do, nature can do better</div>
+    <div class="chapter-summary">
+      Darwin begins with the familiar to make the unfamiliar credible. Domestic breeds vary enormously.
+      Humans select for desired traits without understanding genetics. The cumulative power of "unconscious selection"
+      over centuries produces breeds so different they would be classified as separate species. This is the
+      foundation on which the entire argument rests.
+    </div>
+    <div class="expand-hint">
+      <span class="hint-text">&#9662; Expand to see sub-arguments</span>
+      <span class="collapse-text">&#9652; Collapse</span>
+    </div>
+  </div>
+  <div class="chapter-body">
+    <div class="section-divider"></div>
+
+    <div class="sub-argument" id="ch1-1">
+      <div class="sub-arg-header" onclick="toggleSubArg('ch1-1')">
+        <span class="rhetorical-badge badge-evidence">Evidence</span>
+        <div class="sub-arg-content">
+          <div class="sub-arg-title">The Pigeon Case Study</div>
+          <div class="sub-arg-preview">Darwin devotes extensive space to domestic pigeons &mdash; carriers, tumblers, pouters, fantails &mdash; arguing that all descend from the rock-pigeon Columba livia, despite differences so great an ornithologist would rank them as separate species.</div>
+          <div class="sub-arg-expand-hint">&#9662; Close reading</div>
+        </div>
+      </div>
+      <div class="sub-arg-detail">
+        <div class="detail-text">
+          The pigeon argument is Darwin's most brilliant opening gambit. He chooses an organism that is familiar, well-documented, and domesticated &mdash; placing the reader on psychologically comfortable ground. He personally kept every breed, associated with fanciers, and joined London Pigeon Clubs. This is not armchair theorizing. He then demonstrates that the differences between breeds (beak length, tail feather count, crop size, skeletal structure) are at least as great as differences between acknowledged wild species. The logical trap is set: if all these wildly different pigeons descend from one rock-pigeon, why not all finches from one ancestor?
+          <div class="pivotal-quote">
+            <div class="close-reading-label">Pivotal Sentence</div>
+            <div class="quote-text">"I have discussed the probable origin of domestic pigeons at some, yet quite insufficient, length; because when I first kept pigeons and watched the several kinds, knowing well how true they bred, I felt fully as much difficulty in believing that they could ever have descended from a common parent, as any naturalist could in coming to a similar conclusion in regard to the many species of finches, or other large groups of birds, in nature."</div>
+            <div class="quote-analysis">This is the rhetorical linchpin of the entire book. Darwin confesses his own initial disbelief &mdash; a concession that builds trust &mdash; and then implicitly equates the pigeon case with the species question. If he was wrong about pigeons, perhaps naturalists are wrong about species.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sub-argument" id="ch1-2">
+      <div class="sub-arg-header" onclick="toggleSubArg('ch1-2')">
+        <span class="rhetorical-badge badge-analogy">Analogy</span>
+        <div class="sub-arg-content">
+          <div class="sub-arg-title">The Power of Selection</div>
+          <div class="sub-arg-preview">Darwin introduces "unconscious selection" &mdash; the gradual improvement of breeds by ordinary farmers and fanciers who simply breed from their best animals without any deliberate plan to transform the breed.</div>
+          <div class="sub-arg-expand-hint">&#9662; Close reading</div>
+        </div>
+      </div>
+      <div class="sub-arg-detail">
+        <div class="detail-text">
+          The distinction between "methodical" and "unconscious" selection is essential to Darwin's larger argument. If conscious human breeders can transform breeds within decades, unconscious selection over centuries can do vastly more. And if unconscious human selection over centuries can produce such results, what might Nature's selection produce over millions of years? Darwin quotes Youatt on selection as "the magician's wand" and Lord Somerville's striking image of breeders who "chalked out upon a wall a form perfect in itself, and then had given it existence."
+          <div class="pivotal-quote">
+            <div class="close-reading-label">Pivotal Sentence</div>
+            <div class="quote-text">"The key is man's power of accumulative selection: nature gives successive variations; man adds them up in certain directions useful to him. In this sense he may be said to make for himself useful breeds."</div>
+            <div class="quote-analysis">The word "accumulative" does critical work. Darwin is teaching the reader to think in terms of gradual, cumulative change &mdash; a mode of thinking that will be essential when he transitions to natural selection. The phrase "nature gives... man adds them up" also previews the division of labor between variation (which is given) and selection (which directs it).</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sub-argument" id="ch1-3">
+      <div class="sub-arg-header" onclick="toggleSubArg('ch1-3')">
+        <span class="rhetorical-badge badge-concession">Concession</span>
+        <div class="sub-arg-content">
+          <div class="sub-arg-title">Acknowledging Ignorance</div>
+          <div class="sub-arg-preview">Darwin repeatedly concedes how much remains unknown about the laws of variation, inheritance, and the causes of variability &mdash; a rhetorical pattern that will recur throughout the book.</div>
+          <div class="sub-arg-expand-hint">&#9662; Close reading</div>
+        </div>
+      </div>
+      <div class="sub-arg-detail">
+        <div class="detail-text">
+          Darwin's candor about ignorance is strategic. "The laws governing inheritance are quite unknown," he writes. "The result of the various, quite unknown, or dimly seen laws of variation is infinitely complex and diversified." By foregrounding his own uncertainty, Darwin achieves two things: he builds trust with skeptical readers, and he inoculates his theory against the objection that it requires knowledge we do not yet possess. His argument does not depend on knowing the mechanism of inheritance; it depends only on the observable facts that variation exists and is heritable.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- CHAPTER II -->
+<div class="chapter-node" id="ch2">
+  <div class="chapter-dot"></div>
+  <div class="chapter-header" onclick="toggleChapter('ch2')">
+    <div class="chapter-number">Chapter II</div>
+    <div class="chapter-title">Variation Under Nature</div>
+    <div class="chapter-role">Rhetorical role: The bridge &mdash; extending the domestic analogy to the wild</div>
+    <div class="chapter-summary">
+      Having shown that domestic organisms vary, Darwin must now demonstrate that wild species vary too.
+      He argues that the line between species and varieties is arbitrary, that naturalists constantly
+      disagree on classifications, and that well-marked varieties are "incipient species."
+      The dominant species in large genera vary most &mdash; precisely where we'd expect new species to form.
+    </div>
+    <div class="expand-hint">
+      <span class="hint-text">&#9662; Expand to see sub-arguments</span>
+      <span class="collapse-text">&#9652; Collapse</span>
+    </div>
+  </div>
+  <div class="chapter-body">
+    <div class="section-divider"></div>
+
+    <div class="sub-argument" id="ch2-1">
+      <div class="sub-arg-header" onclick="toggleSubArg('ch2-1')">
+        <span class="rhetorical-badge badge-evidence">Evidence</span>
+        <div class="sub-arg-content">
+          <div class="sub-arg-title">The Blurred Line Between Species and Varieties</div>
+          <div class="sub-arg-preview">Mr. Babington counts 251 British plant species where Mr. Bentham counts only 112 &mdash; a difference of 139 doubtful forms. Darwin uses taxonomic disagreement itself as evidence that the species concept is not fixed.</div>
+          <div class="sub-arg-expand-hint">&#9662; Close reading</div>
+        </div>
+      </div>
+      <div class="sub-arg-detail">
+        <div class="detail-text">
+          Darwin's rhetorical strategy here is ingenious: he turns the confusion of taxonomists into evidence for his theory. If species were truly distinct created kinds, experts should agree on what they are. But they do not. The Babington/Bentham discrepancy is a concrete, verifiable fact that any naturalist could check. Darwin accumulates examples &mdash; British plants, Galapagos birds, Madeira insects, the primrose/cowslip debate &mdash; creating a steady drumbeat of taxonomic uncertainty.
+          <div class="pivotal-quote">
+            <div class="close-reading-label">Pivotal Sentence</div>
+            <div class="quote-text">"Hence I look at individual differences, though of small interest to the systematist, as of high importance for us, as being the first step towards such slight varieties as are barely thought worth recording in works on natural history."</div>
+            <div class="quote-analysis">Darwin is recalibrating the reader's attention. What systematists dismiss as noise is, in Darwin's framework, the raw material of evolution. This revaluation of the trivial is one of the book's most profound intellectual moves.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sub-argument" id="ch2-2">
+      <div class="sub-arg-header" onclick="toggleSubArg('ch2-2')">
+        <span class="rhetorical-badge badge-hypothesis">Hypothesis</span>
+        <div class="sub-arg-content">
+          <div class="sub-arg-title">Varieties as Incipient Species</div>
+          <div class="sub-arg-preview">Darwin's key conceptual move: varieties grade into species along a continuum. A well-marked variety "may be justly called an incipient species."</div>
+          <div class="sub-arg-expand-hint">&#9662; Close reading</div>
+        </div>
+      </div>
+      <div class="sub-arg-detail">
+        <div class="detail-text">
+          This chapter dissolves the categorical distinction between variety and species. If the two categories blend into each other "in an insensible series," and if "a series impresses the mind with the idea of an actual passage," then the gap between existing variation and the origin of new species is not a gap at all but a gradient. Darwin supports this with tabulated data from H. C. Watson's botanical work, showing that common, wide-ranging, dominant species in large genera vary most &mdash; exactly what we'd predict if natural selection were operating on existing variation to produce new forms.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- CHAPTER III -->
+<div class="chapter-node" id="ch3">
+  <div class="chapter-dot"></div>
+  <div class="chapter-header" onclick="toggleChapter('ch3')">
+    <div class="chapter-number">Chapter III</div>
+    <div class="chapter-title">Struggle for Existence</div>
+    <div class="chapter-role">Rhetorical role: Establishing the engine &mdash; the Malthusian pressure that powers selection</div>
+    <div class="chapter-summary">
+      Darwin introduces the universal struggle for existence. All organisms tend to increase geometrically;
+      resources are finite; therefore most must perish. The struggle is most severe between closely related
+      forms. Competition, predation, climate, and complex ecological webs shape which individuals survive.
+      This is the Malthusian wedge that makes natural selection inevitable.
+    </div>
+    <div class="expand-hint">
+      <span class="hint-text">&#9662; Expand to see sub-arguments</span>
+      <span class="collapse-text">&#9652; Collapse</span>
+    </div>
+  </div>
+  <div class="chapter-body">
+    <div class="section-divider"></div>
+
+    <div class="sub-argument" id="ch3-1">
+      <div class="sub-arg-header" onclick="toggleSubArg('ch3-1')">
+        <span class="rhetorical-badge badge-hypothesis">Hypothesis</span>
+        <div class="sub-arg-content">
+          <div class="sub-arg-title">Geometrical Increase and Its Consequences</div>
+          <div class="sub-arg-preview">Even the slow-breeding elephant would produce fifteen million descendants in five centuries if unchecked. Since populations do not explode, enormous destruction must be occurring invisibly, constantly.</div>
+          <div class="sub-arg-expand-hint">&#9662; Close reading</div>
+        </div>
+      </div>
+      <div class="sub-arg-detail">
+        <div class="detail-text">
+          Darwin's elephant calculation is a rhetorical set piece. By choosing the slowest-breeding animal he can think of and showing that even it would overrun the earth in a few centuries, he makes the Malthusian principle vivid and undeniable. The gap between theoretical increase and actual population is, he insists, filled by death. "We behold the face of nature bright with gladness," he writes, but "we do not see, or we forget, that the birds which are idly singing round us mostly live on insects or seeds, and are thus constantly destroying life." This is Darwin at his most rhetorically powerful: transforming the reader's perception of ordinary nature into a scene of constant, invisible warfare.
+          <div class="pivotal-quote">
+            <div class="close-reading-label">Pivotal Sentence</div>
+            <div class="quote-text">"The face of Nature may be compared to a yielding surface, with ten thousand sharp wedges packed close together and driven inwards by incessant blows, sometimes one wedge being struck, and then another with greater force."</div>
+            <div class="quote-analysis">This vivid metaphor of wedges driven into nature's surface captures Darwin's vision of ecological competition: every organism is a wedge trying to force its way in, and every successful insertion dislodges another. The violence of the image is intentional &mdash; it prepares the reader for the relentless logic of natural selection.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sub-argument" id="ch3-2">
+      <div class="sub-arg-header" onclick="toggleSubArg('ch3-2')">
+        <span class="rhetorical-badge badge-evidence">Evidence</span>
+        <div class="sub-arg-content">
+          <div class="sub-arg-title">The Web of Complex Relations</div>
+          <div class="sub-arg-preview">Darwin traces an ecological chain from cats to mice to humble-bees to clover to cattle, showing how seemingly unrelated organisms are bound together in complex webs of interdependence.</div>
+          <div class="sub-arg-expand-hint">&#9662; Close reading</div>
+        </div>
+      </div>
+      <div class="sub-arg-detail">
+        <div class="detail-text">
+          The famous cats-mice-bees-clover chain is not just natural history but rhetorical persuasion. Darwin uses it to show that "the relation of organism to organism" is "the most important of all relations" &mdash; more important than climate, soil, or any physical condition. This sets up a crucial premise for natural selection: the environment that matters most is the biological one, and it is endlessly complex. Another memorable example: cattle preventing fir seedlings from growing in Staffordshire, where a tiny Scotch fir had tried for twenty-six years to raise its head above the heath and failed, browsed down each time. Darwin counted thirty-two seedlings in one square yard &mdash; characteristic of his insistence on quantification.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ========= ARC: THE MECHANISM ========= -->
+<div class="arc-marker"><div class="arc-label">Part II &mdash; The Mechanism Unveiled</div></div>
+
+<!-- CHAPTER IV -->
+<div class="chapter-node" id="ch4">
+  <div class="chapter-dot"></div>
+  <div class="chapter-header" onclick="toggleChapter('ch4')">
+    <div class="chapter-number">Chapter IV</div>
+    <div class="chapter-title">Natural Selection</div>
+    <div class="chapter-role">Rhetorical role: The keystone &mdash; where variation, inheritance, and struggle converge into a mechanism</div>
+    <div class="chapter-summary">
+      This is the climax of the first movement. Darwin synthesizes the previous three chapters into
+      the theory of natural selection: any variation, however slight, that gives an advantage in the
+      struggle for life will tend to be preserved. He extends the concept through sexual selection,
+      the importance of intercrossing, divergence of character, and extinction. The chapter ends with
+      the famous image of the Tree of Life.
+    </div>
+    <div class="expand-hint">
+      <span class="hint-text">&#9662; Expand to see sub-arguments</span>
+      <span class="collapse-text">&#9652; Collapse</span>
+    </div>
+  </div>
+  <div class="chapter-body">
+    <div class="section-divider"></div>
+
+    <div class="sub-argument" id="ch4-1">
+      <div class="sub-arg-header" onclick="toggleSubArg('ch4-1')">
+        <span class="rhetorical-badge badge-analogy">Analogy</span>
+        <div class="sub-arg-content">
+          <div class="sub-arg-title">Nature's Selection vs. Man's</div>
+          <div class="sub-arg-preview">Darwin argues that natural selection is not merely analogous to artificial selection but immeasurably superior: Nature can act on every internal organ, every constitutional difference, over geological time.</div>
+          <div class="sub-arg-expand-hint">&#9662; Close reading</div>
+        </div>
+      </div>
+      <div class="sub-arg-detail">
+        <div class="detail-text">
+          Having built the analogy with domestication over three chapters, Darwin now transcends it. The entire passage comparing man's selection with nature's reads as a crescendo: "Man selects only for his own good; Nature only for that of the being which she tends." Man is limited to external characters; Nature can reach every shade of constitutional difference. Man's time is short; Nature has geological ages. This elevation of natural over artificial selection transforms the argument from analogy into something stronger: if feeble human effort can produce such results, Nature's power must be incomparably greater.
+          <div class="pivotal-quote">
+            <div class="close-reading-label">Pivotal Sentence</div>
+            <div class="quote-text">"It may be said that natural selection is daily and hourly scrutinising, throughout the world, every variation, even the slightest; rejecting that which is bad, preserving and adding up all that is good; silently and insensibly working, whenever and wherever opportunity offers, at the improvement of each organic being."</div>
+            <div class="quote-analysis">The personification of natural selection as a vigilant agent "scrutinising" and "working" was controversial even in Darwin's day (some critics thought he was smuggling in a designer). But rhetorically it is potent: it gives the reader a concrete mental image of an abstract process, making the imperceptible imaginable.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sub-argument" id="ch4-2">
+      <div class="sub-arg-header" onclick="toggleSubArg('ch4-2')">
+        <span class="rhetorical-badge badge-hypothesis">Hypothesis</span>
+        <div class="sub-arg-content">
+          <div class="sub-arg-title">Divergence of Character</div>
+          <div class="sub-arg-preview">The more diversified the descendants of any species become, the more ecological niches they can seize. This principle of divergence explains why species tend to become ever more distinct over time.</div>
+          <div class="sub-arg-expand-hint">&#9662; Close reading</div>
+        </div>
+      </div>
+      <div class="sub-arg-detail">
+        <div class="detail-text">
+          Divergence of Character is Darwin's answer to a crucial question: why do varieties become increasingly distinct rather than remaining intermediate? His answer rests on ecological economy: "the more diversified the descendants from any one species become in structure, constitution, and habits, by so much will they be better enabled to seize on many and widely diversified places in the polity of nature." He draws on the analogy of crop rotation, experimental plots showing that diverse grass mixtures outperform monocultures, and the pattern of naturalization (immigrant species tend to represent new genera, not new species in existing genera).
+        </div>
+      </div>
+    </div>
+
+    <div class="sub-argument" id="ch4-3">
+      <div class="sub-arg-header" onclick="toggleSubArg('ch4-3')">
+        <span class="rhetorical-badge badge-analogy">Analogy</span>
+        <div class="sub-arg-content">
+          <div class="sub-arg-title">The Tree of Life</div>
+          <div class="sub-arg-preview">Darwin closes with his most powerful metaphor: all living things as branches of one great tree, where dead branches represent extinct forms and green twigs represent living species.</div>
+          <div class="sub-arg-expand-hint">&#9662; Close reading</div>
+        </div>
+      </div>
+      <div class="sub-arg-detail">
+        <div class="detail-text">
+          The Tree of Life passage is among the most celebrated in scientific prose. Darwin transforms a static classification system into a dynamic, historical narrative. The image encodes his entire theory: common descent, branching diversification, extinction, and the hierarchical grouping of organisms &mdash; all visible in the structure of a single tree. The concluding sentence elevates natural history from catalogue to epic.
+          <div class="pivotal-quote">
+            <div class="close-reading-label">Pivotal Sentence</div>
+            <div class="quote-text">"As buds give rise by growth to fresh buds, and these, if vigorous, branch out and overtop on all sides many a feebler branch, so by generation I believe it has been with the great Tree of Life, which fills with its dead and broken branches the crust of the earth, and covers the surface with its ever branching and beautiful ramifications."</div>
+            <div class="quote-analysis">The Tree of Life is both a scientific diagram and a Romantic image. "Dead and broken branches" filling the earth's crust &mdash; the fossil record &mdash; and "ever branching and beautiful ramifications" covering the surface &mdash; living diversity. The word "beautiful" does essential emotional work, insisting that the theory of natural selection enhances rather than diminishes the wonder of life.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- CHAPTER V -->
+<div class="chapter-node" id="ch5">
+  <div class="chapter-dot"></div>
+  <div class="chapter-header" onclick="toggleChapter('ch5')">
+    <div class="chapter-number">Chapter V</div>
+    <div class="chapter-title">Laws of Variation</div>
+    <div class="chapter-role">Rhetorical role: The caveat &mdash; honest acknowledgment of the complexity of variation</div>
+    <div class="chapter-summary">
+      Darwin examines what governs variation: external conditions, use and disuse, correlation
+      of growth, compensation, and reversion. He candidly admits deep ignorance about the laws
+      of variation while arguing that this ignorance does not undermine natural selection.
+      The chapter serves as a bridge between the constructive argument (Chapters 1-4) and
+      the defensive argument (Chapters 6-8).
+    </div>
+    <div class="expand-hint">
+      <span class="hint-text">&#9662; Expand to see sub-arguments</span>
+      <span class="collapse-text">&#9652; Collapse</span>
+    </div>
+  </div>
+  <div class="chapter-body">
+    <div class="section-divider"></div>
+
+    <div class="sub-argument" id="ch5-1">
+      <div class="sub-arg-header" onclick="toggleSubArg('ch5-1')">
+        <span class="rhetorical-badge badge-concession">Concession</span>
+        <div class="sub-arg-content">
+          <div class="sub-arg-title">Confessing Ignorance About Variation's Causes</div>
+          <div class="sub-arg-preview">Darwin admits that calling variation "due to chance" is "a wholly incorrect expression" that merely acknowledges ignorance. He examines use/disuse, correlation of growth, and environmental effects while insisting that natural selection is what makes variation meaningful.</div>
+          <div class="sub-arg-expand-hint">&#9662; Close reading</div>
+        </div>
+      </div>
+      <div class="sub-arg-detail">
+        <div class="detail-text">
+          This chapter is Darwin's most sustained exercise in intellectual honesty. He discusses the wingless beetles of Madeira (natural selection eliminating those that fly out to sea), cave animals losing their eyes, and the correlation between seemingly unrelated traits. Throughout, he distinguishes between the cause of variation (unknown) and the direction of modification (governed by selection). The Madeira beetles case is particularly elegant: Darwin argues the wingless condition is "mainly due to the action of natural selection, but combined probably with disuse" &mdash; showing that natural selection and other causes need not be mutually exclusive.
+          <div class="pivotal-quote">
+            <div class="close-reading-label">Pivotal Sentence</div>
+            <div class="quote-text">"I have hitherto sometimes spoken as if the variations... had been due to chance. This, of course, is a wholly incorrect expression, but it serves to acknowledge plainly our ignorance of the cause of each particular variation."</div>
+            <div class="quote-analysis">This sentence is a philosophical landmark. Darwin separates the question of why variation occurs (unknown) from the question of what happens to it once it exists (selection). By making this distinction explicit, he frees his theory from the burden of explaining the origin of variation &mdash; a question that would not be answered for another century, with the discovery of DNA.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ========= ARC: DIFFICULTIES ========= -->
+<div class="arc-marker"><div class="arc-label">Part III &mdash; Confronting Difficulties</div></div>
+
+<!-- CHAPTER VI -->
+<div class="chapter-node" id="ch6">
+  <div class="chapter-dot"></div>
+  <div class="chapter-header" onclick="toggleChapter('ch6')">
+    <div class="chapter-number">Chapter VI</div>
+    <div class="chapter-title">Difficulties on Theory</div>
+    <div class="chapter-role">Rhetorical role: The gauntlet &mdash; Darwin names the strongest objections and meets them head-on</div>
+    <div class="chapter-summary">
+      Darwin enumerates four major difficulties: the absence of transitional forms, the origin of complex organs
+      like the eye, the acquisition of instincts, and the sterility of hybrids. He addresses the first two here,
+      arguing that transitional forms are destroyed by the very process of selection, and that even the eye
+      can be explained by gradual, functional intermediates. His strategy: state the objection at full force,
+      then show it is not fatal.
+    </div>
+    <div class="expand-hint">
+      <span class="hint-text">&#9662; Expand to see sub-arguments</span>
+      <span class="collapse-text">&#9652; Collapse</span>
+    </div>
+  </div>
+  <div class="chapter-body">
+    <div class="section-divider"></div>
+
+    <div class="sub-argument" id="ch6-1">
+      <div class="sub-arg-header" onclick="toggleSubArg('ch6-1')">
+        <span class="rhetorical-badge badge-objection">Objection</span>
+        <div class="sub-arg-content">
+          <div class="sub-arg-title">Where Are the Transitional Forms?</div>
+          <div class="sub-arg-preview">"Why is not all nature in confusion instead of the species being, as we see them, well defined?" Darwin concedes the force of this objection and offers a multi-part answer involving extinction, competition, and geography.</div>
+          <div class="sub-arg-expand-hint">&#9662; Close reading</div>
+        </div>
+      </div>
+      <div class="sub-arg-detail">
+        <div class="detail-text">
+          Darwin's opening is disarmingly candid: "Long before having arrived at this part of my work, a crowd of difficulties will have occurred to the reader. Some of them are so grave that to this day I can never reflect on them without being staggered." This confession of personal doubt is a calculated move: it signals that Darwin takes objections seriously, has struggled with them for decades, and yet has found his theory survives. His answer to the missing transitions problem is layered: (1) intermediate forms are destroyed by the very process of selection; (2) intermediate zones are narrow and population sizes small; (3) the geological record is incomparably less perfect than commonly supposed.
+          <div class="pivotal-quote">
+            <div class="close-reading-label">Pivotal Sentence</div>
+            <div class="quote-text">"Long before having arrived at this part of my work, a crowd of difficulties will have occurred to the reader. Some of them are so grave that to this day I can never reflect on them without being staggered; but, to the best of my judgment, the greater number are only apparent, and those that are real are not, I think, fatal to my theory."</div>
+            <div class="quote-analysis">This sentence is a masterclass in persuasive rhetoric. "Staggered" is remarkably strong &mdash; Darwin admits to being shaken. But then the tripartite structure (apparent difficulties / real difficulties / fatal difficulties) narrows the threat: most are "only apparent," and those that are real are "not fatal." The word "fatal" carries medical connotations &mdash; the theory is wounded perhaps, but alive.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sub-argument" id="ch6-2">
+      <div class="sub-arg-header" onclick="toggleSubArg('ch6-2')">
+        <span class="rhetorical-badge badge-resolution">Resolution</span>
+        <div class="sub-arg-content">
+          <div class="sub-arg-title">Organs of Extreme Perfection</div>
+          <div class="sub-arg-preview">Darwin tackles the eye &mdash; the supreme test case. He shows that functional gradations exist across living species, from a simple nerve coated with pigment to the complex vertebrate eye, making stepwise evolution credible.</div>
+          <div class="sub-arg-expand-hint">&#9662; Close reading</div>
+        </div>
+      </div>
+      <div class="sub-arg-detail">
+        <div class="detail-text">
+          Darwin's treatment of the eye is his most famous concede-and-resolve maneuver. He concedes that "to suppose that the eye, with all its inimitable contrivances... could have been formed by natural selection, seems, I freely confess, absurd in the highest possible degree." But then he pivots: "Yet reason tells me..." He demonstrates that living animals exhibit every gradation of visual apparatus, from the simple pigment-spot of certain invertebrates to the complex lens-eye of vertebrates. Each stage is functional. Each stage is advantageous. Therefore, gradual improvement is possible. The "absurd in the highest degree" confession is a calculated rhetorical risk that pays off by making the resolution more convincing.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- CHAPTER VII -->
+<div class="chapter-node" id="ch7">
+  <div class="chapter-dot"></div>
+  <div class="chapter-header" onclick="toggleChapter('ch7')">
+    <div class="chapter-number">Chapter VII</div>
+    <div class="chapter-title">Instinct</div>
+    <div class="chapter-role">Rhetorical role: Extending the theory to behavior &mdash; the hive-bee as test case</div>
+    <div class="chapter-summary">
+      Darwin extends natural selection from physical structure to mental faculties. He examines
+      the cuckoo's parasitism, slave-making ants, and the hive-bee's geometrically perfect cells.
+      The climactic difficulty: neuter worker insects that cannot reproduce, yet possess
+      specialized instincts. Darwin resolves this through "family selection" (a precursor to kin selection).
+    </div>
+    <div class="expand-hint">
+      <span class="hint-text">&#9662; Expand to see sub-arguments</span>
+      <span class="collapse-text">&#9652; Collapse</span>
+    </div>
+  </div>
+  <div class="chapter-body">
+    <div class="section-divider"></div>
+
+    <div class="sub-argument" id="ch7-1">
+      <div class="sub-arg-header" onclick="toggleSubArg('ch7-1')">
+        <span class="rhetorical-badge badge-evidence">Evidence</span>
+        <div class="sub-arg-content">
+          <div class="sub-arg-title">Graduated Instincts: From Cuckoo to Hive-Bee</div>
+          <div class="sub-arg-preview">Darwin traces gradations of instinct across species, showing that even seemingly miraculous behaviors like the hive-bee's cell-building can be reached by small, selectable steps from the cruder cells of humble-bees.</div>
+          <div class="sub-arg-expand-hint">&#9662; Close reading</div>
+        </div>
+      </div>
+      <div class="sub-arg-detail">
+        <div class="detail-text">
+          Darwin applies the same strategy he used for the eye: find living intermediates that show each step of the gradation is functional and advantageous. For cell-building, he traces a series from the crude spherical cells of humble-bees through the intermediate cells of Melipona domestica to the geometrically perfect hexagonal cells of the hive-bee. He even experiments with bees, showing that their building behavior emerges from simple rules (excavating at equal distances) rather than mathematical calculation. The aphid experiment is a personal favorite &mdash; Darwin with his lens, tickling aphids with a hair to test whether they excrete "voluntarily" for ants.
+        </div>
+      </div>
+    </div>
+
+    <div class="sub-argument" id="ch7-2">
+      <div class="sub-arg-header" onclick="toggleSubArg('ch7-2')">
+        <span class="rhetorical-badge badge-objection">Objection</span>
+        <div class="sub-arg-content">
+          <div class="sub-arg-title">The Problem of Neuter Insects</div>
+          <div class="sub-arg-preview">How can natural selection produce specialized worker castes that cannot reproduce? Darwin calls this "the most serious special difficulty which my theory has encountered" and resolves it through selection acting on families.</div>
+          <div class="sub-arg-expand-hint">&#9662; Close reading</div>
+        </div>
+      </div>
+      <div class="sub-arg-detail">
+        <div class="detail-text">
+          Darwin does not hide from this problem; he calls it out explicitly as potentially fatal to his theory. His solution anticipates modern kin selection theory by a century: selection acts on the family or community as a whole, not just on the individual. If a community that produces specialized sterile workers outcompetes communities that do not, then the trait can spread even though the workers themselves leave no offspring. Darwin compares this to breeders selecting for meat quality based on the characteristics of relatives that have been slaughtered &mdash; a grim but logically precise analogy.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- CHAPTER VIII -->
+<div class="chapter-node" id="ch8">
+  <div class="chapter-dot"></div>
+  <div class="chapter-header" onclick="toggleChapter('ch8')">
+    <div class="chapter-number">Chapter VIII</div>
+    <div class="chapter-title">Hybridism</div>
+    <div class="chapter-role">Rhetorical role: Neutralizing an apparent counter-argument &mdash; sterility is incidental, not designed</div>
+    <div class="chapter-summary">
+      The sterility of species crosses seems to be a clear, designed barrier &mdash; strong evidence for separate creation.
+      Darwin argues that sterility is not a "special endowment" but an incidental byproduct of
+      constitutional differences accumulated through other causes. He shows that sterility varies
+      continuously and unpredictably, just as his theory would predict.
+    </div>
+    <div class="expand-hint">
+      <span class="hint-text">&#9662; Expand to see sub-arguments</span>
+      <span class="collapse-text">&#9652; Collapse</span>
+    </div>
+  </div>
+  <div class="chapter-body">
+    <div class="section-divider"></div>
+
+    <div class="sub-argument" id="ch8-1">
+      <div class="sub-arg-header" onclick="toggleSubArg('ch8-1')">
+        <span class="rhetorical-badge badge-resolution">Resolution</span>
+        <div class="sub-arg-content">
+          <div class="sub-arg-title">Sterility as Byproduct, Not Design</div>
+          <div class="sub-arg-preview">Darwin reframes hybrid sterility from evidence for special creation to evidence against it: if sterility were designed to prevent confusion, why is it so irregular and variable? The inconsistency is the clue.</div>
+          <div class="sub-arg-expand-hint">&#9662; Close reading</div>
+        </div>
+      </div>
+      <div class="sub-arg-detail">
+        <div class="detail-text">
+          Darwin's key insight is that hybrid sterility "could not possibly be of any advantage" to the hybrids themselves, and therefore could not have been produced by natural selection. It must be incidental on other constitutional changes. He marshals evidence showing that sterility grades continuously from complete fertility to complete sterility; that the same two species crossed reciprocally (male A x female B vs. male B x female A) often give wildly different results; and that the most experienced hybridizers (Kolreuter, Gartner, Herbert) disagree about the same species. This variability and inconsistency is, Darwin argues, exactly what we'd expect of an incidental byproduct, not a specially designed barrier.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ========= ARC: EVIDENCE FROM DEEP TIME AND SPACE ========= -->
+<div class="arc-marker"><div class="arc-label">Part IV &mdash; Evidence from Deep Time and Space</div></div>
+
+<!-- CHAPTER IX -->
+<div class="chapter-node" id="ch9">
+  <div class="chapter-dot"></div>
+  <div class="chapter-header" onclick="toggleChapter('ch9')">
+    <div class="chapter-number">Chapter IX</div>
+    <div class="chapter-title">On the Imperfection of the Geological Record</div>
+    <div class="chapter-role">Rhetorical role: Preemptive defense &mdash; explaining why the fossil record seems hostile to the theory</div>
+    <div class="chapter-summary">
+      Darwin confronts "the most obvious and gravest objection which can be urged against my theory":
+      the absence of finely graded fossil transitions. His response: the geological record is
+      incomparably imperfect. He makes the reader feel the immensity of geological time,
+      the rarity of fossilization, and the vast gaps between formations.
+    </div>
+    <div class="expand-hint">
+      <span class="hint-text">&#9662; Expand to see sub-arguments</span>
+      <span class="collapse-text">&#9652; Collapse</span>
+    </div>
+  </div>
+  <div class="chapter-body">
+    <div class="section-divider"></div>
+
+    <div class="sub-argument" id="ch9-1">
+      <div class="sub-arg-header" onclick="toggleSubArg('ch9-1')">
+        <span class="rhetorical-badge badge-concession">Concession</span>
+        <div class="sub-arg-content">
+          <div class="sub-arg-title">Acknowledging the Gravest Objection</div>
+          <div class="sub-arg-preview">"Geology assuredly does not reveal any such finely graduated organic chain; and this, perhaps, is the most obvious and gravest objection which can be urged against my theory."</div>
+          <div class="sub-arg-expand-hint">&#9662; Close reading</div>
+        </div>
+      </div>
+      <div class="sub-arg-detail">
+        <div class="detail-text">
+          Darwin does not minimize the difficulty. The fossil record appears to show species appearing suddenly and fully formed, exactly as special creation would predict. His entire counter-argument rests on a single premise: that the geological record is not a faithful archive but a fragmentary, biased, and gappy document. He conveys the immensity of time through vivid examples: the 72,584 feet of strata in Britain (nearly fourteen miles), the Craven fault with its 3,000-foot displacements invisible at the surface, and the vain attempt to "grapple with the idea of eternity" when contemplating denudation.
+          <div class="pivotal-quote">
+            <div class="close-reading-label">Pivotal Sentence</div>
+            <div class="quote-text">"The crust of the earth is a vast museum; but the natural collections have been made only at intervals of time immensely remote."</div>
+            <div class="quote-analysis">This metaphor transforms the reader's relationship to the fossil record. A museum with collections "made only at intervals" is not expected to show continuous gradations. The absence of transitional forms becomes not an objection to evolution but a prediction of imperfect preservation. Darwin is asking the reader to change what they expect the evidence to look like.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- CHAPTER X -->
+<div class="chapter-node" id="ch10">
+  <div class="chapter-dot"></div>
+  <div class="chapter-header" onclick="toggleChapter('ch10')">
+    <div class="chapter-number">Chapter X</div>
+    <div class="chapter-title">On the Geological Succession of Organic Beings</div>
+    <div class="chapter-role">Rhetorical role: Positive evidence &mdash; what the fossil record does show matches the theory perfectly</div>
+    <div class="chapter-summary">
+      Having explained away the gaps, Darwin turns to what the fossil record positively reveals:
+      the slow, successive appearance of new species; the fact that once lost they never reappear;
+      the gradual waxing and waning of groups; the affinity of extinct to living forms; and the
+      succession of similar types in the same geographical areas. All match the theory beautifully.
+    </div>
+    <div class="expand-hint">
+      <span class="hint-text">&#9662; Expand to see sub-arguments</span>
+      <span class="collapse-text">&#9652; Collapse</span>
+    </div>
+  </div>
+  <div class="chapter-body">
+    <div class="section-divider"></div>
+
+    <div class="sub-argument" id="ch10-1">
+      <div class="sub-arg-header" onclick="toggleSubArg('ch10-1')">
+        <span class="rhetorical-badge badge-evidence">Evidence</span>
+        <div class="sub-arg-content">
+          <div class="sub-arg-title">Species Once Lost Never Reappear</div>
+          <div class="sub-arg-preview">Darwin argues that this universal fact &mdash; that no extinct species has ever returned &mdash; is inexplicable on the theory of independent creation but follows naturally from descent with modification.</div>
+          <div class="sub-arg-expand-hint">&#9662; Close reading</div>
+        </div>
+      </div>
+      <div class="sub-arg-detail">
+        <div class="detail-text">
+          This is a classic Darwinian argument from pattern. If species were independently created, there is no reason why the same species should not be recreated when conditions recur. But they never are. This makes perfect sense if each species is a unique product of a particular lineage's history: even if conditions recur, the lineage that produced the original species is gone, and any new form arising from different ancestors will differ. Darwin makes this vivid with his pigeon analogy: we could perhaps re-breed something like a fantail from existing pigeons, but if the rock-pigeon itself were extinct, the result would inevitably differ.
+          <div class="pivotal-quote">
+            <div class="close-reading-label">Pivotal Sentence</div>
+            <div class="quote-text">"Each formation, on this view, does not mark a new and complete act of creation, but only an occasional scene, taken almost at hazard, in a slowly changing drama."</div>
+            <div class="quote-analysis">The theatrical metaphor &mdash; "an occasional scene, taken almost at hazard, in a slowly changing drama" &mdash; reframes the fossil record as a fragmentary script of a vast play, most of which we never witness. The word "drama" elevates geological succession from dry catalogue to narrative, aligning the reader's expectations with Darwin's view of life as a continuous, unfolding story.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- CHAPTERS XI-XII -->
+<div class="chapter-node" id="ch11">
+  <div class="chapter-dot"></div>
+  <div class="chapter-header" onclick="toggleChapter('ch11')">
+    <div class="chapter-number">Chapters XI &ndash; XII</div>
+    <div class="chapter-title">Geographical Distribution</div>
+    <div class="chapter-role">Rhetorical role: A new domain of evidence &mdash; patterns in space confirm the theory</div>
+    <div class="chapter-summary">
+      Darwin pivots from time to space. He shows that the distribution of organisms cannot be explained
+      by climate or physical conditions alone but makes perfect sense as the result of migration, barriers,
+      and descent with modification. Similar environments on different continents have utterly different
+      faunas; similar faunas across different environments share a continent. Islands reveal the
+      theory's predictive power most clearly.
+    </div>
+    <div class="expand-hint">
+      <span class="hint-text">&#9662; Expand to see sub-arguments</span>
+      <span class="collapse-text">&#9652; Collapse</span>
+    </div>
+  </div>
+  <div class="chapter-body">
+    <div class="section-divider"></div>
+
+    <div class="sub-argument" id="ch11-1">
+      <div class="sub-arg-header" onclick="toggleSubArg('ch11-1')">
+        <span class="rhetorical-badge badge-evidence">Evidence</span>
+        <div class="sub-arg-content">
+          <div class="sub-arg-title">Climate Cannot Explain Distribution</div>
+          <div class="sub-arg-preview">Australia, South Africa, and western South America share nearly identical climates between latitudes 25 and 35 degrees &mdash; yet their faunas and floras are "utterly dissimilar." Inheritance, not climate, explains why.</div>
+          <div class="sub-arg-expand-hint">&#9662; Close reading</div>
+        </div>
+      </div>
+      <div class="sub-arg-detail">
+        <div class="detail-text">
+          Darwin opens with a devastating comparison: the same latitudes on three different continents have completely different living things, yet organisms within the same continent &mdash; across wildly different climates &mdash; resemble each other far more. This is exactly backwards from what a creationist would predict but exactly what descent with modification predicts. He extends the argument to barriers: the isthmus of Panama separates utterly different marine faunas on its two sides, despite identical climate. But across the entire tropical Pacific, with no barriers, the fauna grades smoothly. "This bond, on my theory, is simply inheritance."
+          <div class="pivotal-quote">
+            <div class="close-reading-label">Pivotal Sentence</div>
+            <div class="quote-text">"We see in these facts some deep organic bond, prevailing throughout space and time, over the same areas of land and water, and independent of their physical conditions. The naturalist must feel little curiosity, who is not led to inquire what this bond is."</div>
+            <div class="quote-analysis">The phrase "deep organic bond" is Darwin's way of naming common descent without yet saying the word. The mild rebuke to the incurious naturalist is pointed: Darwin is challenging his colleagues to explain a pattern that is staring them in the face.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sub-argument" id="ch11-2">
+      <div class="sub-arg-header" onclick="toggleSubArg('ch11-2')">
+        <span class="rhetorical-badge badge-evidence">Evidence</span>
+        <div class="sub-arg-content">
+          <div class="sub-arg-title">Oceanic Islands as Natural Experiments</div>
+          <div class="sub-arg-preview">Oceanic islands lack native mammals and amphibians but have abundant birds and insects; their inhabitants resemble those of the nearest mainland. Darwin shows these patterns are inexplicable by creation but perfectly predicted by migration and modification.</div>
+          <div class="sub-arg-expand-hint">&#9662; Close reading</div>
+        </div>
+      </div>
+      <div class="sub-arg-detail">
+        <div class="detail-text">
+          Darwin's treatment of oceanic islands is some of his most compelling evidence. Why would a creator place no frogs or mammals on oceanic islands but plenty on continents with identical climates? Darwin's answer: frogs and mammals cannot cross salt water, while birds and windborne insects can. He supports this with his own experiments: soaking seeds in salt water to test survival (some germinate after weeks of immersion), suspending duck feet in water to show that freshwater molluscs cling to them and could be transported. He found 537 plants growing from three tablespoons of pond mud &mdash; a vivid demonstration of dispersal's hidden power.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ========= ARC: CONVERGENCE ========= -->
+<div class="arc-marker"><div class="arc-label">Part V &mdash; Convergence of Evidence</div></div>
+
+<!-- CHAPTER XIII -->
+<div class="chapter-node" id="ch13">
+  <div class="chapter-dot"></div>
+  <div class="chapter-header" onclick="toggleChapter('ch13')">
+    <div class="chapter-number">Chapter XIII</div>
+    <div class="chapter-title">Mutual Affinities: Morphology, Embryology, Rudimentary Organs</div>
+    <div class="chapter-role">Rhetorical role: The grand synthesis &mdash; multiple independent lines of evidence converge on one conclusion</div>
+    <div class="chapter-summary">
+      Darwin brings together classification, morphology, embryology, and rudimentary organs as four
+      independent lines of evidence that all point to descent with modification. The hierarchical
+      grouping of organisms, the unity of type underlying diverse adaptations, embryological resemblances,
+      and vestigial organs all become explicable as consequences of a shared evolutionary history.
+    </div>
+    <div class="expand-hint">
+      <span class="hint-text">&#9662; Expand to see sub-arguments</span>
+      <span class="collapse-text">&#9652; Collapse</span>
+    </div>
+  </div>
+  <div class="chapter-body">
+    <div class="section-divider"></div>
+
+    <div class="sub-argument" id="ch13-1">
+      <div class="sub-arg-header" onclick="toggleSubArg('ch13-1')">
+        <span class="rhetorical-badge badge-resolution">Resolution</span>
+        <div class="sub-arg-content">
+          <div class="sub-arg-title">Classification Reveals Genealogy</div>
+          <div class="sub-arg-preview">Darwin reinterprets the Linnaean hierarchy as a family tree: groups subordinate to groups are not an arbitrary filing system but a record of descent from common ancestors. "Propinquity of descent is the bond."</div>
+          <div class="sub-arg-expand-hint">&#9662; Close reading</div>
+        </div>
+      </div>
+      <div class="sub-arg-detail">
+        <div class="detail-text">
+          Darwin's argument here is that the entire enterprise of taxonomy makes sense only on the assumption of descent with modification. Why do classification characters correlate with each other in ways that form nested hierarchies? Why are rudimentary organs &mdash; useless to the organism &mdash; "of the highest importance" in classification? Why are adaptive characters (which should be most important to the organism) the least reliable for classification? All of these puzzles dissolve when we see classification as genealogy: organisms resemble each other because they share ancestors, and the degree of resemblance reflects the recency of common ancestry.
+          <div class="pivotal-quote">
+            <div class="close-reading-label">Pivotal Sentence</div>
+            <div class="quote-text">"I believe that something more is included; and that propinquity of descent,&mdash;the only known cause of the similarity of organic beings,&mdash;is the bond, hidden as it is by various degrees of modification, which is partially revealed to us by our classifications."</div>
+            <div class="quote-analysis">The phrase "the only known cause" is a quiet thunderclap. Darwin is not claiming that descent is the best explanation; he is claiming it is the only explanation anyone has ever offered for why organisms resemble each other in patterns. The alternative &mdash; "the plan of the Creator" &mdash; he has already dismissed as adding nothing to our knowledge.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sub-argument" id="ch13-2">
+      <div class="sub-arg-header" onclick="toggleSubArg('ch13-2')">
+        <span class="rhetorical-badge badge-evidence">Evidence</span>
+        <div class="sub-arg-content">
+          <div class="sub-arg-title">Embryology and Rudimentary Organs</div>
+          <div class="sub-arg-preview">Embryos of different species resemble each other far more than adults do. Rudimentary organs &mdash; male mammae, the teeth of fetal whales, the wings of flightless beetles &mdash; are unintelligible as designs but eloquent as historical traces.</div>
+          <div class="sub-arg-expand-hint">&#9662; Close reading</div>
+        </div>
+      </div>
+      <div class="sub-arg-detail">
+        <div class="detail-text">
+          Embryology and rudimentary organs provide Darwin with some of his most powerful evidence. Embryological resemblance suggests common ancestry because modifications tend to appear late in development and be inherited at corresponding ages. Rudimentary organs are "letters" in a word that has been partly erased: they no longer function but betray the organism's ancestry. Darwin lists examples with accumulative force: rudimentary teeth in fetal calves, rudimentary wing-stumps in flightless beetles, the tiny leg bones inside whale skeletons, the rudimentary stamens in female flowers. Each is unintelligible as a fresh creation but perfectly explicable as an inherited remnant.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ========= ARC: CONCLUSION ========= -->
+<div class="arc-marker"><div class="arc-label">Part VI &mdash; Recapitulation and Vision</div></div>
+
+<!-- CHAPTER XIV -->
+<div class="chapter-node" id="ch14">
+  <div class="chapter-dot"></div>
+  <div class="chapter-header" onclick="toggleChapter('ch14')">
+    <div class="chapter-number">Chapter XIV</div>
+    <div class="chapter-title">Recapitulation and Conclusion</div>
+    <div class="chapter-role">Rhetorical role: The summation &mdash; recapitulating the argument, answering objections, and looking to the future</div>
+    <div class="chapter-summary">
+      Darwin explicitly names his book "one long argument" and recapitulates its chain of reasoning.
+      He addresses the difficulties one final time, then turns to the positive evidence. He explains why
+      belief in immutable species persists, extends his theory tentatively to all life, envisions the
+      transformation of natural history, and closes with one of the most famous paragraphs in scientific literature.
+    </div>
+    <div class="expand-hint">
+      <span class="hint-text">&#9662; Expand to see sub-arguments</span>
+      <span class="collapse-text">&#9652; Collapse</span>
+    </div>
+  </div>
+  <div class="chapter-body">
+    <div class="section-divider"></div>
+
+    <div class="sub-argument" id="ch14-1">
+      <div class="sub-arg-header" onclick="toggleSubArg('ch14-1')">
+        <span class="rhetorical-badge badge-transition">Transition</span>
+        <div class="sub-arg-content">
+          <div class="sub-arg-title">"One Long Argument"</div>
+          <div class="sub-arg-preview">Darwin opens the final chapter by naming the rhetorical strategy of the entire book, recapitulating the chain of reasoning from variation through selection to the convergence of evidence from multiple domains.</div>
+          <div class="sub-arg-expand-hint">&#9662; Close reading</div>
+        </div>
+      </div>
+      <div class="sub-arg-detail">
+        <div class="detail-text">
+          The phrase "one long argument" reveals Darwin's self-awareness about the book's rhetorical structure. He recognizes that his case does not rest on a single decisive proof but on the cumulative weight of evidence from many sources: domestication, biogeography, paleontology, morphology, embryology, and rudimentary organs. Each strand is individually suggestive; together they form a cable that, Darwin believes, cannot be broken.
+          <div class="pivotal-quote">
+            <div class="close-reading-label">Pivotal Sentence</div>
+            <div class="quote-text">"As this whole volume is one long argument, it may be convenient to the reader to have the leading facts and inferences briefly recapitulated."</div>
+            <div class="quote-analysis">This sentence is often quoted as Darwin's own characterization of his method. The word "argument" is key: Darwin sees himself not as presenting a proof but as building a case, weighing evidence, addressing objections. The legal metaphor is apt &mdash; he is making a case before the court of scientific opinion.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sub-argument" id="ch14-2">
+      <div class="sub-arg-header" onclick="toggleSubArg('ch14-2')">
+        <span class="rhetorical-badge badge-concession">Concession</span>
+        <div class="sub-arg-content">
+          <div class="sub-arg-title">Final Acknowledgment of Difficulties</div>
+          <div class="sub-arg-preview">"I have felt these difficulties far too heavily during many years to doubt their weight." Darwin's final concession is also his most dignified: the objections are real, but "they do not overthrow the theory."</div>
+          <div class="sub-arg-expand-hint">&#9662; Close reading</div>
+        </div>
+      </div>
+      <div class="sub-arg-detail">
+        <div class="detail-text">
+          Darwin's closing treatment of difficulties is both a summary and a rhetorical crescendo. He lists every major objection, acknowledges each one's force, and then delivers his judgment: "Grave as these several difficulties are, in my judgment they do not overthrow the theory of descent with modification." The key move comes next: "the more important objections relate to questions on which we are confessedly ignorant; nor do we know how ignorant we are." This appeal to the unknown is not an evasion but an invitation to humility &mdash; we should not reject a well-supported theory simply because we cannot yet answer every question it raises.
+          <div class="pivotal-quote">
+            <div class="close-reading-label">Pivotal Sentence</div>
+            <div class="quote-text">"We do not know all the possible transitional gradations between the simplest and the most perfect organs; it cannot be pretended that we know all the varied means of Distribution during the long lapse of years, or that we know how imperfect the Geological Record is."</div>
+            <div class="quote-analysis">The triple repetition of "we do not know" is a rhetorical device that turns our ignorance from an objection against Darwin's theory into an objection against the confidence of his critics. If we are so ignorant, how can we be certain that the difficulties are fatal?</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sub-argument" id="ch14-3">
+      <div class="sub-arg-header" onclick="toggleSubArg('ch14-3')">
+        <span class="rhetorical-badge badge-hypothesis">Hypothesis</span>
+        <div class="sub-arg-content">
+          <div class="sub-arg-title">The Boldest Extension: All Life from One Prototype</div>
+          <div class="sub-arg-preview">Darwin extends his theory from species within genera to all life, suggesting "that probably all the organic beings which have ever lived on this earth have descended from some one primordial form, into which life was first breathed."</div>
+          <div class="sub-arg-expand-hint">&#9662; Close reading</div>
+        </div>
+      </div>
+      <div class="sub-arg-detail">
+        <div class="detail-text">
+          Darwin arrives at this breathtaking conclusion through a careful escalation: first he establishes descent within genera, then within classes, then across all animals and all plants, and finally to universal common ancestry. He hedges characteristically &mdash; "analogy may be a deceitful guide" &mdash; but the direction of the argument is unmistakable. The evidence: all life shares the same chemical composition, cellular structure, and fundamental laws of growth and reproduction. The same poison affects plants and animals similarly. The implication is staggering in its simplicity and scope.
+        </div>
+      </div>
+    </div>
+
+    <div class="sub-argument" id="ch14-4">
+      <div class="sub-arg-header" onclick="toggleSubArg('ch14-4')">
+        <span class="rhetorical-badge badge-transition">Transition</span>
+        <div class="sub-arg-content">
+          <div class="sub-arg-title">The Entangled Bank</div>
+          <div class="sub-arg-preview">Darwin closes with his most lyrical passage, contemplating an entangled bank and finding grandeur in the view that all life's diversity has been produced by natural laws from a simple beginning.</div>
+          <div class="sub-arg-expand-hint">&#9662; Close reading</div>
+        </div>
+      </div>
+      <div class="sub-arg-detail">
+        <div class="detail-text">
+          The famous closing paragraph is Darwin's final rhetorical stroke. Having spent 490 pages in argument, evidence, and concession, he allows himself a moment of lyrical vision. The "entangled bank" is a microcosm of the entire book: what looks like confused profusion is in fact the product of a few simple laws acting over immense time. The final sentence is among the most quoted in all of science.
+          <div class="pivotal-quote">
+            <div class="close-reading-label">Pivotal Sentence</div>
+            <div class="quote-text">"There is grandeur in this view of life, with its several powers, having been originally breathed into a few forms or into one; and that, whilst this planet has gone cycling on according to the fixed law of gravity, from so simple a beginning endless forms most beautiful and most wonderful have been, and are being, evolved."</div>
+            <div class="quote-analysis">The word "grandeur" is Darwin's answer to the charge that his theory degrades life. On the contrary, he insists, it elevates it: life is not a static catalogue of created kinds but a dynamic, unfolding process of infinite creativity. The echoing of Newton ("the fixed law of gravity") claims for natural selection the same status as the most established law in physics. And the final word &mdash; "evolved" &mdash; the only use of that word in the entire first edition, lands with the force of a conclusion long prepared for but never before stated so boldly.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Timeline end -->
+<div class="timeline-end">
+  <div class="timeline-end-dot"></div>
+  <div class="coda">
+    <div class="quote-text">
+      "It is interesting to contemplate an entangled bank, clothed with many plants of many kinds,
+      with birds singing on the bushes, with various insects flitting about, and with worms crawling
+      through the damp earth, and to reflect that these elaborately constructed forms, so different
+      from each other, and dependent on each other in so complex a manner, have all been produced
+      by laws acting around us."
+    </div>
+    <div class="attribution">&mdash; Charles Darwin, <em>On the Origin of Species</em>, closing paragraph</div>
+  </div>
+</div>
+
+</div><!-- end timeline -->
+
+<script>
+function toggleChapter(id) {
+  const node = document.getElementById(id);
+  const wasExpanded = node.classList.contains('expanded');
+
+  // Close all other chapters
+  document.querySelectorAll('.chapter-node.expanded').forEach(n => {
+    if (n.id !== id) {
+      n.classList.remove('expanded');
+      // Also close all sub-arguments within
+      n.querySelectorAll('.sub-argument.expanded').forEach(s => s.classList.remove('expanded'));
+    }
+  });
+
+  if (wasExpanded) {
+    node.classList.remove('expanded');
+    node.querySelectorAll('.sub-argument.expanded').forEach(s => s.classList.remove('expanded'));
+  } else {
+    node.classList.add('expanded');
+    // Scroll into view with offset for sticky nav
+    setTimeout(() => {
+      const rect = node.getBoundingClientRect();
+      const offset = 60;
+      if (rect.top < offset) {
+        window.scrollBy({ top: rect.top - offset, behavior: 'smooth' });
+      }
+    }, 50);
+  }
+}
+
+function toggleSubArg(id) {
+  const el = document.getElementById(id);
+  const wasExpanded = el.classList.contains('expanded');
+
+  // Close other sub-arguments in the same chapter
+  const parent = el.closest('.chapter-body');
+  if (parent) {
+    parent.querySelectorAll('.sub-argument.expanded').forEach(s => {
+      if (s.id !== id) s.classList.remove('expanded');
+    });
+  }
+
+  if (wasExpanded) {
+    el.classList.remove('expanded');
+  } else {
+    el.classList.add('expanded');
+    setTimeout(() => {
+      const rect = el.getBoundingClientRect();
+      const offset = 60;
+      if (rect.top < offset) {
+        window.scrollBy({ top: rect.top - offset, behavior: 'smooth' });
+      }
+    }, 50);
+  }
+
+  // Prevent the click from bubbling to the chapter header
+  event.stopPropagation();
+}
+
+// Prevent sub-argument clicks from toggling the chapter
+document.querySelectorAll('.sub-arg-header').forEach(header => {
+  header.addEventListener('click', e => e.stopPropagation());
+});
+</script>
+
+</body>
+</html>

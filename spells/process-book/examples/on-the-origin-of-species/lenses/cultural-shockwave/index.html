@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cultural Shockwave -- On the Origin of Species</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg: #0a0a0f;
+    --bg-surface: #12121a;
+    --bg-card: #1a1a26;
+    --text: #e8e6e1;
+    --text-dim: #9a978f;
+    --text-bright: #fff;
+    --accent: #c9a84c;
+    --religion: #9b59b6;
+    --science: #3498db;
+    --politics: #e74c3c;
+    --literature: #27ae60;
+    --law: #e67e22;
+    --philosophy: #1abc9c;
+    --ethics: #f1c40f;
+    --ring-1: rgba(201,168,76,0.08);
+    --ring-2: rgba(201,168,76,0.06);
+    --ring-3: rgba(201,168,76,0.05);
+    --ring-4: rgba(201,168,76,0.04);
+    --ring-5: rgba(201,168,76,0.03);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* --- Top bar --- */
+  .top-bar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 28px;
+    background: rgba(10,10,15,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(201,168,76,0.12);
+  }
+  .top-bar a {
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  .top-bar a:hover { color: #e0c76a; }
+  .top-bar .title {
+    font-family: 'Crimson Pro', serif;
+    font-size: 15px;
+    color: var(--text-dim);
+    font-weight: 400;
+  }
+  .top-bar .legend-toggle {
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text-dim);
+    background: none;
+    border: 1px solid rgba(201,168,76,0.2);
+    padding: 4px 12px;
+    border-radius: 4px;
+    transition: all 0.2s;
+  }
+  .top-bar .legend-toggle:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* --- Legend panel --- */
+  .legend-panel {
+    position: fixed;
+    top: 52px; right: 20px;
+    z-index: 999;
+    background: var(--bg-card);
+    border: 1px solid rgba(201,168,76,0.15);
+    border-radius: 8px;
+    padding: 16px 20px;
+    display: none;
+    min-width: 200px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  }
+  .legend-panel.open { display: block; }
+  .legend-panel h4 {
+    font-family: 'Crimson Pro', serif;
+    font-size: 14px;
+    color: var(--accent);
+    margin-bottom: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+    font-size: 13px;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  .legend-item:hover { color: var(--text); }
+  .legend-item.inactive { opacity: 0.3; }
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* --- Intro hero --- */
+  .hero {
+    padding: 100px 28px 40px;
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .hero h1 {
+    font-family: 'Crimson Pro', serif;
+    font-size: clamp(28px, 5vw, 44px);
+    font-weight: 300;
+    color: var(--text-bright);
+    line-height: 1.2;
+    margin-bottom: 12px;
+  }
+  .hero h1 em {
+    color: var(--accent);
+    font-style: italic;
+  }
+  .hero .subtitle {
+    font-size: 15px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    max-width: 560px;
+    margin: 0 auto 24px;
+  }
+  .hero .quote {
+    font-family: 'Crimson Pro', serif;
+    font-style: italic;
+    color: var(--text-dim);
+    font-size: 16px;
+    line-height: 1.6;
+    border-left: 2px solid var(--accent);
+    padding-left: 16px;
+    text-align: left;
+    max-width: 540px;
+    margin: 0 auto;
+  }
+  .hero .quote cite {
+    display: block;
+    font-style: normal;
+    color: var(--accent);
+    font-size: 13px;
+    margin-top: 6px;
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* --- Radial visualization --- */
+  .radial-container {
+    position: relative;
+    width: 100%;
+    max-width: 1100px;
+    margin: 20px auto 0;
+    aspect-ratio: 1;
+  }
+  @media (max-width: 800px) {
+    .radial-container { display: none; }
+    .timeline-section { display: block !important; }
+  }
+  @media (min-width: 801px) {
+    .timeline-section { display: none !important; }
+  }
+
+  .radial-svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* --- Center book --- */
+  .center-book {
+    cursor: default;
+  }
+  .center-book text {
+    font-family: 'Crimson Pro', serif;
+    fill: var(--accent);
+  }
+
+  /* --- Event dots --- */
+  .event-dot {
+    cursor: pointer;
+    transition: transform 0.2s, filter 0.2s;
+  }
+  .event-dot:hover {
+    filter: brightness(1.4);
+  }
+  .event-dot.inactive {
+    opacity: 0.08;
+    pointer-events: none;
+  }
+
+  /* --- Ring labels --- */
+  .ring-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    fill: rgba(201,168,76,0.35);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  /* --- Tooltip --- */
+  .tooltip {
+    position: fixed;
+    z-index: 2000;
+    background: var(--bg-card);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 8px;
+    padding: 14px 18px;
+    max-width: 320px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+  }
+  .tooltip.visible { opacity: 1; }
+  .tooltip .tt-year {
+    font-size: 11px;
+    color: var(--accent);
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+  .tooltip .tt-title {
+    font-family: 'Crimson Pro', serif;
+    font-size: 17px;
+    color: var(--text-bright);
+    margin-bottom: 4px;
+    line-height: 1.25;
+  }
+  .tooltip .tt-domain {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  .tooltip .tt-desc {
+    font-size: 12.5px;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+
+  /* --- Detail panel (modal) --- */
+  .detail-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(6px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .detail-overlay.open {
+    display: flex;
+  }
+  .detail-panel {
+    background: var(--bg-surface);
+    border: 1px solid rgba(201,168,76,0.15);
+    border-radius: 12px;
+    max-width: 640px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 32px;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  .detail-panel::-webkit-scrollbar { width: 6px; }
+  .detail-panel::-webkit-scrollbar-track { background: transparent; }
+  .detail-panel::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.2); border-radius: 3px; }
+  .detail-close {
+    position: absolute;
+    top: 16px; right: 16px;
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    font-size: 22px;
+    cursor: pointer;
+    width: 32px; height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s;
+  }
+  .detail-close:hover {
+    background: rgba(201,168,76,0.1);
+    color: var(--accent);
+  }
+  .detail-domain-badge {
+    display: inline-block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 3px;
+    margin-bottom: 8px;
+  }
+  .detail-year {
+    font-size: 13px;
+    color: var(--accent);
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+  .detail-title {
+    font-family: 'Crimson Pro', serif;
+    font-size: 26px;
+    color: var(--text-bright);
+    font-weight: 400;
+    line-height: 1.25;
+    margin-bottom: 16px;
+  }
+  .detail-section {
+    margin-bottom: 16px;
+  }
+  .detail-section h4 {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--accent);
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .detail-section p, .detail-section ul {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text-dim);
+  }
+  .detail-section ul {
+    padding-left: 18px;
+  }
+  .detail-section li {
+    margin-bottom: 4px;
+  }
+  .detail-section blockquote {
+    font-family: 'Crimson Pro', serif;
+    font-style: italic;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--text);
+    border-left: 2px solid var(--accent);
+    padding-left: 14px;
+    margin: 8px 0;
+  }
+  .detail-section a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(201,168,76,0.3);
+    transition: border-color 0.2s;
+  }
+  .detail-section a:hover {
+    border-color: var(--accent);
+  }
+  .detail-figures {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+  .detail-figures strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  /* --- Mobile timeline fallback --- */
+  .timeline-section {
+    padding: 20px 20px 60px;
+    max-width: 680px;
+    margin: 0 auto;
+  }
+  .era-group {
+    margin-bottom: 36px;
+  }
+  .era-group h2 {
+    font-family: 'Crimson Pro', serif;
+    font-size: 22px;
+    color: var(--accent);
+    font-weight: 400;
+    margin-bottom: 16px;
+    border-bottom: 1px solid rgba(201,168,76,0.15);
+    padding-bottom: 8px;
+  }
+  .tl-card {
+    background: var(--bg-card);
+    border: 1px solid rgba(201,168,76,0.08);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.15s;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .tl-card:hover {
+    border-color: rgba(201,168,76,0.25);
+    transform: translateX(4px);
+  }
+  .tl-card-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 5px;
+  }
+  .tl-card-body {}
+  .tl-card-year {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 1px;
+  }
+  .tl-card-title {
+    font-family: 'Crimson Pro', serif;
+    font-size: 17px;
+    color: var(--text-bright);
+    margin-top: 2px;
+  }
+  .tl-card-domain {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 3px;
+  }
+
+  /* --- Pulse animation --- */
+  @keyframes pulse-ring {
+    0% { opacity: 0.15; transform: scale(1); }
+    50% { opacity: 0.05; transform: scale(1.02); }
+    100% { opacity: 0.15; transform: scale(1); }
+  }
+  .ring-pulse {
+    animation: pulse-ring 6s ease-in-out infinite;
+  }
+  .ring-pulse:nth-child(2) { animation-delay: 1s; }
+  .ring-pulse:nth-child(3) { animation-delay: 2s; }
+  .ring-pulse:nth-child(4) { animation-delay: 3s; }
+  .ring-pulse:nth-child(5) { animation-delay: 4s; }
+
+  /* --- Footer --- */
+  .footer {
+    text-align: center;
+    padding: 40px 20px 30px;
+    font-size: 12px;
+    color: var(--text-dim);
+    opacity: 0.6;
+  }
+  .footer a { color: var(--accent); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<!-- Top bar -->
+<div class="top-bar">
+  <a href="../../index.html">&larr; Back to Book</a>
+  <span class="title">Cultural Shockwave</span>
+  <button class="legend-toggle" onclick="toggleLegend()">Legend</button>
+</div>
+
+<!-- Legend -->
+<div class="legend-panel" id="legendPanel">
+  <h4>Domains</h4>
+  <div class="legend-item" data-domain="religion" onclick="filterDomain('religion')">
+    <span class="legend-dot" style="background:var(--religion)"></span> Religion
+  </div>
+  <div class="legend-item" data-domain="science" onclick="filterDomain('science')">
+    <span class="legend-dot" style="background:var(--science)"></span> Science
+  </div>
+  <div class="legend-item" data-domain="politics" onclick="filterDomain('politics')">
+    <span class="legend-dot" style="background:var(--politics)"></span> Politics
+  </div>
+  <div class="legend-item" data-domain="literature" onclick="filterDomain('literature')">
+    <span class="legend-dot" style="background:var(--literature)"></span> Literature
+  </div>
+  <div class="legend-item" data-domain="law" onclick="filterDomain('law')">
+    <span class="legend-dot" style="background:var(--law)"></span> Law / Education
+  </div>
+  <div class="legend-item" data-domain="philosophy" onclick="filterDomain('philosophy')">
+    <span class="legend-dot" style="background:var(--philosophy)"></span> Philosophy
+  </div>
+  <div class="legend-item" data-domain="ethics" onclick="filterDomain('ethics')">
+    <span class="legend-dot" style="background:var(--ethics)"></span> Ethics
+  </div>
+  <div style="margin-top:10px;border-top:1px solid rgba(201,168,76,0.1);padding-top:8px;">
+    <div class="legend-item" onclick="filterDomain(null)" style="color:var(--accent);">Show All</div>
+  </div>
+</div>
+
+<!-- Tooltip -->
+<div class="tooltip" id="tooltip">
+  <div class="tt-year"></div>
+  <div class="tt-title"></div>
+  <div class="tt-domain"></div>
+  <div class="tt-desc"></div>
+</div>
+
+<!-- Detail overlay -->
+<div class="detail-overlay" id="detailOverlay" onclick="if(event.target===this)closeDetail()">
+  <div class="detail-panel" id="detailPanel">
+    <button class="detail-close" onclick="closeDetail()">&times;</button>
+    <div id="detailContent"></div>
+  </div>
+</div>
+
+<!-- Hero -->
+<div class="hero">
+  <h1>The <em>Cultural Shockwave</em> of Darwin's Origin</h1>
+  <p class="subtitle">
+    How one book rippled through religion, philosophy, politics, literature, law, and ethics &mdash;
+    from the 1860 Oxford debate to modern courtrooms.
+  </p>
+  <div class="quote">
+    "There is grandeur in this view of life, with its several powers, having been originally breathed
+    into a few forms or into one; and that, whilst this planet has gone cycling on according to the
+    fixed law of gravity, from so simple a beginning endless forms most beautiful and most wonderful
+    have been, and are being, evolved."
+    <cite>Charles Darwin, On the Origin of Species (1859), final paragraph</cite>
+  </div>
+</div>
+
+<!-- Radial visualization (desktop) -->
+<div class="radial-container" id="radialContainer">
+  <svg class="radial-svg" id="radialSvg" viewBox="0 0 1100 1100"></svg>
+</div>
+
+<!-- Mobile timeline fallback -->
+<div class="timeline-section" id="timelineSection"></div>
+
+<!-- Footer -->
+<div class="footer">
+  Data drawn from <a href="https://en.wikipedia.org/wiki/On_the_Origin_of_Species" target="_blank">Wikipedia</a>
+  and scholarly sources. &bull; An interactive exploration of Darwin's cultural legacy.
+</div>
+
+<script>
+// ============================================================
+//  EVENT DATA — 42 cultural impacts, 1858-present
+// ============================================================
+const EVENTS = [
+  // --- ERA 1: 1858–1869 ---
+  {
+    id: 1, year: 1858, era: 1,
+    title: "Darwin-Wallace Papers at the Linnean Society",
+    domain: "science",
+    short: "Joint presentation of evolution by natural selection to the scientific world.",
+    what: "On 1 July 1858, papers by Charles Darwin and Alfred Russel Wallace were read to the Linnean Society of London, presenting the theory of evolution by natural selection for the first time. Wallace had independently arrived at nearly the same conclusions as Darwin, prompting the joint presentation arranged by Charles Lyell and Joseph Hooker.",
+    passage: "\"Mr. Wallace, who is now studying the natural history of the Malay archipelago, has arrived at almost exactly the same general conclusions that I have on the origin of species.\" &mdash; Darwin, Introduction to the Origin",
+    figures: "Charles Darwin, Alfred Russel Wallace, Charles Lyell, Joseph Hooker",
+    impact: "Established scientific priority for both men and set the stage for the Origin's publication the following year. The Linnean Society president famously remarked at year's end that no revolutionary discoveries had been presented that year.",
+    links: '<a href="https://en.wikipedia.org/wiki/On_the_Tendency_of_Species_to_form_Varieties" target="_blank">Wikipedia: 1858 Papers</a>'
+  },
+  {
+    id: 2, year: 1859, era: 1,
+    title: "Publication of On the Origin of Species",
+    domain: "science",
+    short: "All 1,250 copies of the first edition sold on the first day.",
+    what: "Published on 24 November 1859 by John Murray in London, the first edition of 1,250 copies sold out immediately. Darwin presented his theory that populations evolve over generations through natural selection, supported by evidence from his voyage on HMS Beagle and decades of subsequent research.",
+    passage: "\"I am fully convinced that species are not immutable; but that those belonging to what are called the same genera are lineal descendants of some other and generally extinct species.\" &mdash; Darwin, Introduction",
+    figures: "Charles Darwin, John Murray (publisher)",
+    impact: "Arguably the most influential scientific book ever published. It fundamentally changed humanity's understanding of its place in nature and launched controversies that continue to this day.",
+    links: '<a href="https://en.wikipedia.org/wiki/On_the_Origin_of_Species" target="_blank">Wikipedia: Origin of Species</a>'
+  },
+  {
+    id: 3, year: 1860, era: 1,
+    title: "The 1860 Oxford Evolution Debate",
+    domain: "religion",
+    short: "Huxley vs. Wilberforce: the legendary confrontation over ape ancestry.",
+    what: "On 30 June 1860, at the Oxford University Museum, Bishop Samuel Wilberforce debated Thomas Henry Huxley before a crowd of over 1,000. Wilberforce reportedly asked Huxley whether he was descended from an ape on his grandmother's or grandfather's side. Huxley replied he would rather have an ape for a grandfather than a man who used his abilities to ridicule scientific discussion.",
+    passage: "The debate centered on Darwin's core argument that species are not independently created but descend from common ancestors &mdash; the very thesis of the Origin's Introduction.",
+    figures: "Thomas Henry Huxley (\"Darwin's Bulldog\"), Bishop Samuel Wilberforce, Joseph Hooker, Robert FitzRoy",
+    impact: "Though no verbatim transcript exists, the debate became a founding myth of the science-vs-religion narrative. It galvanized public support for Darwin's theory and established Huxley as its foremost champion.",
+    links: '<a href="https://en.wikipedia.org/wiki/1860_Oxford_evolution_debate" target="_blank">Wikipedia: 1860 Oxford Debate</a>'
+  },
+  {
+    id: 4, year: 1860, era: 1,
+    title: "Asa Gray Defends Darwin in America",
+    domain: "religion",
+    short: "A devout Christian botanist became Darwin's chief American advocate.",
+    what: "Beginning in March 1860, Harvard botanist Asa Gray published a series of reviews and essays defending the Origin while arguing that evolution was compatible with Christian theism. Gray had been in correspondence with Darwin since 1857 and was the first American scientist to publicly support the theory.",
+    passage: "Darwin had written to Gray that he was \"inclined to look at everything as resulting from designed laws, with the details, whether good or bad, left to the working out of what we may call chance.\"",
+    figures: "Asa Gray, Charles Darwin, Louis Agassiz (Gray's opponent at Harvard)",
+    impact: "Gray's advocacy created space for theistic evolution &mdash; the position that God works through natural processes. His collected essays, Darwiniana (1876), remain a landmark in the science-faith dialogue.",
+    links: '<a href="https://en.wikipedia.org/wiki/Asa_Gray" target="_blank">Wikipedia: Asa Gray</a>'
+  },
+  {
+    id: 5, year: 1860, era: 1,
+    title: "Seven Essays and Reviews Controversy",
+    domain: "religion",
+    short: "Anglican clergy faced heresy charges for accommodating science.",
+    what: "In 1860, seven liberal Anglican theologians published Essays and Reviews, which engaged with biblical criticism and scientific findings including Darwin's theory. The book sold more copies than the Origin itself and two contributors were tried for heresy (and acquitted on appeal in 1864).",
+    passage: "The essayists challenged the literal reading of Genesis that Darwin's subtitle &mdash; \"the Preservation of Favoured Races in the Struggle for Life\" &mdash; seemed to undermine.",
+    figures: "Frederick Temple (later Archbishop of Canterbury), Baden Powell, Benjamin Jowett",
+    impact: "The controversy showed that the challenge to traditional religion came not only from scientists but from within the Church itself. It marked the beginning of liberal theology's engagement with evolution.",
+    links: '<a href="https://en.wikipedia.org/wiki/Essays_and_Reviews" target="_blank">Wikipedia: Essays and Reviews</a>'
+  },
+  {
+    id: 6, year: 1864, era: 1,
+    title: "Herbert Spencer Coins \"Survival of the Fittest\"",
+    domain: "philosophy",
+    short: "A phrase often misattributed to Darwin, with vast ideological consequences.",
+    what: "In Principles of Biology (1864), philosopher Herbert Spencer coined the phrase \"survival of the fittest\" after reading the Origin, drawing parallels between Darwin's natural selection and his own laissez-faire economic philosophy. Spencer wrote: \"This survival of the fittest, which I have here sought to express in mechanical terms, is that which Mr. Darwin has called 'natural selection.'\"",
+    passage: "Darwin's own phrase was \"natural selection\" and \"the preservation of favoured races in the struggle for life.\" He adopted Spencer's phrase only in the 5th edition (1869) at Wallace's suggestion.",
+    figures: "Herbert Spencer, Alfred Russel Wallace, Charles Darwin",
+    impact: "The phrase became the most famous (and most misunderstood) summary of evolutionary theory. It was used to justify laissez-faire capitalism, imperialism, and racial hierarchies &mdash; applications Darwin never intended. 'Fittest' meant 'best adapted,' not 'strongest.'",
+    links: '<a href="https://en.wikipedia.org/wiki/Survival_of_the_fittest" target="_blank">Wikipedia: Survival of the Fittest</a> &bull; <a href="https://en.wikipedia.org/wiki/Herbert_Spencer" target="_blank">Wikipedia: Herbert Spencer</a>'
+  },
+  {
+    id: 7, year: 1866, era: 1,
+    title: "Ernst Haeckel Popularizes Darwin in Germany",
+    domain: "science",
+    short: "Haeckel's vivid illustrations and lectures brought evolution to the German public.",
+    what: "German biologist Ernst Haeckel published Generelle Morphologie (1866) and the popular Natrliche Schpfungsgeschichte (1868), introducing Darwin's ideas to German-speaking audiences. Haeckel coined many biological terms including 'ecology' and 'phylogeny,' and produced elaborate illustrations of organisms and evolutionary trees.",
+    passage: "Haeckel extended Darwin's argument about the \"mutual affinities of organic beings\" into spectacular visual genealogies of all life.",
+    figures: "Ernst Haeckel, Rudolf Virchow (critic)",
+    impact: "Haeckel made evolution a cultural force in Germany, though he also promoted a problematic 'recapitulation theory' and his ideas were later co-opted by racial theorists. His artistic depictions of nature remain iconic.",
+    links: '<a href="https://en.wikipedia.org/wiki/Ernst_Haeckel" target="_blank">Wikipedia: Ernst Haeckel</a>'
+  },
+  {
+    id: 8, year: 1869, era: 1,
+    title: "Matthew Arnold's \"Dover Beach\" Published",
+    domain: "literature",
+    short: "A poem capturing the Victorian crisis of faith in the wake of science.",
+    what: "Though likely drafted in the early 1850s, Matthew Arnold's \"Dover Beach\" was published in 1867. Its famous closing image of a world where \"ignorant armies clash by night\" and the \"Sea of Faith\" retreats captured the spiritual anxiety that Darwin's work intensified. Arnold saw the erosion of religious certainty as the defining crisis of his age.",
+    passage: "Arnold's \"melancholy, long, withdrawing roar\" of faith echoed Darwin's quiet displacement of divine creation with natural law.",
+    figures: "Matthew Arnold",
+    impact: "\"Dover Beach\" became the quintessential poem of Victorian doubt. It remains widely anthologized as a literary response to the intellectual revolution Darwin helped catalyze.",
+    links: '<a href="https://en.wikipedia.org/wiki/Dover_Beach" target="_blank">Wikipedia: Dover Beach</a>'
+  },
+  // --- ERA 2: 1870–1899 ---
+  {
+    id: 9, year: 1871, era: 2,
+    title: "The Descent of Man Published",
+    domain: "science",
+    short: "Darwin explicitly applied evolution to humanity, introducing sexual selection.",
+    what: "In The Descent of Man, and Selection in Relation to Sex (1871), Darwin addressed what he had deliberately avoided in the Origin: human evolution. He argued that humans descended from ape-like ancestors and introduced the theory of sexual selection. The book was far more controversial than the Origin, as it directly challenged humanity's special status.",
+    passage: "In the Origin, Darwin had written only: \"Light will be thrown on the origin of man and his history.\" The Descent made that light blindingly explicit.",
+    figures: "Charles Darwin, St. George Mivart (critic)",
+    impact: "The book forced Victorian society to grapple with human ancestry directly. Its passages on race and gender reflected (and reinforced) Victorian prejudices, making it both groundbreaking and deeply problematic by modern standards.",
+    links: '<a href="https://en.wikipedia.org/wiki/The_Descent_of_Man,_and_Selection_in_Relation_to_Sex" target="_blank">Wikipedia: Descent of Man</a>'
+  },
+  {
+    id: 10, year: 1872, era: 2,
+    title: "George Eliot's Middlemarch and Darwinian Realism",
+    domain: "literature",
+    short: "The novel as a form of social natural history.",
+    what: "George Eliot's Middlemarch (1871-72) embodied a Darwinian vision of society as a complex ecosystem. Eliot was a close reader of Darwin and in her essay 'The Natural History of German Life' (1856) had already argued for art grounded in dispassionate observation. Her novels treated provincial English life with the same empirical rigor Darwin brought to natural history.",
+    passage: "Eliot's ecological vision of human community parallels Darwin's \"entangled bank\" passage: organisms \"so different from each other, and dependent on each other in so complex a manner.\"",
+    figures: "George Eliot (Mary Ann Evans), George Henry Lewes",
+    impact: "Middlemarch established the Darwinian realist novel as a major literary form, treating human society as an interconnected web of causes and effects rather than a morality tale.",
+    links: '<a href="https://en.wikipedia.org/wiki/Middlemarch" target="_blank">Wikipedia: Middlemarch</a>'
+  },
+  {
+    id: 11, year: 1875, era: 2,
+    title: "Social Darwinism and the Gilded Age",
+    domain: "politics",
+    short: "\"Survival of the fittest\" became a rallying cry for unfettered capitalism.",
+    what: "By the 1870s-80s, Herbert Spencer's application of evolutionary language to economics and society &mdash; Social Darwinism &mdash; was embraced by American industrialists like Andrew Carnegie and John D. Rockefeller to justify vast inequality. Spencer's 1875 lectures in America drew enormous audiences. William Graham Sumner at Yale became Social Darwinism's chief academic champion.",
+    passage: "The misuse of Darwin's \"struggle for existence\" (Chapter 3) to justify economic competition ignored Darwin's own observation that cooperation and mutual dependence were equally natural.",
+    figures: "Herbert Spencer, Andrew Carnegie, William Graham Sumner, John D. Rockefeller",
+    impact: "Social Darwinism provided intellectual cover for laissez-faire economics, opposition to social welfare, and imperialist expansion. Darwin himself was uneasy with Spencer's conclusions. The ideology persisted well into the 20th century.",
+    links: '<a href="https://en.wikipedia.org/wiki/Social_Darwinism" target="_blank">Wikipedia: Social Darwinism</a>'
+  },
+  {
+    id: 12, year: 1883, era: 2,
+    title: "Francis Galton Founds Eugenics",
+    domain: "ethics",
+    short: "Darwin's cousin coined \"eugenics\" and launched the darkest legacy of evolutionary thought.",
+    what: "Francis Galton, Darwin's half-cousin, coined the term \"eugenics\" (from Greek eugenes, \"well-born\") in 1883 in his book Inquiries into Human Faculty. Inspired by Darwin's work on heredity and selection, Galton proposed that human breeding could be guided to improve the race. He emphasized \"positive eugenics\" &mdash; encouraging reproduction among the \"fit.\"",
+    passage: "Galton extrapolated from Darwin's Chapter 1 on \"Variation Under Domestication\" and the power of artificial selection &mdash; \"how great is the power of man in accumulating by his Selection successive slight variations\" &mdash; to human populations.",
+    figures: "Francis Galton, Charles Darwin (who expressed mixed views)",
+    impact: "Eugenics became a global movement that led to forced sterilization laws in over 30 US states, Canada, and Scandinavia, and was eventually taken to its horrific extreme by Nazi Germany. It remains the most devastating misapplication of Darwinian ideas.",
+    links: '<a href="https://en.wikipedia.org/wiki/Francis_Galton" target="_blank">Wikipedia: Francis Galton</a> &bull; <a href="https://en.wikipedia.org/wiki/Eugenics" target="_blank">Wikipedia: Eugenics</a>'
+  },
+  {
+    id: 13, year: 1882, era: 2,
+    title: "Darwin Buried in Westminster Abbey",
+    domain: "science",
+    short: "The Church of England honored the man who challenged its worldview.",
+    what: "When Darwin died on 19 April 1882, his family planned a quiet burial near his home. But a petition organized by William Spottiswoode (President of the Royal Society) and supported by members of Parliament secured a state funeral at Westminster Abbey. Darwin was buried beside Isaac Newton and John Herschel.",
+    passage: "The Abbey burial symbolized the reconciliation Darwin had hoped for in his conclusion: \"To my mind it accords better with what we know of the laws impressed on matter by the Creator.\"",
+    figures: "Charles Darwin, William Spottiswoode, Joseph Hooker, Thomas Huxley (pallbearers)",
+    impact: "The Church's acceptance of Darwin's burial in its most sacred space signaled that, for mainstream Anglicanism at least, evolution and faith could coexist.",
+    links: '<a href="https://en.wikipedia.org/wiki/Charles_Darwin%27s_funeral" target="_blank">Wikipedia: Darwin\'s Funeral</a>'
+  },
+  {
+    id: 14, year: 1891, era: 2,
+    title: "Thomas Hardy's Tess of the d'Urbervilles",
+    domain: "literature",
+    short: "Characters at the mercy of heredity and environment in a Darwinian world.",
+    what: "Hardy's Tess (1891) and later Jude the Obscure (1895) depicted characters crushed by forces beyond their control &mdash; heredity, environment, and social convention. Hardy was deeply influenced by Darwin and saw human fate as governed by the same impersonal natural laws that governed all life.",
+    passage: "Hardy's fatalism echoes Darwin's \"war of nature, from famine and death\" in the Origin's final paragraph, but strips away Darwin's concluding grandeur.",
+    figures: "Thomas Hardy",
+    impact: "Hardy's novels pioneered literary naturalism in England, presenting a post-Darwinian world where traditional morality and divine justice offered no comfort.",
+    links: '<a href="https://en.wikipedia.org/wiki/Tess_of_the_d%27Urbervilles" target="_blank">Wikipedia: Tess of the d\'Urbervilles</a>'
+  },
+  {
+    id: 15, year: 1895, era: 2,
+    title: "H.G. Wells' The Time Machine",
+    domain: "literature",
+    short: "Darwinian speculation about humanity's evolutionary future.",
+    what: "H.G. Wells, who had studied under Thomas Huxley, imagined in The Time Machine (1895) a far future where humanity had diverged into two species: the passive Eloi and the predatory Morlocks &mdash; evolved from the Victorian upper and working classes respectively. The novel applied Darwinian logic to human social divisions.",
+    passage: "Wells dramatized Darwin's principle of \"Divergence of Character\" from Chapter 4, where natural selection causes populations to split into increasingly distinct forms.",
+    figures: "H.G. Wells, Thomas Henry Huxley (Wells' teacher)",
+    impact: "The novel launched evolutionary science fiction and posed a question that still haunts us: will humanity's social divisions lead to biological divergence?",
+    links: '<a href="https://en.wikipedia.org/wiki/The_Time_Machine" target="_blank">Wikipedia: The Time Machine</a>'
+  },
+  {
+    id: 16, year: 1893, era: 2,
+    title: "Huxley's \"Evolution and Ethics\" Lecture",
+    domain: "ethics",
+    short: "Darwin's Bulldog argued that ethics must resist, not follow, nature.",
+    what: "In his famous 1893 Romanes Lecture, Thomas Henry Huxley argued that human ethical progress depends on combating the cosmic process of evolution, not imitating it. He rejected the Social Darwinist idea that nature provides a moral guide, insisting that civilization requires us to fight against natural selection's cruelty.",
+    passage: "Huxley directly challenged the misuse of Darwin's \"struggle for existence\" as a moral principle, arguing that \"the ethical progress of society depends, not on imitating the cosmic process... but in combating it.\"",
+    figures: "Thomas Henry Huxley",
+    impact: "The lecture drew a critical line between biological evolution and moral philosophy, influencing thinkers from Peter Kropotkin to modern evolutionary ethicists.",
+    links: '<a href="https://en.wikipedia.org/wiki/Evolution_and_Ethics" target="_blank">Wikipedia: Evolution and Ethics</a>'
+  },
+  {
+    id: 17, year: 1896, era: 2,
+    title: "Kropotkin's Mutual Aid",
+    domain: "philosophy",
+    short: "Cooperation, not just competition, as a factor in evolution.",
+    what: "Russian anarchist and naturalist Peter Kropotkin published Mutual Aid: A Factor of Evolution (serialized 1890-96, book 1902), arguing that cooperation within species was as important as competition. Drawing on his own observations in Siberia and a selective reading of Darwin, Kropotkin challenged the Social Darwinist interpretation.",
+    passage: "Kropotkin cited Darwin's own observation from the Origin that species \"dependent on each other in so complex a manner\" thrive through interdependence, not just competition.",
+    figures: "Peter Kropotkin, Thomas Huxley (whose essay prompted Kropotkin's response)",
+    impact: "Mutual Aid provided intellectual ammunition for anarchism, socialism, and later the study of altruism in evolutionary biology. Modern research on kin selection and reciprocal altruism has vindicated many of Kropotkin's insights.",
+    links: '<a href="https://en.wikipedia.org/wiki/Mutual_Aid:_A_Factor_of_Evolution" target="_blank">Wikipedia: Mutual Aid</a>'
+  },
+  // --- ERA 3: 1900–1949 ---
+  {
+    id: 18, year: 1900, era: 3,
+    title: "Rediscovery of Mendel's Genetics",
+    domain: "science",
+    short: "The missing mechanism: heredity explained at last.",
+    what: "In 1900, three botanists &mdash; Hugo de Vries, Carl Correns, and Erich von Tschermak &mdash; independently rediscovered Gregor Mendel's 1866 laws of heredity. Darwin had struggled to explain how variations were inherited without being blended away; Mendelian genetics provided the answer, though the synthesis with Darwinism took decades.",
+    passage: "Darwin wrote in Chapter 1 of the Origin: \"The laws governing inheritance are quite unknown\" &mdash; Mendel's work, published seven years after the Origin, was the answer Darwin never found.",
+    figures: "Gregor Mendel, Hugo de Vries, Carl Correns, Erich von Tschermak",
+    impact: "Initially, Mendelians and Darwinians were rivals; it took the Modern Synthesis of the 1930s-40s to unite natural selection with genetics into the framework of evolutionary biology we know today.",
+    links: '<a href="https://en.wikipedia.org/wiki/Mendel%27s_laws" target="_blank">Wikipedia: Mendel\'s Laws</a>'
+  },
+  {
+    id: 19, year: 1903, era: 3,
+    title: "G.E. Moore and the Naturalistic Fallacy",
+    domain: "philosophy",
+    short: "A devastating philosophical critique of evolutionary ethics.",
+    what: "In Principia Ethica (1903), philosopher G.E. Moore formulated the \"naturalistic fallacy\" &mdash; the error of defining moral \"good\" in terms of any natural property, including evolutionary fitness. Moore argued that you cannot derive what ought to be from what is, directly challenging attempts to build ethics on Darwinian foundations.",
+    passage: "Moore's critique targeted Social Darwinists who derived moral imperatives from Darwin's description of nature as a \"struggle for existence\" and \"survival of the fittest.\"",
+    figures: "G.E. Moore, Herbert Spencer (primary target)",
+    impact: "The naturalistic fallacy remains a fundamental concept in moral philosophy. It effectively severed the link between evolutionary biology and normative ethics that Spencer and others had tried to forge.",
+    links: '<a href="https://en.wikipedia.org/wiki/Naturalistic_fallacy" target="_blank">Wikipedia: Naturalistic Fallacy</a>'
+  },
+  {
+    id: 20, year: 1910, era: 3,
+    title: "Dewey's \"The Influence of Darwin on Philosophy\"",
+    domain: "philosophy",
+    short: "Pragmatism as the philosophical offspring of Darwinian thinking.",
+    what: "John Dewey published his landmark essay in 1910, arguing that Darwin's Origin had revolutionized philosophy itself by replacing the search for fixed essences with the study of change and adaptation. Dewey saw the combination of the words 'origin' and 'species' as embodying a wider intellectual revolt against static, metaphysical thinking.",
+    passage: "Dewey argued that Darwin destroyed the idea of fixed natural kinds &mdash; the \"species\" that philosophers since Aristotle had treated as eternal &mdash; and replaced them with populations in flux.",
+    figures: "John Dewey, William James, Charles Sanders Peirce",
+    impact: "Dewey's essay crystallized pragmatism's debt to Darwin and influenced a century of philosophy. The idea that truth is not fixed but evolves through inquiry became central to American intellectual life.",
+    links: '<a href="https://en.wikipedia.org/wiki/John_Dewey" target="_blank">Wikipedia: John Dewey</a>'
+  },
+  {
+    id: 21, year: 1925, era: 3,
+    title: "The Scopes \"Monkey\" Trial",
+    domain: "law",
+    short: "The most famous courtroom clash between evolution and creationism.",
+    what: "In July 1925 in Dayton, Tennessee, high school teacher John Scopes was tried for violating the Butler Act, which prohibited teaching human evolution. Clarence Darrow defended Scopes against prosecutor William Jennings Bryan. The trial was a media sensation &mdash; the first to be broadcast live on national radio. Scopes was convicted and fined $100, but the verdict was overturned on a technicality.",
+    passage: "The prosecution specifically targeted the teaching of Darwin's idea that humans descended from lower organisms &mdash; the implication Darwin hinted at in the Origin: \"Light will be thrown on the origin of man and his history.\"",
+    figures: "John T. Scopes, Clarence Darrow, William Jennings Bryan, H.L. Mencken (covering journalist)",
+    impact: "The trial exposed the deep rift between modernism and fundamentalism in American culture. It discouraged the teaching of evolution for decades afterward. Bryan died five days after the trial ended. Mencken's scathing coverage shaped public memory of the event.",
+    links: '<a href="https://en.wikipedia.org/wiki/Scopes_trial" target="_blank">Wikipedia: Scopes Trial</a>'
+  },
+  {
+    id: 22, year: 1925, era: 3,
+    title: "The Fundamentals and Anti-Evolution Movement",
+    domain: "religion",
+    short: "Christian fundamentalism organized against Darwinism after World War I.",
+    what: "Between 1910 and 1915, The Fundamentals &mdash; a set of 90 essays &mdash; was published defending orthodox Protestant theology against modernism and higher criticism. After WWI, William Jennings Bryan led a campaign that resulted in anti-evolution laws in Tennessee (1925), Mississippi (1926), and Arkansas (1928). The movement reflected a broader anxiety about modernity.",
+    passage: "The fundamentalist movement rejected Darwin's core thesis: \"that each species has been independently created &mdash; is erroneous.\"",
+    figures: "William Jennings Bryan, A.C. Dixon, Reuben Torrey",
+    impact: "Fundamentalism became a permanent feature of American religious and political life. The anti-evolution movement retreated after Scopes but re-emerged in new forms (creation science, intelligent design) in later decades.",
+    links: '<a href="https://en.wikipedia.org/wiki/The_Fundamentals" target="_blank">Wikipedia: The Fundamentals</a>'
+  },
+  {
+    id: 23, year: 1930, era: 3,
+    title: "The Modern Evolutionary Synthesis Begins",
+    domain: "science",
+    short: "Genetics and natural selection finally united.",
+    what: "Beginning with R.A. Fisher's The Genetical Theory of Natural Selection (1930), followed by works by J.B.S. Haldane and Sewall Wright, the Modern Synthesis fused Darwinian natural selection with Mendelian genetics. Theodosius Dobzhansky's Genetics and the Origin of Species (1937) and Julian Huxley's Evolution: The Modern Synthesis (1942) completed the framework.",
+    passage: "The synthesis vindicated Darwin's central mechanism &mdash; natural selection &mdash; by showing exactly how it worked at the genetic level, resolving the inheritance problem Darwin acknowledged: \"The laws governing inheritance are quite unknown.\"",
+    figures: "R.A. Fisher, J.B.S. Haldane, Sewall Wright, Theodosius Dobzhansky, Julian Huxley, Ernst Mayr",
+    impact: "The Modern Synthesis remains the foundation of evolutionary biology. It put Darwin's theory on an unassailable empirical footing and enabled the molecular revolution that followed.",
+    links: '<a href="https://en.wikipedia.org/wiki/Modern_synthesis_(20th_century)" target="_blank">Wikipedia: Modern Synthesis</a>'
+  },
+  {
+    id: 24, year: 1933, era: 3,
+    title: "Nazi Germany and the Perversion of Darwinism",
+    domain: "ethics",
+    short: "Eugenics taken to genocidal extremes under the Third Reich.",
+    what: "The Nazi regime's racial hygiene program drew on decades of eugenics advocacy, combining Galton's ideas with German racial theory. The 1933 Law for the Prevention of Hereditarily Diseased Offspring mandated forced sterilization. This escalated to the T4 euthanasia program and ultimately the Holocaust. The Nazis claimed scientific legitimacy from a grotesquely distorted reading of evolution.",
+    passage: "The Nazis perverted Darwin's observation that natural selection is \"daily and hourly scrutinising\" all living beings, transforming a description of nature into a prescription for deliberate racial engineering.",
+    figures: "Adolf Hitler, Alfred Ploetz (racial hygienist), Ernst Haeckel (posthumous influence)",
+    impact: "The Holocaust permanently discredited eugenics and Social Darwinism. After WWII, the scientific community emphatically repudiated the use of evolutionary biology to justify racial hierarchies or genocide.",
+    links: '<a href="https://en.wikipedia.org/wiki/Nazi_eugenics" target="_blank">Wikipedia: Nazi Eugenics</a>'
+  },
+  {
+    id: 25, year: 1942, era: 3,
+    title: "Julian Huxley's Evolutionary Humanism",
+    domain: "philosophy",
+    short: "A secular philosophy built on Darwinian foundations.",
+    what: "Julian Huxley (grandson of Thomas Huxley) developed \"evolutionary humanism\" &mdash; a secular worldview that grounded human purpose and ethics in the evolutionary process. In Evolution: The Modern Synthesis (1942) and later writings, he argued that humanity had a unique responsibility to guide its own future evolution through reason and knowledge.",
+    passage: "Huxley extended Darwin's hopeful vision that \"all corporeal and mental endowments will tend to progress towards perfection\" into a comprehensive humanist philosophy.",
+    figures: "Julian Huxley",
+    impact: "Huxley became the first Director-General of UNESCO and helped shape secular humanism as a global intellectual movement. His ideas influenced the Universal Declaration of Human Rights.",
+    links: '<a href="https://en.wikipedia.org/wiki/Julian_Huxley" target="_blank">Wikipedia: Julian Huxley</a>'
+  },
+  // --- ERA 4: 1950–1999 ---
+  {
+    id: 26, year: 1953, era: 4,
+    title: "Discovery of the Structure of DNA",
+    domain: "science",
+    short: "The molecular basis of heredity revealed at last.",
+    what: "Watson and Crick's discovery of DNA's double helix structure in 1953, building on Rosalind Franklin's X-ray crystallography, revealed the physical mechanism of heredity that Darwin could only speculate about. The genetic code explained how variations arise, how they are inherited, and how natural selection operates at the molecular level.",
+    passage: "Darwin had written: \"The laws governing inheritance are quite unknown; no one can say why... the child sometimes reverts in certain characters to its grandfather.\" DNA answered this question.",
+    figures: "James Watson, Francis Crick, Rosalind Franklin, Maurice Wilkins",
+    impact: "The discovery of DNA completed the explanatory framework that Darwin's theory required. It launched molecular biology and, eventually, genomics &mdash; fields that have confirmed and refined evolutionary theory in extraordinary detail.",
+    links: '<a href="https://en.wikipedia.org/wiki/Molecular_structure_of_nucleic_acids" target="_blank">Wikipedia: Structure of DNA</a>'
+  },
+  {
+    id: 27, year: 1959, era: 4,
+    title: "Darwin Centennial at the University of Chicago",
+    domain: "science",
+    short: "100 years of the Origin: the scientific world celebrates.",
+    what: "In November 1959, the University of Chicago hosted a major centennial celebration of the Origin's publication. Julian Huxley gave the keynote address. The event marked the complete triumph of evolutionary theory in mainstream science, a century after the book's controversial first edition.",
+    passage: "The centennial celebrated what Darwin had foreseen: \"In the distant future I see open fields for far more important researches.\"",
+    figures: "Julian Huxley, Theodosius Dobzhansky, Ernst Mayr, Sewall Wright",
+    impact: "The centennial symbolized evolution's unquestioned status in science. Dobzhansky's famous dictum &mdash; \"Nothing in biology makes sense except in the light of evolution\" (later formalized in 1973) &mdash; captured the consensus.",
+    links: '<a href="https://en.wikipedia.org/wiki/Darwin_Centennial_Celebration" target="_blank">Wikipedia: Darwin Centennial</a>'
+  },
+  {
+    id: 28, year: 1968, era: 4,
+    title: "Epperson v. Arkansas",
+    domain: "law",
+    short: "The Supreme Court strikes down anti-evolution laws.",
+    what: "In Epperson v. Arkansas (1968), the US Supreme Court unanimously ruled that Arkansas's 1928 anti-evolution statute was unconstitutional because it violated the Establishment Clause. The law, which prohibited teachers from teaching \"the theory or doctrine that mankind ascended or descended from a lower order of animals,\" was struck down as motivated by religious belief.",
+    passage: "The case centered on the fundamental conflict between Darwin's argument that species are \"lineal descendants of some other and generally extinct species\" and the biblical account of special creation.",
+    figures: "Susan Epperson (plaintiff), Justice Abe Fortas (wrote majority opinion)",
+    impact: "The ruling effectively ended outright bans on teaching evolution in the US, though it prompted creationists to develop new strategies like \"balanced treatment\" and \"creation science.\"",
+    links: '<a href="https://en.wikipedia.org/wiki/Epperson_v._Arkansas" target="_blank">Wikipedia: Epperson v. Arkansas</a>'
+  },
+  {
+    id: 29, year: 1975, era: 4,
+    title: "E.O. Wilson's Sociobiology Controversy",
+    domain: "science",
+    short: "Applying Darwinian logic to human social behavior ignited fierce debate.",
+    what: "E.O. Wilson's Sociobiology: The New Synthesis (1975) applied evolutionary theory to animal and human social behavior, arguing that many behaviors have a genetic basis shaped by natural selection. The final chapter on humans ignited furious opposition from scientists like Richard Lewontin and Stephen Jay Gould, who saw it as a new Social Darwinism.",
+    passage: "Wilson extended Darwin's observation from the Origin that instincts are \"comparable with habits, but different in their origin\" (Chapter 7) to argue that human social behaviors are evolutionary adaptations.",
+    figures: "E.O. Wilson, Richard Lewontin, Stephen Jay Gould, Richard Dawkins",
+    impact: "The sociobiology debate reshaped the boundaries between biology and social science. It led directly to evolutionary psychology and renewed debates about nature vs. nurture that continue today.",
+    links: '<a href="https://en.wikipedia.org/wiki/Sociobiology:_The_New_Synthesis" target="_blank">Wikipedia: Sociobiology</a>'
+  },
+  {
+    id: 30, year: 1976, era: 4,
+    title: "Richard Dawkins' The Selfish Gene",
+    domain: "science",
+    short: "A gene-centered view of evolution that reshaped public understanding.",
+    what: "Dawkins' The Selfish Gene (1976) presented evolution from the perspective of the gene rather than the organism, arguing that organisms are \"survival machines\" built by genes to propagate themselves. The book also introduced the concept of the \"meme\" as a unit of cultural evolution.",
+    passage: "Dawkins reimagined Darwin's \"struggle for existence\" at the genetic level, arguing that natural selection operates on replicators (genes) rather than on whole organisms or species.",
+    figures: "Richard Dawkins, W.D. Hamilton, George C. Williams, John Maynard Smith",
+    impact: "The book made evolutionary biology accessible to millions and established Dawkins as a major public intellectual. The \"meme\" concept entered popular culture. The book also intensified the science-religion debate that would define Dawkins' later career.",
+    links: '<a href="https://en.wikipedia.org/wiki/The_Selfish_Gene" target="_blank">Wikipedia: The Selfish Gene</a>'
+  },
+  {
+    id: 31, year: 1981, era: 4,
+    title: "Arkansas \"Balanced Treatment\" Trial",
+    domain: "law",
+    short: "Creation science tested in court and found wanting.",
+    what: "In McLean v. Arkansas Board of Education (1981-82), a federal court struck down Arkansas's Balanced Treatment for Creation-Science and Evolution-Science Act. Judge William Overton ruled that \"creation science\" was not science but religion, applying a set of criteria for distinguishing science from non-science that became widely cited.",
+    passage: "The trial required examining whether \"creation science\" &mdash; the claim that species were independently created &mdash; met the standards of genuine science as Darwin's theory did.",
+    figures: "Judge William Overton, Stephen Jay Gould (testified), Michael Ruse (testified)",
+    impact: "The ruling established important legal precedents for defining science and set the stage for the Supreme Court's Edwards v. Aguillard decision.",
+    links: '<a href="https://en.wikipedia.org/wiki/McLean_v._Arkansas" target="_blank">Wikipedia: McLean v. Arkansas</a>'
+  },
+  {
+    id: 32, year: 1987, era: 4,
+    title: "Edwards v. Aguillard: Supreme Court Rules",
+    domain: "law",
+    short: "The Supreme Court struck down \"balanced treatment\" of creationism.",
+    what: "In Edwards v. Aguillard (1987), the US Supreme Court ruled 7-2 that Louisiana's Creationism Act &mdash; requiring \"balanced treatment\" of evolution and creation science &mdash; violated the Establishment Clause. The Court found the law's purpose was to endorse the religious belief that a supernatural being created humankind.",
+    passage: "The ruling addressed head-on the conflict between Darwin's argument that species descend from common ancestors and the creationist claim of independent creation.",
+    figures: "Justice William Brennan (majority opinion), Justice Antonin Scalia (dissent), Donald Aguillard (plaintiff)",
+    impact: "The ruling effectively ended creation science as a legal strategy, prompting creationists to rebrand their approach as \"intelligent design\" &mdash; a strategy that would be tested in court again in 2005.",
+    links: '<a href="https://en.wikipedia.org/wiki/Edwards_v._Aguillard" target="_blank">Wikipedia: Edwards v. Aguillard</a>'
+  },
+  {
+    id: 33, year: 1996, era: 4,
+    title: "Pope John Paul II: Evolution \"More Than a Hypothesis\"",
+    domain: "religion",
+    short: "The Catholic Church formally acknowledged evolution's scientific standing.",
+    what: "In an October 1996 address to the Pontifical Academy of Sciences, Pope John Paul II stated that evolution was \"more than a hypothesis,\" acknowledging the convergence of evidence from multiple fields. While insisting that the soul was a direct creation by God, the statement represented a significant shift in Catholic engagement with evolutionary theory.",
+    passage: "The Pope's position echoed Darwin's own diplomatic phrasing: \"To my mind it accords better with what we know of the laws impressed on matter by the Creator.\"",
+    figures: "Pope John Paul II",
+    impact: "The statement was a landmark in the religion-science dialogue, though it satisfied neither strict creationists nor materialist scientists. It positioned the Catholic Church as broadly accepting of evolutionary science.",
+    links: '<a href="https://en.wikipedia.org/wiki/Catholic_Church_and_evolution" target="_blank">Wikipedia: Catholic Church and Evolution</a>'
+  },
+  {
+    id: 34, year: 1998, era: 4,
+    title: "The Wedge Document and Intelligent Design Strategy",
+    domain: "politics",
+    short: "A leaked memo revealed the political strategy behind intelligent design.",
+    what: "The Discovery Institute's \"Wedge Document,\" written in 1998 and leaked in 1999, outlined a strategic plan to use intelligent design to challenge the teaching of evolution and advance a theistic worldview. The document described a multi-phase campaign involving scientific research, public relations, and cultural confrontation.",
+    passage: "The document targeted what it called the \"materialistic\" implications of Darwin's theory, particularly the idea that natural processes alone can explain biological complexity.",
+    figures: "Phillip E. Johnson, Michael Behe, William Dembski, Discovery Institute",
+    impact: "The leaked document exposed intelligent design as a political and religious movement rather than a scientific endeavor, undermining its credibility and providing ammunition for opponents in the Kitzmiller trial.",
+    links: '<a href="https://en.wikipedia.org/wiki/Wedge_document" target="_blank">Wikipedia: Wedge Document</a>'
+  },
+  // --- ERA 5: 2000–present ---
+  {
+    id: 35, year: 2005, era: 5,
+    title: "Kitzmiller v. Dover: Intelligent Design on Trial",
+    domain: "law",
+    short: "A federal court ruled that intelligent design is creationism, not science.",
+    what: "In Kitzmiller v. Dover Area School District (2005), a federal court in Pennsylvania ruled that the Dover school board's policy of promoting intelligent design in biology classes was unconstitutional. Judge John E. Jones III, a Republican appointee, issued a 139-page ruling finding that ID is \"not science\" and is \"essentially religious in nature.\"",
+    passage: "The trial examined whether \"irreducible complexity\" &mdash; the claim that certain biological structures could not have evolved &mdash; refuted Darwin's argument in Chapter 6 about \"Organs of extreme perfection.\"",
+    figures: "Judge John E. Jones III, Kenneth Miller (testified for plaintiffs), Michael Behe (testified for defense)",
+    impact: "The ruling was a decisive defeat for the intelligent design movement. All eight pro-ID school board members lost re-election. The case remains the leading legal precedent on intelligent design in US schools.",
+    links: '<a href="https://en.wikipedia.org/wiki/Kitzmiller_v._Dover_Area_School_District" target="_blank">Wikipedia: Kitzmiller v. Dover</a>'
+  },
+  {
+    id: 36, year: 2006, era: 5,
+    title: "Dawkins' The God Delusion and New Atheism",
+    domain: "religion",
+    short: "Darwin's theory became a central weapon in the New Atheist movement.",
+    what: "Richard Dawkins' The God Delusion (2006) used evolutionary biology as its primary argument against the existence of God, arguing that natural selection eliminates the need for a divine designer. Along with works by Sam Harris, Christopher Hitchens, and Daniel Dennett, the book defined the \"New Atheism\" movement.",
+    passage: "Dawkins built on Darwin's argument from Chapter 6 that complex organs evolve gradually through \"numerous, successive, slight modifications\" &mdash; no designer needed.",
+    figures: "Richard Dawkins, Sam Harris, Christopher Hitchens, Daniel Dennett (the \"Four Horsemen\")",
+    impact: "The New Atheism movement brought the Darwin-religion debate to a mass audience and polarized opinion. Critics accused it of misrepresenting both religion and the implications of evolutionary theory.",
+    links: '<a href="https://en.wikipedia.org/wiki/The_God_Delusion" target="_blank">Wikipedia: The God Delusion</a>'
+  },
+  {
+    id: 37, year: 2009, era: 5,
+    title: "Darwin Bicentennial and 150th Anniversary of the Origin",
+    domain: "science",
+    short: "Global celebrations marked Darwin's 200th birthday.",
+    what: "The year 2009 saw worldwide celebrations of Darwin's 200th birthday (12 February) and the 150th anniversary of the Origin's publication. Events included exhibitions, conferences, publications, and the film Creation (2009). The celebrations highlighted both Darwin's scientific legacy and the continuing cultural debates his work inspires.",
+    passage: "The anniversary invited reflection on Darwin's closing prophecy: \"from so simple a beginning endless forms most beautiful and most wonderful have been, and are being, evolved.\"",
+    figures: "Global scientific community",
+    impact: "The bicentennial demonstrated Darwin's enduring cultural significance. Polls showed that while evolution was nearly universally accepted by scientists, public acceptance varied dramatically by country and religion.",
+    links: '<a href="https://en.wikipedia.org/wiki/Darwin_Day" target="_blank">Wikipedia: Darwin Day</a>'
+  },
+  {
+    id: 38, year: 2013, era: 5,
+    title: "CRISPR Gene Editing and Directed Evolution",
+    domain: "ethics",
+    short: "Humanity gains the power to directly edit the code of life.",
+    what: "The development of CRISPR-Cas9 gene editing technology (key papers 2012-2013) gave scientists the ability to precisely edit DNA in living organisms, including humans. This raised profound ethical questions about \"playing God\" with evolution &mdash; exactly the kind of directed variation that Darwin's Chapter 1 on artificial selection described, but at the molecular level.",
+    passage: "Darwin marveled at \"how great is the power of man in accumulating by his Selection successive slight variations.\" CRISPR takes that power to the genetic level, enabling changes far beyond anything Darwin could have imagined.",
+    figures: "Jennifer Doudna, Emmanuelle Charpentier, Feng Zhang",
+    impact: "CRISPR reignited debates about eugenics, human enhancement, and the ethics of altering the human germline. The technology represents a moment where humanity gained the power to direct its own evolution.",
+    links: '<a href="https://en.wikipedia.org/wiki/CRISPR_gene_editing" target="_blank">Wikipedia: CRISPR</a>'
+  },
+  {
+    id: 39, year: 2014, era: 5,
+    title: "Pope Francis: Evolution and the Big Bang Are Real",
+    domain: "religion",
+    short: "Another papal endorsement of evolution, with stronger language.",
+    what: "In October 2014, Pope Francis declared that evolution and the Big Bang are real and do not contradict the existence of God: \"God is not a magician with a magic wand.\" He criticized those who read Genesis as a literal scientific account, calling such interpretations simplistic.",
+    passage: "Francis echoed Darwin's own diplomatic language about \"the laws impressed on matter by the Creator,\" maintaining that God works through natural processes.",
+    figures: "Pope Francis",
+    impact: "The statement further distanced mainstream Catholic theology from creationism and intelligent design, though it had limited effect on evangelical Protestant opposition to evolution in the US.",
+    links: '<a href="https://en.wikipedia.org/wiki/Catholic_Church_and_evolution" target="_blank">Wikipedia: Catholic Church and Evolution</a>'
+  },
+  {
+    id: 40, year: 2020, era: 5,
+    title: "COVID-19: Evolution in Real Time",
+    domain: "science",
+    short: "A global pandemic demonstrated natural selection before the world's eyes.",
+    what: "The COVID-19 pandemic provided a vivid, real-time demonstration of Darwinian evolution. The SARS-CoV-2 virus rapidly evolved variants (Alpha, Delta, Omicron) through mutation and natural selection, with each variant better adapted to spread. Public health messaging required explaining evolutionary concepts to a global audience.",
+    passage: "The pandemic illustrated Darwin's core principle: \"any being, if it vary however slightly in any manner profitable to itself... will have a better chance of surviving, and thus be naturally selected.\"",
+    figures: "Global scientific and public health communities",
+    impact: "COVID-19 made evolution viscerally relevant to billions of people. It also revealed persistent public misunderstanding of evolution, as some resisted the idea that viruses evolve, or misunderstood what \"fittest\" means.",
+    links: '<a href="https://en.wikipedia.org/wiki/Variants_of_SARS-CoV-2" target="_blank">Wikipedia: SARS-CoV-2 Variants</a>'
+  },
+  {
+    id: 41, year: 2022, era: 5,
+    title: "Evolutionary Psychology in the Culture Wars",
+    domain: "politics",
+    short: "Darwin's ideas remain contested in debates about human nature.",
+    what: "Evolutionary psychology &mdash; the application of Darwinian theory to human cognition and behavior &mdash; remains deeply controversial. In the 2020s, claims about evolved sex differences, the biological basis of morality, and the evolutionary roots of political behavior continue to fuel culture-war debates across the political spectrum.",
+    passage: "These debates trace back to Darwin's tentative suggestion in the Origin that \"Psychology will be based on a new foundation\" &mdash; a prediction that remains contentious 160+ years later.",
+    figures: "Steven Pinker, Jonathan Haidt, various critics",
+    impact: "Evolutionary psychology highlights the enduring tension between Darwinian accounts of human nature and social constructionist perspectives. The debate shows no signs of resolution.",
+    links: '<a href="https://en.wikipedia.org/wiki/Evolutionary_psychology" target="_blank">Wikipedia: Evolutionary Psychology</a>'
+  },
+  {
+    id: 42, year: 2025, era: 5,
+    title: "Kitzmiller at 20: The Fight Continues",
+    domain: "law",
+    short: "Two decades after the Dover trial, evolution education is still contested.",
+    what: "In 2025, twenty years after the Kitzmiller ruling, evolution education remains contested in parts of the United States. While outright bans on teaching evolution are unconstitutional, strategies such as \"teach the controversy,\" \"academic freedom\" bills, and local school board pressure continue to challenge the teaching of evolution in public schools.",
+    passage: "The ongoing conflict reflects the enduring cultural power of Darwin's core claim that species are \"not immutable\" but \"lineal descendants of some other and generally extinct species.\"",
+    figures: "National Center for Science Education, various state legislatures",
+    impact: "The persistence of anti-evolution sentiment in the US, more than 165 years after the Origin, demonstrates that Darwin's \"cultural shockwave\" has not yet dissipated.",
+    links: '<a href="https://en.wikipedia.org/wiki/Creation%E2%80%93evolution_controversy" target="_blank">Wikipedia: Creation-Evolution Controversy</a> &bull; <a href="https://ncse.ngo/" target="_blank">National Center for Science Education</a>'
+  }
+];
+
+// ============================================================
+//  DOMAIN COLORS & ERA DEFINITIONS
+// ============================================================
+const DOMAIN_COLORS = {
+  religion: '#9b59b6',
+  science: '#3498db',
+  politics: '#e74c3c',
+  literature: '#27ae60',
+  law: '#e67e22',
+  philosophy: '#1abc9c',
+  ethics: '#f1c40f'
+};
+
+const DOMAIN_LABELS = {
+  religion: 'Religion',
+  science: 'Science',
+  politics: 'Politics',
+  literature: 'Literature',
+  law: 'Law / Education',
+  philosophy: 'Philosophy',
+  ethics: 'Ethics'
+};
+
+const ERAS = [
+  { id: 1, label: '1858 -- 1869', start: 1858, end: 1869 },
+  { id: 2, label: '1870 -- 1899', start: 1870, end: 1899 },
+  { id: 3, label: '1900 -- 1949', start: 1900, end: 1949 },
+  { id: 4, label: '1950 -- 1999', start: 1950, end: 1999 },
+  { id: 5, label: '2000 -- present', start: 2000, end: 2030 }
+];
+
+// ============================================================
+//  SVG RADIAL VISUALIZATION
+// ============================================================
+const CX = 550, CY = 550;
+const RING_RADII = [0, 130, 230, 330, 430, 510];
+// Ring i is between RING_RADII[i] and RING_RADII[i+1]
+
+let activeDomainFilter = null;
+
+function buildRadial() {
+  const svg = document.getElementById('radialSvg');
+  if (!svg) return;
+  svg.innerHTML = '';
+
+  // Background rings
+  for (let i = 5; i >= 1; i--) {
+    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    circle.setAttribute('cx', CX);
+    circle.setAttribute('cy', CY);
+    circle.setAttribute('r', RING_RADII[i]);
+    circle.setAttribute('fill', 'none');
+    circle.setAttribute('stroke', 'rgba(201,168,76,0.08)');
+    circle.setAttribute('stroke-width', '1');
+    circle.classList.add('ring-pulse');
+    svg.appendChild(circle);
+  }
+
+  // Filled ring backgrounds with subtle gradients
+  for (let i = 1; i <= 5; i++) {
+    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    circle.setAttribute('cx', CX);
+    circle.setAttribute('cy', CY);
+    circle.setAttribute('r', RING_RADII[i]);
+    circle.setAttribute('fill', `rgba(201,168,76,${0.015 * (6 - i)})`);
+    circle.setAttribute('stroke', 'none');
+    svg.appendChild(circle);
+  }
+
+  // Ring stroke overlays
+  for (let i = 1; i <= 5; i++) {
+    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    circle.setAttribute('cx', CX);
+    circle.setAttribute('cy', CY);
+    circle.setAttribute('r', RING_RADII[i]);
+    circle.setAttribute('fill', 'none');
+    circle.setAttribute('stroke', 'rgba(201,168,76,0.12)');
+    circle.setAttribute('stroke-width', '0.5');
+    svg.appendChild(circle);
+  }
+
+  // Ring era labels
+  for (let i = 1; i <= 5; i++) {
+    const midR = (RING_RADII[i - 1] + RING_RADII[i]) / 2 + (i === 1 ? 20 : 0);
+    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    text.setAttribute('x', CX);
+    text.setAttribute('y', CY - midR + 4);
+    text.setAttribute('text-anchor', 'middle');
+    text.classList.add('ring-label');
+    text.textContent = ERAS[i - 1].label;
+    svg.appendChild(text);
+  }
+
+  // Center book
+  const centerG = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  centerG.classList.add('center-book');
+
+  // Center glow
+  const glow = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  glow.setAttribute('cx', CX);
+  glow.setAttribute('cy', CY);
+  glow.setAttribute('r', 60);
+  glow.setAttribute('fill', 'rgba(201,168,76,0.06)');
+  glow.setAttribute('stroke', 'rgba(201,168,76,0.25)');
+  glow.setAttribute('stroke-width', '1.5');
+  centerG.appendChild(glow);
+
+  const innerGlow = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  innerGlow.setAttribute('cx', CX);
+  innerGlow.setAttribute('cy', CY);
+  innerGlow.setAttribute('r', 40);
+  innerGlow.setAttribute('fill', 'rgba(201,168,76,0.1)');
+  centerG.appendChild(innerGlow);
+
+  const t1 = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+  t1.setAttribute('x', CX);
+  t1.setAttribute('y', CY - 10);
+  t1.setAttribute('text-anchor', 'middle');
+  t1.setAttribute('font-size', '11');
+  t1.setAttribute('font-weight', '600');
+  t1.setAttribute('letter-spacing', '1');
+  t1.textContent = 'ORIGIN OF';
+  centerG.appendChild(t1);
+
+  const t2 = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+  t2.setAttribute('x', CX);
+  t2.setAttribute('y', CY + 6);
+  t2.setAttribute('text-anchor', 'middle');
+  t2.setAttribute('font-size', '11');
+  t2.setAttribute('font-weight', '600');
+  t2.setAttribute('letter-spacing', '1');
+  t2.textContent = 'SPECIES';
+  centerG.appendChild(t2);
+
+  const t3 = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+  t3.setAttribute('x', CX);
+  t3.setAttribute('y', CY + 22);
+  t3.setAttribute('text-anchor', 'middle');
+  t3.setAttribute('font-size', '9');
+  t3.setAttribute('fill', 'rgba(201,168,76,0.6)');
+  t3.setAttribute('letter-spacing', '0.5');
+  t3.textContent = '1859';
+  centerG.appendChild(t3);
+
+  svg.appendChild(centerG);
+
+  // Place event dots
+  // For each era, distribute events evenly around the ring
+  for (let eraIdx = 0; eraIdx < ERAS.length; eraIdx++) {
+    const era = ERAS[eraIdx];
+    const eraEvents = EVENTS.filter(e => e.era === era.id);
+    const ringInner = RING_RADII[eraIdx] + (eraIdx === 0 ? 10 : 0);
+    const ringOuter = RING_RADII[eraIdx + 1];
+    const midR = (ringInner + ringOuter) / 2 + 5;
+
+    const count = eraEvents.length;
+    // Spread across a full circle with some offset per era
+    const startAngle = -Math.PI / 2 + (eraIdx * 0.3);
+    const angleStep = (2 * Math.PI) / Math.max(count, 1);
+
+    eraEvents.forEach((evt, i) => {
+      const angle = startAngle + i * angleStep;
+      // Add small radial jitter for visual interest
+      const jitter = (i % 3 - 1) * 12;
+      const r = midR + jitter;
+      const x = CX + r * Math.cos(angle);
+      const y = CY + r * Math.sin(angle);
+
+      const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      g.classList.add('event-dot');
+      g.dataset.id = evt.id;
+      g.dataset.domain = evt.domain;
+
+      if (activeDomainFilter && evt.domain !== activeDomainFilter) {
+        g.classList.add('inactive');
+      }
+
+      // Dot
+      const dotR = 8;
+      const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      circle.setAttribute('cx', x);
+      circle.setAttribute('cy', y);
+      circle.setAttribute('r', dotR);
+      circle.setAttribute('fill', DOMAIN_COLORS[evt.domain]);
+      circle.setAttribute('opacity', '0.85');
+      g.appendChild(circle);
+
+      // Outer ring on dot
+      const outerC = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      outerC.setAttribute('cx', x);
+      outerC.setAttribute('cy', y);
+      outerC.setAttribute('r', dotR + 3);
+      outerC.setAttribute('fill', 'none');
+      outerC.setAttribute('stroke', DOMAIN_COLORS[evt.domain]);
+      outerC.setAttribute('stroke-width', '1');
+      outerC.setAttribute('opacity', '0.3');
+      g.appendChild(outerC);
+
+      // Year label near dot
+      const yearText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      yearText.setAttribute('x', x);
+      yearText.setAttribute('y', y + dotR + 14);
+      yearText.setAttribute('text-anchor', 'middle');
+      yearText.setAttribute('font-family', 'Inter, sans-serif');
+      yearText.setAttribute('font-size', '8');
+      yearText.setAttribute('fill', 'rgba(255,255,255,0.4)');
+      yearText.textContent = evt.year;
+      g.appendChild(yearText);
+
+      // Hover / click behavior
+      g.addEventListener('mouseenter', (e) => showTooltip(e, evt));
+      g.addEventListener('mouseleave', hideTooltip);
+      g.addEventListener('click', () => openDetail(evt));
+
+      svg.appendChild(g);
+    });
+  }
+}
+
+// ============================================================
+//  TOOLTIP
+// ============================================================
+const tooltip = document.getElementById('tooltip');
+
+function showTooltip(e, evt) {
+  const tt = tooltip;
+  tt.querySelector('.tt-year').textContent = evt.year;
+  tt.querySelector('.tt-title').textContent = evt.title;
+  tt.querySelector('.tt-domain').textContent = DOMAIN_LABELS[evt.domain];
+  tt.querySelector('.tt-domain').style.color = DOMAIN_COLORS[evt.domain];
+  tt.querySelector('.tt-desc').textContent = evt.short;
+  tt.classList.add('visible');
+
+  const rect = e.target.closest('g').getBoundingClientRect();
+  let left = rect.left + rect.width / 2 + 12;
+  let top = rect.top - 10;
+  if (left + 320 > window.innerWidth) left = rect.left - 330;
+  if (top + 200 > window.innerHeight) top = window.innerHeight - 210;
+  if (top < 60) top = 60;
+  tt.style.left = left + 'px';
+  tt.style.top = top + 'px';
+}
+
+function hideTooltip() {
+  tooltip.classList.remove('visible');
+}
+
+// ============================================================
+//  DETAIL PANEL
+// ============================================================
+function openDetail(evt) {
+  hideTooltip();
+  const dc = document.getElementById('detailContent');
+  const color = DOMAIN_COLORS[evt.domain];
+
+  dc.innerHTML = `
+    <span class="detail-domain-badge" style="background:${color}22;color:${color};">${DOMAIN_LABELS[evt.domain]}</span>
+    <div class="detail-year">${evt.year}</div>
+    <div class="detail-title">${evt.title}</div>
+    <div class="detail-section">
+      <h4>What Happened</h4>
+      <p>${evt.what}</p>
+    </div>
+    <div class="detail-section">
+      <h4>Connection to the Origin</h4>
+      <blockquote>${evt.passage}</blockquote>
+    </div>
+    <div class="detail-section">
+      <h4>Key Figures</h4>
+      <p class="detail-figures">${evt.figures.split(', ').map(f => `<strong>${f}</strong>`).join(' &bull; ')}</p>
+    </div>
+    <div class="detail-section">
+      <h4>Lasting Impact</h4>
+      <p>${evt.impact}</p>
+    </div>
+    <div class="detail-section">
+      <h4>Further Reading</h4>
+      <p>${evt.links}</p>
+    </div>
+  `;
+
+  document.getElementById('detailOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeDetail() {
+  document.getElementById('detailOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeDetail();
+});
+
+// ============================================================
+//  LEGEND & FILTERING
+// ============================================================
+function toggleLegend() {
+  document.getElementById('legendPanel').classList.toggle('open');
+}
+
+function filterDomain(domain) {
+  activeDomainFilter = domain;
+
+  // Update legend items
+  document.querySelectorAll('.legend-item[data-domain]').forEach(el => {
+    if (domain === null || el.dataset.domain === domain) {
+      el.classList.remove('inactive');
+    } else {
+      el.classList.add('inactive');
+    }
+  });
+
+  // Rebuild radial
+  buildRadial();
+
+  // Update mobile timeline
+  buildTimeline();
+}
+
+// Close legend when clicking outside
+document.addEventListener('click', (e) => {
+  const panel = document.getElementById('legendPanel');
+  const toggle = document.querySelector('.legend-toggle');
+  if (!panel.contains(e.target) && !toggle.contains(e.target)) {
+    panel.classList.remove('open');
+  }
+});
+
+// ============================================================
+//  MOBILE TIMELINE
+// ============================================================
+function buildTimeline() {
+  const container = document.getElementById('timelineSection');
+  container.innerHTML = '';
+
+  ERAS.forEach(era => {
+    let eraEvents = EVENTS.filter(e => e.era === era.id);
+    if (activeDomainFilter) {
+      eraEvents = eraEvents.filter(e => e.domain === activeDomainFilter);
+    }
+    if (eraEvents.length === 0) return;
+
+    const group = document.createElement('div');
+    group.className = 'era-group';
+
+    const h2 = document.createElement('h2');
+    h2.textContent = era.label;
+    group.appendChild(h2);
+
+    eraEvents.forEach(evt => {
+      const card = document.createElement('div');
+      card.className = 'tl-card';
+      card.onclick = () => openDetail(evt);
+      card.innerHTML = `
+        <span class="tl-card-dot" style="background:${DOMAIN_COLORS[evt.domain]}"></span>
+        <div class="tl-card-body">
+          <div class="tl-card-year">${evt.year}</div>
+          <div class="tl-card-title">${evt.title}</div>
+          <div class="tl-card-domain" style="color:${DOMAIN_COLORS[evt.domain]}">${DOMAIN_LABELS[evt.domain]}</div>
+        </div>
+      `;
+      group.appendChild(card);
+    });
+
+    container.appendChild(group);
+  });
+}
+
+// ============================================================
+//  INIT
+// ============================================================
+buildRadial();
+buildTimeline();
+
+// Redraw on resize for proper scaling
+window.addEventListener('resize', () => {
+  buildRadial();
+  buildTimeline();
+});
+</script>
+</body>
+</html>
