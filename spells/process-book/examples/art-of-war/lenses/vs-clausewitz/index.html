@@ -1,0 +1,1132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sun Tzŭ vs. Clausewitz — The Art of War</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600;700&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* Parchment / Sun Tzŭ palette */
+    --sun-paper:#f4ead6;
+    --sun-paper-2:#ece0c3;
+    --sun-ink:#2b1d10;
+    --sun-ink-2:#5a3d1d;
+    --sun-accent:#9a1b1e;   /* cinnabar seal */
+    --sun-accent-2:#c6812a; /* aged gold */
+    --sun-rule:#8b6a3c;
+
+    /* Prussian / Clausewitz palette */
+    --cl-paper:#eef1f5;
+    --cl-paper-2:#dde4ec;
+    --cl-ink:#0b1a2a;
+    --cl-ink-2:#2a3b54;
+    --cl-accent:#1a3a6e;     /* Prussian blue */
+    --cl-accent-2:#8a1414;   /* field-marshal red */
+    --cl-steel:#5c6c85;
+    --cl-rule:#3a4d6b;
+
+    /* Neutral field */
+    --bg:#12141a;
+    --fg:#ece7dd;
+    --muted:#9aa0ad;
+    --rule:#2a2f3a;
+
+    --serif-sun:"EB Garamond", "Cormorant Garamond", Georgia, serif;
+    --serif-cl:"Cormorant Garamond", "EB Garamond", Georgia, serif;
+    --sans:"Inter", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    --cn:"Noto Serif SC", serif;
+  }
+
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--fg)}
+  body{
+    font-family:var(--sans);
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    background:
+      radial-gradient(1200px 700px at 15% -10%, rgba(198,129,42,.08), transparent 60%),
+      radial-gradient(1200px 700px at 85% 110%, rgba(26,58,110,.12), transparent 60%),
+      var(--bg);
+    min-height:100vh;
+  }
+
+  a{color:inherit}
+  ::selection{background:rgba(198,129,42,.35); color:#fff}
+
+  /* ---------- Top bar ---------- */
+  .topbar{
+    position:sticky; top:0; z-index:50;
+    display:flex; align-items:center; justify-content:space-between;
+    gap:16px;
+    padding:14px 24px;
+    background:rgba(18,20,26,.78);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--rule);
+  }
+  .back{
+    font-family:var(--sans);
+    font-size:13px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--muted);
+    text-decoration:none;
+    padding:8px 12px;
+    border:1px solid var(--rule);
+    border-radius:999px;
+    transition:color .2s, border-color .2s, background .2s;
+  }
+  .back:hover{color:var(--fg); border-color:#5a6170; background:rgba(255,255,255,.03)}
+  .top-title{
+    font-family:var(--serif-cl);
+    font-size:15px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:#c8c1b2;
+  }
+  .top-title em{font-style:italic; color:var(--sun-accent-2)}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    position:relative;
+    overflow:hidden;
+    padding:80px 24px 40px;
+    border-bottom:1px solid var(--rule);
+  }
+  .hero-inner{max-width:1200px; margin:0 auto; text-align:center}
+  .lens-label{
+    display:inline-block;
+    font-family:var(--sans);
+    font-size:11px; letter-spacing:.3em; text-transform:uppercase;
+    color:var(--muted);
+    padding:6px 14px;
+    border:1px solid var(--rule);
+    border-radius:999px;
+    margin-bottom:22px;
+  }
+  .lens-label .dot{display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--sun-accent-2); margin-right:8px; vertical-align:middle; box-shadow:0 0 10px var(--sun-accent-2)}
+  h1.lens-title{
+    font-family:var(--serif-cl);
+    font-weight:500;
+    font-size:clamp(38px, 6.2vw, 78px);
+    line-height:1.02;
+    margin:0 0 18px;
+    letter-spacing:-.01em;
+  }
+  h1.lens-title .v{
+    display:inline-block;
+    font-style:italic;
+    font-weight:400;
+    color:var(--sun-accent-2);
+    font-size:.72em;
+    padding:0 .15em;
+    transform:translateY(-.1em);
+  }
+  h1.lens-title .sun{color:#f3dfb3}
+  h1.lens-title .cl{color:#a9c0e3}
+  .hero p.dek{
+    max-width:780px; margin:0 auto;
+    font-family:var(--serif-cl);
+    font-style:italic;
+    font-size:clamp(17px, 1.8vw, 22px);
+    line-height:1.55;
+    color:#c8c1b2;
+  }
+  .hero .dates{
+    margin-top:22px;
+    display:flex; gap:40px; justify-content:center; flex-wrap:wrap;
+    font-family:var(--sans);
+    font-size:12px; letter-spacing:.2em; text-transform:uppercase;
+    color:var(--muted);
+  }
+  .hero .dates span b{color:#f3dfb3; font-weight:600}
+  .hero .dates span:last-child b{color:#a9c0e3}
+
+  /* ---------- Depth rail ---------- */
+  .depth-rail{
+    max-width:1200px;
+    margin:0 auto;
+    padding:22px 24px 8px;
+    display:flex; gap:10px; flex-wrap:wrap;
+    border-bottom:1px solid var(--rule);
+    -webkit-overflow-scrolling:touch;
+  }
+  .depth-chip{
+    font-family:var(--sans);
+    font-size:11px; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--muted);
+    padding:8px 14px;
+    border:1px solid var(--rule);
+    border-radius:999px;
+    text-decoration:none;
+    transition:all .2s;
+  }
+  .depth-chip b{color:#d9cdb2; margin-right:8px; font-weight:600}
+  .depth-chip:hover{border-color:#5a6170; color:var(--fg); background:rgba(255,255,255,.03)}
+  .depth-chip.active{border-color:#c6812a; color:#f3dfb3}
+
+  /* ---------- Section frame ---------- */
+  section.depth{
+    max-width:1200px;
+    margin:0 auto;
+    padding:80px 24px 20px;
+    scroll-margin-top:80px;
+  }
+  .depth-head{
+    display:flex; align-items:baseline; gap:16px; flex-wrap:wrap;
+    margin-bottom:28px;
+    padding-bottom:16px;
+    border-bottom:1px solid var(--rule);
+  }
+  .depth-head .n{
+    font-family:var(--serif-cl);
+    font-style:italic;
+    font-size:14px;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+  .depth-head h2{
+    font-family:var(--serif-cl);
+    font-weight:500;
+    font-size:clamp(26px, 3.4vw, 42px);
+    line-height:1.1;
+    margin:0;
+    color:#ede6d6;
+  }
+  .depth-head .sub{
+    flex-basis:100%;
+    font-family:var(--serif-cl);
+    font-style:italic;
+    color:var(--muted);
+    max-width:780px;
+    line-height:1.55;
+  }
+
+  /* ---------- Dual portrait (Level 1) ---------- */
+  .portrait-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:28px;
+    position:relative;
+  }
+  .portrait{
+    border-radius:6px;
+    padding:34px 32px 32px;
+    position:relative;
+    overflow:hidden;
+    min-height:540px;
+  }
+  .portrait.sun{
+    background:
+      radial-gradient(600px 260px at 110% -10%, rgba(154,27,30,.14), transparent 60%),
+      linear-gradient(180deg, var(--sun-paper), var(--sun-paper-2));
+    color:var(--sun-ink);
+    font-family:var(--serif-sun);
+    border:1px solid rgba(139,106,60,.35);
+    box-shadow:0 30px 80px rgba(0,0,0,.35), inset 0 0 120px rgba(139,106,60,.12);
+  }
+  .portrait.cl{
+    background:
+      radial-gradient(600px 260px at -10% -10%, rgba(138,20,20,.12), transparent 60%),
+      linear-gradient(180deg, var(--cl-paper), var(--cl-paper-2));
+    color:var(--cl-ink);
+    font-family:var(--serif-cl);
+    border:1px solid rgba(58,77,107,.35);
+    box-shadow:0 30px 80px rgba(0,0,0,.35), inset 0 0 120px rgba(58,77,107,.10);
+  }
+  .portrait .spine{
+    position:absolute; top:0; left:0; right:0; height:4px;
+  }
+  .portrait.sun .spine{background:linear-gradient(90deg, transparent, var(--sun-accent), transparent)}
+  .portrait.cl .spine{background:linear-gradient(90deg, transparent, var(--cl-accent), transparent)}
+
+  .portrait .seal{
+    position:absolute;
+    top:26px; right:28px;
+    width:54px; height:54px;
+    border-radius:4px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--cn);
+    font-weight:700;
+    letter-spacing:.05em;
+  }
+  .portrait.sun .seal{
+    background:var(--sun-accent);
+    color:#f6e7c2;
+    font-size:18px;
+    box-shadow:0 6px 14px rgba(154,27,30,.35);
+    transform:rotate(-4deg);
+  }
+  .portrait.cl .seal{
+    background:var(--cl-accent);
+    color:#e7ecf4;
+    font-family:var(--serif-cl);
+    font-style:italic;
+    font-size:22px;
+    transform:rotate(-3deg);
+    box-shadow:0 6px 14px rgba(26,58,110,.35);
+  }
+
+  .portrait .era{
+    font-family:var(--sans);
+    font-size:10px;
+    letter-spacing:.28em;
+    text-transform:uppercase;
+    opacity:.7;
+    margin-bottom:10px;
+  }
+  .portrait h3{
+    font-family:inherit;
+    font-weight:600;
+    font-size:32px;
+    line-height:1.05;
+    margin:0 0 6px;
+  }
+  .portrait.sun h3{color:var(--sun-ink)}
+  .portrait.cl h3{color:var(--cl-ink)}
+  .portrait .zh{
+    font-family:var(--cn);
+    font-size:18px;
+    opacity:.8;
+    margin-bottom:14px;
+    letter-spacing:.08em;
+  }
+  .portrait .de{
+    font-family:var(--serif-cl);
+    font-style:italic;
+    font-size:16px;
+    opacity:.75;
+    margin-bottom:14px;
+  }
+  .portrait .lived{
+    font-family:var(--sans);
+    font-size:11px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    opacity:.7;
+    margin-bottom:20px;
+    padding-bottom:16px;
+    border-bottom:1px solid currentColor;
+    border-bottom-color:rgba(91,63,30,.25);
+  }
+  .portrait.cl .lived{border-bottom-color:rgba(26,58,110,.25)}
+  .portrait p{
+    font-size:17px;
+    line-height:1.62;
+    margin:0 0 14px;
+  }
+  .portrait.sun p{color:var(--sun-ink-2)}
+  .portrait.cl p{color:var(--cl-ink-2)}
+  .portrait p b{font-weight:600}
+  .portrait.sun p b{color:var(--sun-ink)}
+  .portrait.cl p b{color:var(--cl-ink)}
+
+  .portrait .factbox{
+    margin-top:22px;
+    display:grid;
+    grid-template-columns:auto 1fr;
+    gap:8px 18px;
+    font-family:var(--sans);
+    font-size:12px;
+    line-height:1.45;
+    padding-top:16px;
+    border-top:1px solid rgba(91,63,30,.25);
+  }
+  .portrait.cl .factbox{border-top-color:rgba(26,58,110,.25)}
+  .portrait .factbox dt{
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    opacity:.6;
+    font-size:10px;
+    padding-top:2px;
+  }
+  .portrait .factbox dd{margin:0; font-size:13px}
+
+  .portrait-divider{
+    position:absolute;
+    left:50%; top:40px; bottom:40px;
+    width:1px;
+    background:linear-gradient(180deg, transparent, rgba(255,255,255,.18), transparent);
+    transform:translateX(-.5px);
+    pointer-events:none;
+  }
+  .portrait-divider::before{
+    content:"vs.";
+    position:absolute;
+    top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    font-family:var(--serif-cl);
+    font-style:italic;
+    font-size:22px;
+    color:#c8c1b2;
+    background:var(--bg);
+    padding:6px 10px;
+    border:1px solid var(--rule);
+    border-radius:999px;
+  }
+
+  /* ---------- Dialectic pairs (Level 2/3) ---------- */
+  .dialectic{
+    display:grid;
+    gap:40px;
+    margin-top:10px;
+  }
+  .pair{
+    border:1px solid var(--rule);
+    border-radius:8px;
+    overflow:hidden;
+    background:rgba(255,255,255,.02);
+  }
+  .pair-head{
+    display:flex; align-items:baseline; justify-content:space-between; gap:18px;
+    padding:22px 26px;
+    border-bottom:1px solid var(--rule);
+    flex-wrap:wrap;
+    background:linear-gradient(180deg, rgba(255,255,255,.02), transparent);
+  }
+  .pair-head .pair-n{
+    font-family:var(--serif-cl);
+    font-style:italic;
+    font-size:14px;
+    color:var(--muted);
+    letter-spacing:.12em;
+  }
+  .pair-head h3{
+    font-family:var(--serif-cl);
+    font-weight:500;
+    font-size:clamp(22px, 2.6vw, 30px);
+    margin:0;
+    color:#ede6d6;
+    flex:1 1 auto;
+  }
+  .pair-head .tag{
+    font-family:var(--sans);
+    font-size:10px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    padding:5px 10px;
+    border-radius:999px;
+    border:1px solid var(--rule);
+    color:var(--muted);
+  }
+  .pair-head .tag.conv{color:#9dcf9d; border-color:#3e5a3e}
+  .pair-head .tag.div{color:#e8a79b; border-color:#6a3a32}
+  .pair-head .tag.part{color:#e8d79b; border-color:#6a5a32}
+
+  .pair-body{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+  }
+  .side{
+    padding:32px 30px 30px;
+    position:relative;
+    min-height:280px;
+  }
+  .side.sun{
+    background:
+      radial-gradient(400px 200px at 100% 0%, rgba(154,27,30,.09), transparent 60%),
+      linear-gradient(180deg, var(--sun-paper), var(--sun-paper-2));
+    color:var(--sun-ink);
+    font-family:var(--serif-sun);
+    border-right:1px solid rgba(139,106,60,.4);
+  }
+  .side.cl{
+    background:
+      radial-gradient(400px 200px at 0% 0%, rgba(138,20,20,.07), transparent 60%),
+      linear-gradient(180deg, var(--cl-paper), var(--cl-paper-2));
+    color:var(--cl-ink);
+    font-family:var(--serif-cl);
+  }
+  .side .who{
+    font-family:var(--sans);
+    font-size:10px;
+    letter-spacing:.26em;
+    text-transform:uppercase;
+    opacity:.68;
+    margin-bottom:14px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .side .who::before{
+    content:""; display:inline-block;
+    width:10px; height:10px; border-radius:50%;
+  }
+  .side.sun .who::before{background:var(--sun-accent); box-shadow:0 0 0 3px rgba(154,27,30,.12)}
+  .side.cl .who::before{background:var(--cl-accent); box-shadow:0 0 0 3px rgba(26,58,110,.12)}
+  .side blockquote{
+    margin:0 0 16px;
+    font-size:clamp(17px, 1.8vw, 21px);
+    line-height:1.55;
+    font-weight:500;
+    position:relative;
+    padding-left:18px;
+  }
+  .side.sun blockquote{color:var(--sun-ink)}
+  .side.cl blockquote{color:var(--cl-ink); font-style:italic}
+  .side blockquote::before{
+    content:"";
+    position:absolute; left:0; top:.35em; bottom:.35em;
+    width:3px;
+  }
+  .side.sun blockquote::before{background:var(--sun-accent)}
+  .side.cl blockquote::before{background:var(--cl-accent)}
+  .side .cite{
+    font-family:var(--sans);
+    font-size:11px;
+    letter-spacing:.1em;
+    opacity:.66;
+    text-transform:uppercase;
+  }
+  .side.sun .cite{color:var(--sun-ink-2)}
+  .side.cl .cite{color:var(--cl-ink-2)}
+
+  .analysis{
+    padding:22px 28px;
+    background:rgba(255,255,255,.025);
+    border-top:1px solid var(--rule);
+    font-family:var(--serif-cl);
+    font-size:16px;
+    line-height:1.6;
+    color:#d4cdbd;
+  }
+  .analysis::before{
+    content:"Reading";
+    display:block;
+    font-family:var(--sans);
+    font-size:10px;
+    letter-spacing:.3em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-bottom:8px;
+  }
+  .analysis b{color:#f3dfb3; font-weight:500}
+  .analysis em{color:#a9c0e3; font-style:italic}
+
+  /* ---------- Modern reception (Level 4) ---------- */
+  .reception{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:22px;
+    margin-top:10px;
+  }
+  .r-card{
+    border:1px solid var(--rule);
+    border-radius:8px;
+    padding:26px 26px 24px;
+    background:linear-gradient(180deg, rgba(255,255,255,.025), rgba(255,255,255,.01));
+    position:relative;
+    overflow:hidden;
+  }
+  .r-card .flag{
+    position:absolute; top:0; left:0; right:0; height:3px;
+  }
+  .r-card.sun .flag{background:linear-gradient(90deg, var(--sun-accent), var(--sun-accent-2))}
+  .r-card.cl .flag{background:linear-gradient(90deg, var(--cl-accent), #4d7ac2)}
+  .r-card h4{
+    font-family:var(--serif-cl);
+    font-size:22px;
+    font-weight:500;
+    margin:0 0 4px;
+    color:#ede6d6;
+  }
+  .r-card .lede{
+    font-family:var(--serif-cl);
+    font-style:italic;
+    font-size:14px;
+    color:var(--muted);
+    margin:0 0 16px;
+  }
+  .r-card.sun h4{color:#f3dfb3}
+  .r-card.cl h4{color:#a9c0e3}
+  .r-card ul{
+    list-style:none;
+    margin:0; padding:0;
+  }
+  .r-card li{
+    font-family:var(--sans);
+    font-size:14px;
+    line-height:1.5;
+    padding:12px 0;
+    border-top:1px solid var(--rule);
+    color:#cfcabb;
+  }
+  .r-card li:first-child{border-top:none; padding-top:4px}
+  .r-card li b{
+    display:block;
+    font-family:var(--serif-cl);
+    font-weight:500;
+    font-size:15px;
+    color:#ede6d6;
+    margin-bottom:3px;
+    letter-spacing:.01em;
+  }
+  .r-card.sun li b{color:#f3dfb3}
+  .r-card.cl li b{color:#a9c0e3}
+  .r-card li span{color:var(--muted); font-style:italic}
+
+  .reception-note{
+    margin-top:30px;
+    padding:26px 30px;
+    border:1px dashed var(--rule);
+    border-radius:8px;
+    font-family:var(--serif-cl);
+    font-style:italic;
+    font-size:17px;
+    line-height:1.6;
+    color:#d4cdbd;
+    background:rgba(255,255,255,.02);
+  }
+  .reception-note b{font-style:normal; color:#f3dfb3; font-weight:500}
+
+  /* ---------- Sources ---------- */
+  .sources{
+    max-width:1200px;
+    margin:60px auto 0;
+    padding:40px 24px 80px;
+    border-top:1px solid var(--rule);
+  }
+  .sources h2{
+    font-family:var(--serif-cl);
+    font-weight:500;
+    font-size:22px;
+    letter-spacing:.05em;
+    color:#ede6d6;
+    margin:0 0 18px;
+  }
+  .sources ul{
+    list-style:none; padding:0; margin:0;
+    display:grid; grid-template-columns:1fr 1fr; gap:12px 28px;
+  }
+  .sources li{
+    font-family:var(--sans);
+    font-size:13px;
+    color:var(--muted);
+    line-height:1.5;
+    padding-left:14px;
+    position:relative;
+  }
+  .sources li::before{
+    content:"·";
+    position:absolute; left:0; top:0;
+    color:var(--sun-accent-2);
+    font-size:18px;
+    line-height:1;
+  }
+  .sources li b{color:#d9cdb2; font-weight:500}
+  .sources li i{color:#a9c0e3; font-style:italic}
+
+  footer.foot{
+    max-width:1200px;
+    margin:0 auto;
+    padding:20px 24px 60px;
+    font-family:var(--sans);
+    font-size:12px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--muted);
+    display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap;
+    border-top:1px solid var(--rule);
+  }
+
+  /* ---------- Mobile ---------- */
+  @media (max-width: 860px){
+    .portrait-grid{grid-template-columns:1fr; gap:18px}
+    .portrait-divider{display:none}
+    .portrait{min-height:0; padding:28px 24px 24px}
+    .pair-body{grid-template-columns:1fr}
+    .side.sun{border-right:none; border-bottom:3px solid var(--sun-accent)}
+    .reception{grid-template-columns:1fr}
+    .sources ul{grid-template-columns:1fr}
+    .hero{padding:56px 18px 32px}
+    section.depth{padding:60px 18px 10px}
+    .pair-head{padding:18px 20px}
+    .side{padding:26px 22px}
+    .analysis{padding:20px 22px}
+    .top-title{display:none}
+    .topbar .spacer{display:none}
+  }
+  @media (max-width: 420px){
+    .portrait h3{font-size:26px}
+    .portrait .seal{width:46px; height:46px; top:22px; right:22px}
+    .depth-rail{padding:16px 18px 6px}
+    .depth-chip{font-size:10px; padding:6px 10px}
+    .hero .dates{gap:18px}
+  }
+
+  /* Print-ish reveal for anchors */
+  html{scroll-behavior:smooth}
+
+  /* Ornamental flourish */
+  .flourish{
+    display:block;
+    width:140px; height:14px;
+    margin:10px auto 0;
+    opacity:.5;
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="../../index.html" class="back">← Back to lenses</a>
+  <div class="top-title">The Art of War · lens: <em>Sun Tzŭ vs. Clausewitz</em></div>
+  <span class="spacer" style="width:120px"></span>
+</header>
+
+<main>
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="lens-label"><span class="dot"></span>Lens 08 · dual reading</div>
+    <h1 class="lens-title">
+      <span class="sun">Sun&nbsp;Tzŭ</span>
+      <span class="v">vs.</span>
+      <span class="cl">Clausewitz</span>
+    </h1>
+    <p class="dek">
+      Two great military canons across twenty-three centuries. One writes on bamboo strips
+      during the Warring States; the other, on paper in Berlin after Jena. Where their
+      thought converges, where it sharply diverges — and how each has shaped its side of the world.
+    </p>
+    <svg class="flourish" viewBox="0 0 140 14" aria-hidden="true">
+      <line x1="0" y1="7" x2="55" y2="7" stroke="#c6812a" stroke-width="1"/>
+      <circle cx="70" cy="7" r="3" fill="none" stroke="#c6812a"/>
+      <line x1="85" y1="7" x2="140" y2="7" stroke="#c6812a" stroke-width="1"/>
+    </svg>
+    <div class="dates">
+      <span><b>Sun Tzŭ</b> · c. 5th century BCE · State of Wu</span>
+      <span><b>Clausewitz</b> · 1780–1831 · Kingdom of Prussia</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DEPTH RAIL ============ -->
+<nav class="depth-rail" aria-label="Depth levels">
+  <a class="depth-chip" href="#l1"><b>L1</b>Dual portrait</a>
+  <a class="depth-chip" href="#l2"><b>L2–3</b>Thematic dialectic &amp; quotes</a>
+  <a class="depth-chip" href="#l4"><b>L4</b>Modern reception</a>
+  <a class="depth-chip" href="#sources"><b>·</b>Sources</a>
+</nav>
+
+<!-- ============ LEVEL 1: DUAL PORTRAIT ============ -->
+<section class="depth" id="l1">
+  <div class="depth-head">
+    <span class="n">Level 1</span>
+    <h2>Dual portrait — the men and their moment</h2>
+    <p class="sub">Two soldier-writers separated by 2,300 years and two civilisations, both writing in the aftermath of collapse — Sun Tzŭ as the old Zhou order unravels into endless inter-state war; Clausewitz as Prussia picks itself up from the humiliation of Jena.</p>
+  </div>
+
+  <div class="portrait-grid">
+    <article class="portrait sun">
+      <span class="spine"></span>
+      <div class="seal">孫</div>
+      <div class="era">Warring States — bamboo strips</div>
+      <h3>Sun Tzŭ</h3>
+      <div class="zh">孫武 · Sun Wu</div>
+      <div class="lived">fl. c. 544 – 496 BCE · State of Wu, lower Yangtze</div>
+      <p>
+        A general in the service of King Hé Lǘ of <b>Wu</b>, Sun Wu appears in the historian Sima Qian's
+        account as the commander who, to prove he could discipline any troops, drilled the king's
+        concubines and beheaded the two ringleaders when they laughed at his orders. The thirteen
+        chapters of his <b>Bīngfǎ</b> (兵法, "military methods") circulated first on strips of bamboo,
+        were commented on for two millennia by generations of Chinese soldier-scholars (Cao Cao, Du Mu,
+        Mei Yao-ch'en), and reached Europe only in 1772 through a French Jesuit.
+      </p>
+      <p>
+        His world is the <b>Spring and Autumn / Warring States period</b>: hundreds of feudal statelets
+        eating each other, a sovereign in name only, war as endemic rather than exceptional.
+        The question for him is not whether to fight, but how to survive an age of permanent war
+        without ruining your state in the process.
+      </p>
+      <dl class="factbox">
+        <dt>Text</dt><dd>《孫子兵法》— 13 chapters, ~6,000 characters</dd>
+        <dt>Language</dt><dd>Classical Chinese, aphoristic, rhymed</dd>
+        <dt>Read here</dt><dd>Giles (1910) translation, Project Gutenberg</dd>
+        <dt>Temperament</dt><dd>Economist of violence; victory through calculation</dd>
+      </dl>
+    </article>
+
+    <article class="portrait cl">
+      <span class="spine"></span>
+      <div class="seal">C</div>
+      <div class="era">Napoleonic aftermath — ink on paper</div>
+      <h3>Carl von Clausewitz</h3>
+      <div class="de">Vom Kriege — "On War"</div>
+      <div class="lived">1780 – 1831 · Burg bei Magdeburg → Berlin Kriegsakademie</div>
+      <p>
+        A Prussian staff officer who entered the army at twelve, was captured along with Prince August at
+        Jena-Auerstedt in 1806, studied under Scharnhorst, and served with the Russian army during
+        Napoleon's retreat from Moscow. He spent the peace writing. <b>Vom Kriege</b> was left
+        unfinished at his death from cholera in 1831 and published by his widow Marie in 1832.
+      </p>
+      <p>
+        His world is the <b>Napoleonic revolution in war</b>: conscription, nation-in-arms, the grand
+        battle of annihilation, Europe wrestling with the meaning of the <i>levée en masse</i>.
+        Where Sun Tzŭ wrote for a prince who could always choose to walk away, Clausewitz writes
+        for a continent in which war has become total and political — a laboratory for a
+        philosophy of conflict, not a manual.
+      </p>
+      <dl class="factbox">
+        <dt>Text</dt><dd><i>Vom Kriege</i> — 8 books, unfinished, ~700 pages</dd>
+        <dt>Language</dt><dd>German, dialectical, Kantian in cast</dd>
+        <dt>Read here</dt><dd>Col. J. J. Graham translation (1873), public domain</dd>
+        <dt>Temperament</dt><dd>Philosopher of violence; war as thinking thing</dd>
+      </dl>
+    </article>
+
+    <div class="portrait-divider" aria-hidden="true"></div>
+  </div>
+</section>
+
+<!-- ============ LEVEL 2 + 3: DIALECTIC & QUOTES ============ -->
+<section class="depth" id="l2">
+  <div class="depth-head">
+    <span class="n">Levels 2 &amp; 3</span>
+    <h2>Thematic dialectic — ten topics, twenty voices</h2>
+    <p class="sub">For each theme, a verbatim passage from each book, cited by chapter, followed by a short reading of where the two thinkers converge, diverge, or only appear to disagree. Sun Tzŭ is Giles (1910); Clausewitz is Graham (1873) except where noted as Howard &amp; Paret (1976).</p>
+  </div>
+
+  <div class="dialectic" id="l3">
+
+    <!-- PAIR 1 — Politics -->
+    <article class="pair">
+      <header class="pair-head">
+        <span class="pair-n">I.</span>
+        <h3>On the political nature of war</h3>
+        <span class="tag conv">Convergence</span>
+      </header>
+      <div class="pair-body">
+        <div class="side sun">
+          <div class="who">Sun Tzŭ · Laying Plans §1–2</div>
+          <blockquote>"The art of war is of vital importance to the State. It is a matter of life and death, a road either to safety or to ruin. Hence it is a subject of inquiry which can on no account be neglected."</blockquote>
+          <div class="cite">Ch. I · Laying Plans</div>
+        </div>
+        <div class="side cl">
+          <div class="who">Clausewitz · On War, Bk I ch 1 §24</div>
+          <blockquote>"War is a mere continuation of policy by other means. … We see, therefore, that War is not merely a political act, but also a real political instrument, a continuation of political commerce, a carrying out of the same by other means."</blockquote>
+          <div class="cite">Bk I · Ch 1 §24 · "What Is War?" · Graham trans.</div>
+        </div>
+      </div>
+      <div class="analysis">
+        Both men refuse the idea of war as an autonomous sphere. For Sun Tzŭ war is <b>a question for the state</b>, to be decided by calculation in the ancestral temple before a single chariot moves. Clausewitz makes the same point dialectically: war has its own grammar but not its own logic — the logic is always <em>political</em>. This is the one place where a classical Chinese aphorist and a Prussian disciple of Kant say essentially the same thing with different metaphysics.
+      </div>
+    </article>
+
+    <!-- PAIR 2 — decisive battle -->
+    <article class="pair">
+      <header class="pair-head">
+        <span class="pair-n">II.</span>
+        <h3>On the role of decisive battle</h3>
+        <span class="tag div">Sharp divergence</span>
+      </header>
+      <div class="pair-body">
+        <div class="side sun">
+          <div class="who">Sun Tzŭ · Attack by Stratagem §2</div>
+          <blockquote>"Hence to fight and conquer in all your battles is not supreme excellence; supreme excellence consists in breaking the enemy's resistance without fighting."</blockquote>
+          <div class="cite">Ch. III · Attack by Stratagem</div>
+        </div>
+        <div class="side cl">
+          <div class="who">Clausewitz · On War, Bk IV ch 11</div>
+          <blockquote>"The bloody solution of the crisis, the effort for the destruction of the enemy's force, is the first-born son of War. … Great victories only have led to great results. … We only wish to establish this idea, that in War everything is concentrated on the great decisive battle."</blockquote>
+          <div class="cite">Bk IV · Ch 11 · "The Use of the Battle"</div>
+        </div>
+      </div>
+      <div class="analysis">
+        Here the two books pull hardest apart. Sun Tzŭ treats pitched battle as a <b>symptom of failed strategy</b>: if you have to fight, your plans were already defective. Clausewitz, writing in the afterglow of Austerlitz and Jena, insists that <em>Schlacht</em> — the decisive, blood-soaked confrontation — is the organ through which war actually accomplishes anything. Every later "manoeuvre vs. annihilation" debate in Western strategy — Delbrück, Liddell Hart, the attrition-vs-manoeuvre quarrels of the Cold War — is a footnote to this disagreement.
+      </div>
+    </article>
+
+    <!-- PAIR 3 — deception -->
+    <article class="pair">
+      <header class="pair-head">
+        <span class="pair-n">III.</span>
+        <h3>On deception</h3>
+        <span class="tag div">Sharp divergence</span>
+      </header>
+      <div class="pair-body">
+        <div class="side sun">
+          <div class="who">Sun Tzŭ · Laying Plans §18–24</div>
+          <blockquote>"All warfare is based on deception. Hence, when able to attack, we must seem unable; when using our forces, we must seem inactive; when we are near, we must make the enemy believe we are far away; when far away, we must make him believe we are near. … Attack him where he is unprepared, appear where you are not expected."</blockquote>
+          <div class="cite">Ch. I · Laying Plans</div>
+        </div>
+        <div class="side cl">
+          <div class="who">Clausewitz · On War, Bk III ch 10</div>
+          <blockquote>"The preparations for a stratagem are always very troublesome, cost much time and trouble, and these costs increase with the scale on which it is undertaken. … In the end the means have usually so weakened the forces engaged that the decisive result can no longer be obtained by any stratagem, however cunning. To prepare a sham action with sufficient thoroughness to impose upon the enemy requires a considerable expenditure of time and force, and the greater the sham, the greater the expenditure."</blockquote>
+          <div class="cite">Bk III · Ch 10 · "Stratagem"</div>
+        </div>
+      </div>
+      <div class="analysis">
+        Sun Tzŭ's most famous line — <em>bing zhe, gui dao ye</em>, "war is the way of deception" — is the <b>axiom</b> of the whole treatise. Clausewitz acknowledges deception exists but considers it a <em>minor key</em>: cunning is expensive, scales badly, and in a real contest between large armies the great forces of morale, mass and determination eclipse any clever pretence. Read together, the pair mark the gap between the <b>guerrilla / small-state imagination</b> of Sun Tzŭ and the <b>mass-army imagination</b> of the post-Napoleonic continent.
+      </div>
+    </article>
+
+    <!-- PAIR 4 — friction / calculation -->
+    <article class="pair">
+      <header class="pair-head">
+        <span class="pair-n">IV.</span>
+        <h3>On friction and the limits of calculation</h3>
+        <span class="tag div">Sharp divergence</span>
+      </header>
+      <div class="pair-body">
+        <div class="side sun">
+          <div class="who">Sun Tzŭ · Tactical Dispositions §17–18</div>
+          <blockquote>"In respect of military method, we have, firstly, Measurement; secondly, Estimation of quantity; thirdly, Calculation; fourthly, Balancing of chances; fifthly, Victory. Measurement owes its existence to Earth; Estimation of quantity to Measurement; Calculation to Estimation of quantity; Balancing of chances to Calculation; and Victory to Balancing of chances."</blockquote>
+          <div class="cite">Ch. IV · Tactical Dispositions</div>
+        </div>
+        <div class="side cl">
+          <div class="who">Clausewitz · On War, Bk I ch 7</div>
+          <blockquote>"Everything is very simple in War, but the simplest thing is difficult. These difficulties accumulate and produce a friction which no man can imagine exactly who has not seen War. … Friction is the only conception which, in a general way, corresponds to that which distinguishes real War from War on paper."</blockquote>
+          <div class="cite">Bk I · Ch 7 · "Friction in War"</div>
+        </div>
+      </div>
+      <div class="analysis">
+        Sun Tzŭ builds a five-step ladder of rational deduction from the shape of the ground to the certainty of victory — the general who calculates most wins. Clausewitz's concept of <b>friction</b> (<em>Friktion</em>) is the explicit denial that any such ladder can hold up under fire: the horses throw shoes, the dispatch rider gets lost, the corps commander misunderstands the order, it rains. The disagreement is really about <em>epistemology</em>: can a general know enough in advance to predict? Sun Tzŭ says yes, if he is wise; Clausewitz says no, only a <em>coup d'œil</em> and moral strength will see him through.
+      </div>
+    </article>
+
+    <!-- PAIR 5 — center of gravity / weak points -->
+    <article class="pair">
+      <header class="pair-head">
+        <span class="pair-n">V.</span>
+        <h3>Centre of gravity vs. weak points</h3>
+        <span class="tag part">Partial convergence</span>
+      </header>
+      <div class="pair-body">
+        <div class="side sun">
+          <div class="who">Sun Tzŭ · Weak Points and Strong §7, §29–30</div>
+          <blockquote>"You can be sure of succeeding in your attacks if you only attack places which are undefended. … Military tactics are like unto water; for water in its natural course runs away from high places and hastens downwards. So in war, the way is to avoid what is strong and to strike at what is weak."</blockquote>
+          <div class="cite">Ch. VI · Weak Points and Strong</div>
+        </div>
+        <div class="side cl">
+          <div class="who">Clausewitz · On War, Bk VIII ch 4 (Howard &amp; Paret)</div>
+          <blockquote>"One must keep the dominant characteristics of both belligerents in mind. Out of these characteristics a certain centre of gravity develops, the hub of all power and movement, on which everything depends. That is the point against which all our energies should be directed."</blockquote>
+          <div class="cite">Bk VIII · Ch 4 · "Closer Definition of the Military Object" · Howard &amp; Paret trans.</div>
+        </div>
+      </div>
+      <div class="analysis">
+        Both writers tell you to concentrate force at a single decisive point — but they describe <em>opposite</em> points. Sun Tzŭ's <b>xū</b> (虛, the empty) is where the enemy is <em>weakest</em>: find the undefended joint and pour through it like water. Clausewitz's <em>Schwerpunkt</em> is the enemy's <b>strongest</b> knot — the army, the capital, the alliance — the point whose destruction brings the whole structure down. A Sun-Tzǔan reads a battlefield for gaps; a Clausewitzian reads it for spines. Modern doctrine has tried, with mixed results, to weld them together.
+      </div>
+    </article>
+
+    <!-- PAIR 6 — passion trinity / moral law -->
+    <article class="pair">
+      <header class="pair-head">
+        <span class="pair-n">VI.</span>
+        <h3>On morale and moral forces</h3>
+        <span class="tag conv">Convergence</span>
+      </header>
+      <div class="pair-body">
+        <div class="side sun">
+          <div class="who">Sun Tzŭ · Laying Plans §5–6</div>
+          <blockquote>"The Moral Law causes the people to be in complete accord with their ruler, so that they will follow him regardless of their lives, undismayed by any danger."</blockquote>
+          <div class="cite">Ch. I · Laying Plans ("The Moral Law" — <em>dào</em>)</div>
+        </div>
+        <div class="side cl">
+          <div class="who">Clausewitz · On War, Bk I ch 1 §28 — the trinity (Howard &amp; Paret)</div>
+          <blockquote>"War is more than a true chameleon. … As a total phenomenon its dominant tendencies always make war a remarkable trinity — composed of primordial violence, hatred, and enmity, which are to be regarded as a blind natural force; of the play of chance and probability, within which the creative spirit is free to roam; and of its element of subordination, as an instrument of policy, which makes it subject to reason alone."</blockquote>
+          <div class="cite">Bk I · Ch 1 §28 · The "Wunderliche Dreifaltigkeit" · Howard &amp; Paret trans.</div>
+        </div>
+      </div>
+      <div class="analysis">
+        Sun Tzŭ's first and most important factor is <b>the <em>dào</em></b> — moral unity between ruler, army and people. Clausewitz's famous <b>trinity</b> lodges that same popular passion as the first of three inseparable poles of war (passion-people, chance-army, reason-government). Both men refuse to reduce war to counting bayonets: the decisive variable is whether a people will die for their cause. Handel and Heuser read this as the deepest convergence between the two traditions.
+      </div>
+    </article>
+
+    <!-- PAIR 7 — intelligence / foreknowledge -->
+    <article class="pair">
+      <header class="pair-head">
+        <span class="pair-n">VII.</span>
+        <h3>On foreknowledge and intelligence</h3>
+        <span class="tag div">Sharp divergence</span>
+      </header>
+      <div class="pair-body">
+        <div class="side sun">
+          <div class="who">Sun Tzŭ · Use of Spies §4–6</div>
+          <blockquote>"What enables the wise sovereign and the good general to strike and conquer, and achieve things beyond the reach of ordinary men, is foreknowledge. Now this foreknowledge cannot be elicited from spirits; it cannot be obtained inductively from experience, nor by any deductive calculation. Knowledge of the enemy's dispositions can only be obtained from other men."</blockquote>
+          <div class="cite">Ch. XIII · The Use of Spies</div>
+        </div>
+        <div class="side cl">
+          <div class="who">Clausewitz · On War, Bk I ch 6 (Howard &amp; Paret)</div>
+          <blockquote>"Many intelligence reports in war are contradictory; even more are false, and most are uncertain. … In short, most intelligence is false, and the effect of fear is to multiply lies and inaccuracies. As a rule most men would rather believe bad news than good, and rather tend to exaggerate the bad news."</blockquote>
+          <div class="cite">Bk I · Ch 6 · "Intelligence in War" · Howard &amp; Paret trans.</div>
+        </div>
+      </div>
+      <div class="analysis">
+        Sun Tzŭ devotes an <em>entire closing chapter</em> to the use of spies; for him the foreknowledge purchased from a handful of well-paid agents is cheaper than any campaign and effectively decides it. Clausewitz's <em>Nachrichten</em> chapter is the exact opposite: intelligence is a fog of contradictory rumours and a general who trusts it will be destroyed. This is perhaps the sharpest divide between the two books, and the one most cited when scholars wonder <b>why the Chinese and Western intelligence cultures differ so profoundly</b> to this day.
+      </div>
+    </article>
+
+    <!-- PAIR 8 — the ideal general -->
+    <article class="pair">
+      <header class="pair-head">
+        <span class="pair-n">VIII.</span>
+        <h3>On the ideal general</h3>
+        <span class="tag part">Partial convergence</span>
+      </header>
+      <div class="pair-body">
+        <div class="side sun">
+          <div class="who">Sun Tzŭ · Laying Plans §9 &amp; Terrain §24</div>
+          <blockquote>"The Commander stands for the virtues of wisdom, sincerity, benevolence, courage and strictness. … The general who advances without coveting fame and retreats without fearing disgrace, whose only thought is to protect his country and do good service for his sovereign, is the jewel of the kingdom."</blockquote>
+          <div class="cite">Ch. I §9 &amp; Ch. X §24 · Terrain</div>
+        </div>
+        <div class="side cl">
+          <div class="who">Clausewitz · On War, Bk I ch 3 (Howard &amp; Paret)</div>
+          <blockquote>"When all is said and done, it really is the commander's <em>coup d'œil</em>, his ability to see things simply, to identify the whole business of war completely with himself, that is the essence of good generalship. Only if the mind works in this comprehensive fashion can it achieve the freedom it needs to dominate events and not be dominated by them."</blockquote>
+          <div class="cite">Bk I · Ch 3 · "On Military Genius" · Howard &amp; Paret trans.</div>
+        </div>
+      </div>
+      <div class="analysis">
+        Both give us a portrait of the ideal commander, but with different weightings. Sun Tzŭ's general is a <b>Confucian moral agent</b>: five virtues, stoic indifference to personal reputation, devotion to the state. Clausewitz's <em>militärisches Genie</em> is a <b>Romantic-era hero</b>: intellect, <em>coup d'œil</em>, <em>Entschlossenheit</em> (resoluteness), the capacity to act coherently amid the uncertainty and friction he elsewhere describes. They agree that the man matters more than the manual — they disagree about which faculties matter.
+      </div>
+    </article>
+
+    <!-- PAIR 9 — terrain -->
+    <article class="pair">
+      <header class="pair-head">
+        <span class="pair-n">IX.</span>
+        <h3>On terrain and geography</h3>
+        <span class="tag conv">Convergence</span>
+      </header>
+      <div class="pair-body">
+        <div class="side sun">
+          <div class="who">Sun Tzŭ · Terrain §21–22</div>
+          <blockquote>"The natural formation of the country is the soldier's best ally; but a power of estimating the adversary, of controlling the forces of victory, and of shrewdly calculating difficulties, dangers and distances, constitutes the test of a great general. He who knows these things, and in fighting puts his knowledge into practice, will win his battles."</blockquote>
+          <div class="cite">Ch. X · Terrain</div>
+        </div>
+        <div class="side cl">
+          <div class="who">Clausewitz · On War, Bk V ch 17 &amp; Bk VI</div>
+          <blockquote>"The influence of the country and ground, then, naturally has a very great and decisive influence on the whole action in war. … A knowledge of country and ground is for every General of such importance that, without it, nothing truly great or complete can be conceived."</blockquote>
+          <div class="cite">Bk V · Ch 17 · "Country and Ground"</div>
+        </div>
+      </div>
+      <div class="analysis">
+        Here the two traditions quietly shake hands. Sun Tzŭ devotes two whole chapters (<em>Terrain</em>, <em>Nine Situations</em>) to ground; Clausewitz devotes most of Book V and much of Book VI to <em>Das Land und Boden</em>. Both insist the general must have an almost somatic feel for terrain. The difference is scale: Sun Tzŭ catalogues <b>six or nine</b> qualitative types of ground with tactical prescriptions; Clausewitz abstracts to the <b>operational</b> level of river lines, mountain ranges and theatres of war.
+      </div>
+    </article>
+
+    <!-- PAIR 10 — ending war -->
+    <article class="pair">
+      <header class="pair-head">
+        <span class="pair-n">X.</span>
+        <h3>On ending wars</h3>
+        <span class="tag part">Partial convergence</span>
+      </header>
+      <div class="pair-body">
+        <div class="side sun">
+          <div class="who">Sun Tzŭ · Waging War §6, §19 &amp; Attack by Fire §22</div>
+          <blockquote>"There is no instance of a country having benefited from prolonged warfare. … In war, then, let your great object be victory, not lengthy campaigns. … Hence the enlightened ruler is heedful, and the good general full of caution. This is the way to keep a country at peace and an army intact."</blockquote>
+          <div class="cite">Chs. II &amp; XII</div>
+        </div>
+        <div class="side cl">
+          <div class="who">Clausewitz · On War, Bk VIII ch 2 &amp; ch 6B (Howard &amp; Paret)</div>
+          <blockquote>"No one starts a war — or rather, no one in his senses ought to do so — without first being clear in his mind what he intends to achieve by that war and how he intends to conduct it. The former is its political purpose; the latter its operational objective."</blockquote>
+          <div class="cite">Bk VIII · Ch 6B · "War as an Instrument of Policy" · Howard &amp; Paret trans.</div>
+        </div>
+      </div>
+      <div class="analysis">
+        Both books end, strikingly, with the same warning: <b>don't start what you cannot finish</b>. Sun Tzŭ's horror of the protracted campaign (bankrupting the state, making your general a byword) and Clausewitz's famous insistence that the statesman must know, before ordering mobilisation, exactly what peace he is trying to buy — these are the two traditions' shared sobriety. <em>Vom Kriege</em> is even, in its Book VIII, quieter and more cautious than its reputation suggests. Where they diverge is on the instrument: Sun Tzŭ wants the war short through <em>speed</em>; Clausewitz wants it short through <em>mass</em>.
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- ============ LEVEL 4: MODERN RECEPTION ============ -->
+<section class="depth" id="l4">
+  <div class="depth-head">
+    <span class="n">Level 4</span>
+    <h2>Modern reception — which tradition dominates where</h2>
+    <p class="sub">In the twenty-first century, no serious army reads only one of these books. But the centre of gravity of each tradition is clearly visible when you look at the doctrinal literature, the schools, and the quotations senior officers reach for under fire.</p>
+  </div>
+
+  <div class="reception">
+
+    <article class="r-card cl">
+      <span class="flag"></span>
+      <h4>The Clausewitzian world</h4>
+      <p class="lede">From the Prussian General Staff to US Army Field Manual 3-0.</p>
+      <ul>
+        <li><b>Prussian / German General Staff</b><span>Moltke the Elder made Clausewitz required reading at the Kriegsakademie from 1857; the Schlieffen Plan, Hans Delbrück's <em>Strategie des Niederwerfens</em> debates, and the very concept of an operational-level staff descend from him.</span></li>
+        <li><b>US Army after Vietnam</b><span>Col. Harry Summers's <em>On Strategy</em> (1981) re-read Vietnam through Clausewitz and made <em>Vom Kriege</em> the intellectual backbone of the post-Vietnam army. Field Manual 3-0 still opens with the trinity and center-of-gravity analysis.</span></li>
+        <li><b>US Marine Corps MCDP-1 "Warfighting"</b><span>A fusion document: heavy on Clausewitzian friction and moral forces, explicitly citing "fog of war," but also importing manoeuvre-warfare ideas that leak in from the Sun Tzŭ side.</span></li>
+        <li><b>Russian / Soviet General Staff</b><span>Svechin's <em>Strategy</em> (1927), Tukhachevsky, and the deep-operation school were unmistakably Clausewitzian in their pursuit of decisive engagement at operational depth — even when they borrowed Sun-Tzǔan maskirovka on top.</span></li>
+        <li><b>Academic strategic studies</b><span>Michael Howard &amp; Peter Paret's 1976 translation made Clausewitz inescapable for Anglophone scholars; Beatrice Heuser's <em>Reading Clausewitz</em> and <em>Evolution of Strategy</em> are the current standard.</span></li>
+      </ul>
+    </article>
+
+    <article class="r-card sun">
+      <span class="flag"></span>
+      <h4>The Sun-Tzǔan world</h4>
+      <p class="lede">From Mao in the caves of Yan'an to Silicon Valley board rooms.</p>
+      <ul>
+        <li><b>Mao Zedong &amp; the PLA</b><span>Mao's <em>On Protracted War</em> (1938) is essentially Sun Tzŭ translated into Marxist-revolutionary idiom: avoid battle when weak, exhaust the invader, let the people be the sea in which the guerrilla swims. The PLA's <em>Science of Military Strategy</em> (2013 ed.) still quotes him at length.</span></li>
+        <li><b>Ho Chi Minh &amp; Võ Nguyên Giáp</b><span>The Vietnamese concept of <em>đánh lâu dài</em> ("long fight") is a direct descendant — the guerrilla using indirect methods and time against a vastly stronger conventional foe.</span></li>
+        <li><b>B. H. Liddell Hart &amp; the "indirect approach"</b><span>Liddell Hart openly credited Sun Tzŭ with the inspiration for his <em>Strategy: The Indirect Approach</em> (1954), and in his foreword to Griffith's 1963 translation called <em>The Art of War</em> "the concentrated essence of wisdom on the conduct of war."</span></li>
+        <li><b>John Boyd &amp; the OODA loop</b><span>Boyd's briefings carried Sun Tzŭ in one hand and Musashi in the other; the OODA loop is a rate-of-deception argument about getting inside the opponent's decision cycle — pure <em>cheng / ch'i</em>.</span></li>
+        <li><b>Corporate &amp; competitive strategy</b><span>From the Harvard Business Review to Silicon Valley, Sun Tzŭ is the canonical "strategy book you can put on your CEO's desk." Clausewitz, by contrast, has mostly remained inside professional military education.</span></li>
+      </ul>
+    </article>
+
+  </div>
+
+  <p class="reception-note">
+    The honest synthesis, defended by <b>Michael Handel</b> in <i>Masters of War</i> (1992) and by <b>Beatrice Heuser</b> in <i>The Evolution of Strategy</i> (2010), is that the two books are not rivals but <em>complements at different levels of war</em>: Clausewitz gives you the <b>politics and the grammar of mass war</b>, Sun Tzŭ gives you the <b>operational cunning and economy</b>. A reader who takes only one of them gets only half of the picture.
+  </p>
+</section>
+
+<!-- ============ SOURCES ============ -->
+<section class="sources" id="sources">
+  <h2>Sources &amp; further reading</h2>
+  <ul>
+    <li><b>Sun Tzŭ, <i>The Art of War</i></b> — trans. Lionel Giles, Luzac &amp; Co., London, 1910. Public domain; read here as Project Gutenberg eBook #132.</li>
+    <li><b>Carl von Clausewitz, <i>On War</i></b> — trans. Col. J. J. Graham, N. Trübner &amp; Co., London, 1873. Public domain; widely reprinted. Chapter/book references throughout.</li>
+    <li><b>Carl von Clausewitz, <i>On War</i></b> — trans. Michael Howard &amp; Peter Paret, Princeton University Press, 1976. Standard modern English text.</li>
+    <li><b>Michael I. Handel, <i>Masters of War: Classical Strategic Thought</i></b> — Frank Cass, 3rd ed. 2001. The definitive chapter-by-chapter comparison of Sun Tzŭ, Clausewitz, Jomini and Mao.</li>
+    <li><b>Beatrice Heuser, <i>The Evolution of Strategy</i></b> — Cambridge University Press, 2010. And <i>Reading Clausewitz</i>, Pimlico, 2002.</li>
+    <li><b>Peter Paret (ed.), <i>Makers of Modern Strategy from Machiavelli to the Nuclear Age</i></b> — Princeton, 1986. Chapters by Paret on Clausewitz and by Arthur Waldron on Chinese strategic thought.</li>
+    <li><b>Mao Zedong, <i>On Protracted War</i></b> (1938) &amp; <i>On Guerrilla Warfare</i> (1937). The Sun-Tzǔan tradition carried into the twentieth century.</li>
+    <li><b>Harry G. Summers, <i>On Strategy: A Critical Analysis of the Vietnam War</i></b> — Presidio Press, 1981. The book that re-Clausewitzianised the US Army.</li>
+    <li><b>B. H. Liddell Hart, <i>Strategy: The Indirect Approach</i></b> — Faber &amp; Faber, 1954. Foreword explicitly credits Sun Tzŭ.</li>
+    <li><b>PLA Academy of Military Science, <i>Science of Military Strategy</i></b> (战略学) — Beijing, 2013 edition. Shows how deeply Sun Tzŭ is woven into contemporary PLA doctrine.</li>
+    <li><b>US Army FM 3-0, <i>Operations</i></b> &amp; <b>USMC MCDP-1, <i>Warfighting</i></b> — contemporary doctrinal manuals; the Clausewitzian backbone is explicit.</li>
+    <li><b>Azar Gat, <i>A History of Military Thought</i></b> — Oxford University Press, 2001. Places both texts in the wider arc from antiquity to the Cold War.</li>
+  </ul>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div>The Art of War · lens 08 · Sun Tzŭ vs. Clausewitz</div>
+  <div>Quotes verbatim · Giles 1910 · Graham 1873 &amp; Howard-Paret 1976</div>
+</footer>
+
+<script>
+  // Smooth highlight for anchor chips when section enters view
+  const chips = document.querySelectorAll('.depth-chip');
+  const sections = ['#l1','#l2','#l4','#sources'].map(id=>document.querySelector(id)).filter(Boolean);
+  const byId = id => document.querySelector('.depth-chip[href="'+id+'"]');
+  const activate = id => {
+    chips.forEach(c=>{c.classList.remove('active'); c.removeAttribute('aria-current')});
+    const chip = byId(id);
+    if(chip){
+      chip.classList.add('active');
+      chip.setAttribute('aria-current','true');
+    }
+  };
+  if('IntersectionObserver' in window){
+    const obs = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting){
+          activate('#'+e.target.id);
+        }
+      });
+    },{rootMargin:'-40% 0px -55% 0px'});
+    sections.forEach(s=>obs.observe(s));
+  }
+</script>
+</body>
+</html>

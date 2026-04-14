@@ -1,0 +1,2306 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta name="description" content="An interactive narrative reading of Sun Tzu's Art of War in Lionel Giles' 1910 translation. Explore all 13 chapters with commentator annotations across four depth levels." />
+<title>The Art of War — Narrative Structure</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg-0: #f3ead6;
+    --bg-1: #efe4c8;
+    --bg-2: #e8dab4;
+    --bg-3: #dcc99a;
+    --ink-0: #2b1d10;
+    --ink-1: #4a3620;
+    --ink-2: #6a5135;
+    --ink-3: #7a6140;
+    --accent: #8b1e1e;
+    --accent-hover: #a62727;
+    --accent-soft: #d97a3a;
+    --rule: #c8b489;
+    --parchment-hi: #fbf4de;
+    --bamboo-dark: #57462a;
+    --seal: #8b1e1e;
+    --focus: #b0742c;
+    --shadow-card: 0 2px 4px rgba(76, 54, 22, 0.08), 0 12px 28px -14px rgba(76, 54, 22, 0.18);
+    --shadow-modal: 0 30px 80px -20px rgba(43, 29, 16, 0.45), 0 8px 24px -8px rgba(43, 29, 16, 0.3);
+    --radius: 4px;
+    --max-content: 1400px;
+    --sidebar-w: 300px;
+    --font-serif: "EB Garamond", "Cormorant Garamond", Georgia, "Times New Roman", serif;
+    --font-display: "Cormorant Garamond", "EB Garamond", Georgia, serif;
+    --font-ui: "Inter", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg-0: #1a140a;
+      --bg-1: #22190d;
+      --bg-2: #2b1f10;
+      --bg-3: #3a2c18;
+      --ink-0: #f0e6ce;
+      --ink-1: #e2d4b3;
+      --ink-2: #c6b287;
+      --ink-3: #a08d65;
+      --rule: #4a3720;
+      --parchment-hi: #2b1f10;
+      --accent: #d47a3e;
+      --accent-hover: #e49052;
+      --seal: #c5562a;
+      --shadow-card: 0 2px 4px rgba(0, 0, 0, 0.5), 0 12px 28px -12px rgba(0, 0, 0, 0.6);
+      --shadow-modal: 0 30px 80px -20px rgba(0, 0, 0, 0.7), 0 8px 24px -8px rgba(0, 0, 0, 0.5);
+    }
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg-0);
+    color: var(--ink-0);
+    font-family: var(--font-serif);
+    font-size: 17px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+  body {
+    background-image:
+      radial-gradient(circle at 15% 10%, rgba(200, 160, 80, 0.12), transparent 45%),
+      radial-gradient(circle at 85% 90%, rgba(180, 100, 40, 0.10), transparent 55%),
+      repeating-linear-gradient(135deg, transparent 0 22px, rgba(100, 70, 30, 0.015) 22px 23px),
+      linear-gradient(180deg, var(--bg-0), var(--bg-1));
+    min-height: 100vh;
+  }
+
+  /* -------- PROGRESS RIBBON -------- */
+  .progress-ribbon {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: transparent;
+    z-index: 200;
+    pointer-events: none;
+  }
+  .progress-ribbon__fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent), var(--accent-soft));
+    transition: width 180ms ease-out;
+    box-shadow: 0 0 12px rgba(139, 30, 30, 0.35);
+  }
+
+  /* -------- HEADER -------- */
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 150;
+    background: linear-gradient(180deg, rgba(243, 234, 214, 0.98), rgba(243, 234, 214, 0.92));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--rule);
+  }
+  @media (prefers-color-scheme: dark) {
+    .site-header {
+      background: linear-gradient(180deg, rgba(26, 20, 10, 0.98), rgba(26, 20, 10, 0.92));
+    }
+  }
+  .site-header__inner {
+    max-width: var(--max-content);
+    margin: 0 auto;
+    padding: 14px clamp(16px, 3vw, 32px);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .back-link {
+    font-family: var(--font-ui);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-2);
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: var(--radius);
+    border: 1px solid var(--rule);
+    background: rgba(255, 255, 255, 0.15);
+    transition: all 160ms;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 44px;
+  }
+  .back-link:hover { color: var(--accent); border-color: var(--accent); }
+  .back-link::before { content: "←"; font-size: 16px; }
+
+  .title-block { flex: 1; min-width: 220px; }
+  .title-block h1 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(20px, 2.6vw, 28px);
+    line-height: 1.1;
+    letter-spacing: 0.01em;
+    color: var(--ink-0);
+  }
+  .title-block .subtitle {
+    margin-top: 2px;
+    font-family: var(--font-ui);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+
+  .level-indicator {
+    font-family: var(--font-ui);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    padding: 8px 14px;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    background: var(--parchment-hi);
+    white-space: nowrap;
+  }
+  .level-indicator b { color: var(--accent); font-weight: 600; }
+
+  /* -------- LAYOUT -------- */
+  .page {
+    max-width: var(--max-content);
+    margin: 0 auto;
+    padding: 20px clamp(14px, 3vw, 32px) 80px;
+    display: grid;
+    grid-template-columns: var(--sidebar-w) 1fr;
+    gap: clamp(20px, 3vw, 40px);
+  }
+  @media (max-width: 900px) {
+    .page { grid-template-columns: 1fr; padding: 12px; }
+  }
+
+  /* -------- SIDEBAR -------- */
+  .sidebar {
+    position: sticky;
+    top: 84px;
+    align-self: start;
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-right: 8px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--rule) transparent;
+  }
+  .sidebar::-webkit-scrollbar { width: 6px; }
+  .sidebar::-webkit-scrollbar-track { background: transparent; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 3px; }
+
+  @media (max-width: 900px) {
+    .sidebar {
+      position: static;
+      max-height: none;
+      padding-right: 0;
+      margin-bottom: 16px;
+    }
+    .sidebar-toggle {
+      display: flex !important;
+    }
+    .sidebar-nav { display: none; }
+    .sidebar.open .sidebar-nav { display: block; }
+  }
+
+  .sidebar-toggle {
+    display: none;
+    width: 100%;
+    padding: 14px 16px;
+    background: var(--parchment-hi);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    font-family: var(--font-ui);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ink-1);
+    cursor: pointer;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 48px;
+  }
+  .sidebar-toggle::after { content: "▸"; transition: transform 200ms; }
+  .sidebar.open .sidebar-toggle::after { transform: rotate(90deg); }
+
+  .sidebar h2 {
+    font-family: var(--font-ui);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin: 18px 0 8px;
+    padding: 0 8px;
+  }
+  .sidebar h2:first-child { margin-top: 0; }
+
+  .toc-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .toc-item {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 15px;
+    color: var(--ink-1);
+    transition: all 140ms;
+    border-left: 2px solid transparent;
+    line-height: 1.3;
+    min-height: 44px;
+  }
+  .toc-item:hover {
+    background: rgba(139, 30, 30, 0.06);
+    color: var(--ink-0);
+  }
+  .toc-item.active {
+    background: rgba(139, 30, 30, 0.1);
+    border-left-color: var(--accent);
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .toc-item:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: -2px;
+  }
+  .toc-num {
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-3);
+    min-width: 32px;
+    letter-spacing: 0.02em;
+  }
+  .toc-item.active .toc-num { color: var(--accent); }
+  .toc-label { flex: 1; }
+
+  /* -------- MAIN -------- */
+  .main {
+    min-width: 0;
+  }
+
+  /* -------- INTRO -------- */
+  .intro {
+    margin-bottom: 40px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--rule);
+    position: relative;
+  }
+  .intro::after {
+    content: "";
+    position: absolute;
+    bottom: -1px; left: 0;
+    width: 80px; height: 3px;
+    background: var(--accent);
+  }
+  .intro .lens-label {
+    display: inline-block;
+    font-family: var(--font-ui);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding: 5px 12px;
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    margin-bottom: 16px;
+  }
+  .intro h2 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(30px, 5vw, 48px);
+    line-height: 1.05;
+    margin: 0 0 12px;
+    color: var(--ink-0);
+    letter-spacing: -0.01em;
+  }
+  .intro p {
+    max-width: 62ch;
+    color: var(--ink-1);
+    font-size: clamp(16px, 1.8vw, 19px);
+    line-height: 1.6;
+    margin: 0 0 8px;
+  }
+  .intro .meta {
+    margin-top: 18px;
+    font-family: var(--font-ui);
+    font-size: 12px;
+    color: var(--ink-3);
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .intro .meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .intro .meta b { color: var(--ink-1); font-weight: 600; }
+
+  /* -------- LEVEL LEGEND -------- */
+  .level-legend {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px;
+    margin: 24px 0 36px;
+  }
+  .level-legend__item {
+    padding: 12px 14px;
+    background: var(--parchment-hi);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    font-size: 13px;
+  }
+  .level-legend__item b {
+    display: block;
+    font-family: var(--font-ui);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  .level-legend__item span {
+    color: var(--ink-1);
+    line-height: 1.4;
+  }
+
+  /* -------- SECTION HEADING -------- */
+  .section-heading {
+    font-family: var(--font-ui);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin: 48px 0 18px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-heading::before {
+    content: "";
+    width: 24px; height: 1px;
+    background: var(--accent);
+  }
+
+  /* -------- CARDS GRID -------- */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .card {
+    background: var(--parchment-hi);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    padding: 18px 20px 20px;
+    cursor: pointer;
+    transition: all 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    box-shadow: var(--shadow-card);
+    position: relative;
+    overflow: hidden;
+    min-height: 140px;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    font-family: inherit;
+    color: inherit;
+    width: 100%;
+  }
+  .card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 260ms ease-out;
+  }
+  .card:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent);
+    box-shadow: 0 4px 8px rgba(76, 54, 22, 0.1), 0 20px 40px -14px rgba(76, 54, 22, 0.25);
+  }
+  .card:hover::before { transform: scaleX(1); }
+  .card:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 3px;
+  }
+
+  .card__head {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .card__num {
+    font-family: var(--font-display);
+    font-size: 32px;
+    font-weight: 600;
+    line-height: 0.9;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+    font-style: italic;
+  }
+  .card__kind {
+    font-family: var(--font-ui);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-left: auto;
+    padding: 3px 8px;
+    background: var(--bg-2);
+    border-radius: 999px;
+  }
+  .card__title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 21px;
+    line-height: 1.15;
+    margin: 0 0 8px;
+    color: var(--ink-0);
+    letter-spacing: 0.01em;
+  }
+  .card__gist {
+    font-size: 14px;
+    line-height: 1.4;
+    color: var(--ink-2);
+    font-style: italic;
+    margin: 0;
+    flex: 1;
+  }
+  .card__sections-count {
+    margin-top: 14px;
+    font-family: var(--font-ui);
+    font-size: 11px;
+    color: var(--ink-3);
+    letter-spacing: 0.04em;
+  }
+  .card__sections-count b { color: var(--accent); font-weight: 600; }
+
+  /* -------- MODAL -------- */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 12, 4, 0.65);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 500;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 220ms ease-out;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: clamp(8px, 3vw, 40px);
+    overflow-y: auto;
+  }
+  .modal-backdrop.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .modal {
+    background: var(--bg-1);
+    background-image:
+      radial-gradient(circle at 15% 10%, rgba(200, 160, 80, 0.1), transparent 40%),
+      linear-gradient(180deg, var(--bg-1), var(--bg-0));
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    max-width: 880px;
+    width: 100%;
+    box-shadow: var(--shadow-modal);
+    transform: translateY(20px);
+    transition: transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    position: relative;
+    margin: auto 0;
+  }
+  .modal-backdrop.open .modal { transform: translateY(0); }
+
+  .modal__header {
+    position: sticky;
+    top: 0;
+    padding: 20px clamp(18px, 3vw, 32px) 18px;
+    background: linear-gradient(180deg, var(--bg-1) 85%, transparent);
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    z-index: 2;
+    border-radius: 6px 6px 0 0;
+  }
+  .modal__kind {
+    font-family: var(--font-ui);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .modal__title-row { flex: 1; min-width: 0; }
+  .modal__title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(22px, 3.5vw, 32px);
+    line-height: 1.1;
+    margin: 0;
+    color: var(--ink-0);
+  }
+  .modal__title .numeral {
+    color: var(--accent);
+    font-style: italic;
+    margin-right: 10px;
+  }
+  .modal__close {
+    background: transparent;
+    border: 1px solid var(--rule);
+    color: var(--ink-2);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 160ms;
+    font-family: var(--font-ui);
+    line-height: 1;
+  }
+  .modal__close:hover { background: var(--accent); color: white; border-color: var(--accent); }
+  .modal__close:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+  .modal__body {
+    padding: 20px clamp(18px, 3vw, 32px) 32px;
+  }
+
+  .chapter-gist {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: clamp(17px, 2.2vw, 21px);
+    line-height: 1.45;
+    color: var(--ink-1);
+    padding: 14px 18px 14px 22px;
+    border-left: 3px solid var(--accent);
+    background: rgba(139, 30, 30, 0.04);
+    margin: 0 0 24px;
+    border-radius: 0 var(--radius) var(--radius) 0;
+    max-width: 65ch;
+  }
+
+  .chapter-bullets {
+    margin: 0 0 32px;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 12px;
+  }
+  .chapter-bullets li {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 14px;
+    align-items: start;
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--rule);
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--ink-1);
+  }
+  .chapter-bullets li:last-child { border-bottom: none; }
+  .chapter-bullets li::before {
+    content: "◆";
+    color: var(--accent);
+    font-size: 11px;
+    line-height: 1.6;
+    margin-top: 2px;
+  }
+
+  .sections-list-header {
+    font-family: var(--font-ui);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin: 28px 0 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .sections-list {
+    list-style: none;
+    margin: 0 0 20px;
+    padding: 0;
+    display: grid;
+    gap: 6px;
+  }
+  .sections-list li { margin: 0; }
+  .section-row {
+    width: 100%;
+    background: transparent;
+    border: 1px solid transparent;
+    border-left: 2px solid var(--rule);
+    padding: 10px 14px;
+    text-align: left;
+    font-family: inherit;
+    color: var(--ink-1);
+    cursor: pointer;
+    border-radius: 0 var(--radius) var(--radius) 0;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    transition: all 160ms;
+    font-size: 14px;
+    line-height: 1.4;
+    min-height: 44px;
+  }
+  .section-row:hover {
+    background: rgba(139, 30, 30, 0.06);
+    border-left-color: var(--accent);
+    color: var(--ink-0);
+  }
+  .section-row:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: -2px;
+  }
+  .section-row__num {
+    font-family: var(--font-display);
+    font-weight: 600;
+    color: var(--accent);
+    min-width: 32px;
+    font-size: 15px;
+  }
+  .section-row__preview {
+    flex: 1;
+    font-style: italic;
+    color: var(--ink-2);
+  }
+  .section-row__marker {
+    font-family: var(--font-ui);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 2px;
+    background: var(--bg-2);
+    color: var(--ink-3);
+  }
+  .section-row__marker.has-commentary { background: rgba(139, 30, 30, 0.15); color: var(--accent); }
+
+  /* -------- READING VIEW (Level 3 and 4) -------- */
+  .reading-view {
+    padding: 12px 0 0;
+  }
+
+  .verse-block {
+    margin: 0 0 28px;
+    padding: 0 0 24px;
+    border-bottom: 1px solid var(--rule);
+    position: relative;
+  }
+  .verse-block:last-child { border-bottom: none; }
+
+  .verse-num {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-style: italic;
+    color: var(--accent);
+    font-size: 17px;
+    margin-right: 10px;
+  }
+
+  .verse-text {
+    font-family: var(--font-serif);
+    font-size: clamp(17px, 2vw, 20px);
+    line-height: 1.55;
+    color: var(--ink-0);
+    margin: 0 0 14px;
+    max-width: 65ch;
+    font-feature-settings: "liga", "kern";
+  }
+  .verse-text em { font-style: italic; color: var(--ink-1); }
+
+  .giles-note {
+    position: relative;
+    margin: 16px 0 0 clamp(12px, 3vw, 24px);
+    padding: 10px 14px 10px 16px;
+    font-family: var(--font-serif);
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--ink-2);
+    background: linear-gradient(90deg, rgba(139, 30, 30, 0.035), transparent);
+    border-left: 2px solid var(--rule);
+    font-style: italic;
+    max-width: 60ch;
+  }
+  .giles-note::before {
+    content: "GILES";
+    position: absolute;
+    top: -7px; left: 10px;
+    background: var(--bg-0);
+    padding: 0 6px;
+    font-family: var(--font-ui);
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    font-style: normal;
+    color: var(--ink-3);
+  }
+  .giles-note a.xref {
+    color: var(--accent);
+    text-decoration: none;
+    font-style: normal;
+    font-weight: 500;
+    border-bottom: 1px dashed var(--accent);
+    cursor: pointer;
+    padding-bottom: 1px;
+  }
+  .giles-note a.xref:hover { color: var(--accent-hover); border-bottom-style: solid; }
+
+  .commentary-toggle {
+    margin-top: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: 1px solid var(--rule);
+    color: var(--ink-2);
+    font-family: var(--font-ui);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 8px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 160ms;
+    min-height: 44px;
+  }
+  .commentary-toggle:hover {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+  }
+  .commentary-toggle::before {
+    content: "◈";
+    font-size: 11px;
+  }
+  .commentary-toggle:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .commentary-toggle.active {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+  }
+
+  .commentary-stack {
+    display: none;
+    margin-top: 16px;
+    padding: 16px 18px;
+    background: rgba(87, 70, 42, 0.05);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    position: relative;
+  }
+  .commentary-stack.open { display: block; }
+  .commentary-stack::before {
+    content: "CLOSE READING • COMMENTATORS";
+    display: block;
+    font-family: var(--font-ui);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .commentator-entry {
+    padding: 8px 0;
+    border-bottom: 1px dashed var(--rule);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--ink-1);
+  }
+  .commentator-entry:last-child { border-bottom: none; padding-bottom: 0; }
+  .commentator-entry:first-child { padding-top: 0; }
+  .commentator-name {
+    display: inline-block;
+    font-family: var(--font-ui);
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-right: 8px;
+    white-space: nowrap;
+  }
+  .commentator-quote { font-style: italic; }
+  .commentator-quote::before { content: "\201C"; color: var(--ink-3); margin-right: 1px; }
+  .commentator-quote::after { content: "\201D"; color: var(--ink-3); margin-left: 1px; }
+
+  /* -------- FRONT MATTER READING -------- */
+  .front-matter-body {
+    font-family: var(--font-serif);
+    font-size: clamp(16px, 1.8vw, 18px);
+    line-height: 1.65;
+    color: var(--ink-0);
+    max-width: 65ch;
+  }
+  .front-matter-body p { margin: 0 0 18px; }
+
+  /* -------- NAV BAR WITHIN MODAL -------- */
+  .modal-nav {
+    position: sticky;
+    bottom: 0;
+    background: linear-gradient(180deg, transparent, var(--bg-1) 30%);
+    padding: 16px clamp(18px, 3vw, 32px) 18px;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    border-top: 1px solid var(--rule);
+    margin-top: 24px;
+  }
+  .modal-nav button {
+    flex: 1;
+    background: var(--parchment-hi);
+    border: 1px solid var(--rule);
+    padding: 10px 14px;
+    border-radius: var(--radius);
+    font-family: var(--font-ui);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--ink-1);
+    cursor: pointer;
+    min-height: 44px;
+    transition: all 160ms;
+  }
+  .modal-nav button:hover:not(:disabled) {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+  }
+  .modal-nav button:disabled { opacity: 0.4; cursor: not-allowed; }
+  .modal-nav button:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+  .modal-nav button.center { flex: 0 0 auto; padding: 10px 18px; }
+  .modal-nav button.prev::before { content: "← "; }
+  .modal-nav button.next::after { content: " →"; }
+
+  /* -------- BREADCRUMB INSIDE MODAL -------- */
+  .modal-breadcrumb {
+    font-family: var(--font-ui);
+    font-size: 11px;
+    color: var(--ink-3);
+    margin: 0 0 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .modal-breadcrumb a, .modal-breadcrumb button {
+    color: var(--accent);
+    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    font: inherit;
+  }
+  .modal-breadcrumb a:hover, .modal-breadcrumb button:hover { text-decoration: underline; }
+  .modal-breadcrumb .sep { color: var(--ink-3); }
+
+  /* -------- CHAPTER PROGRESS MINI-RIBBON -------- */
+  .chapter-progress {
+    margin: 10px 0 20px;
+    height: 4px;
+    background: var(--bg-3);
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+  }
+  .chapter-progress__fill {
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    background: linear-gradient(90deg, var(--accent), var(--accent-soft));
+    transition: width 200ms;
+    border-radius: 2px;
+  }
+
+  /* -------- FOOTER -------- */
+  .footer {
+    margin-top: 60px;
+    padding-top: 28px;
+    border-top: 1px solid var(--rule);
+    font-family: var(--font-ui);
+    font-size: 12px;
+    color: var(--ink-3);
+    line-height: 1.6;
+  }
+  .footer b { color: var(--ink-1); }
+
+  /* -------- SEAL STAMP -------- */
+  .seal-stamp {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border: 2px solid var(--seal);
+    border-radius: 3px;
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--seal);
+    line-height: 1;
+    transform: rotate(-4deg);
+    opacity: 0.7;
+    flex-shrink: 0;
+    user-select: none;
+    letter-spacing: -0.05em;
+  }
+  @media (max-width: 560px) {
+    .seal-stamp { display: none; }
+  }
+
+  /* -------- UTILITY -------- */
+  .sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+  }
+
+  /* -------- ANIMATIONS -------- */
+  @keyframes fadein {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .card { animation: fadein 320ms ease-out both; }
+  .card:nth-child(2) { animation-delay: 30ms; }
+  .card:nth-child(3) { animation-delay: 60ms; }
+  .card:nth-child(4) { animation-delay: 90ms; }
+  .card:nth-child(5) { animation-delay: 120ms; }
+
+  /* Scroll lock when modal open */
+  body.modal-open { overflow: hidden; }
+
+  @media (max-width: 560px) {
+    .intro h2 { font-size: 28px; }
+    .cards-grid { grid-template-columns: 1fr; }
+    .card { min-height: 120px; }
+    .modal { border-radius: 6px; }
+    .modal__header { padding: 16px 16px 14px; flex-wrap: wrap; }
+    .modal__body { padding: 16px 16px 24px; }
+    .modal-nav { padding: 12px 16px; flex-wrap: wrap; }
+    .modal-nav button { font-size: 11px; padding: 10px 8px; }
+    .chapter-bullets li { grid-template-columns: 1fr; gap: 4px; }
+    .chapter-bullets li::before { display: none; }
+    .giles-note { margin-left: 6px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-ribbon" aria-hidden="true">
+  <div class="progress-ribbon__fill" id="progressFill"></div>
+</div>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="back-link" href="../../index.html">Back to the book</a>
+    <div class="title-block">
+      <h1>The Art of War</h1>
+      <div class="subtitle">Narrative Structure · Sun Tz&#365; · tr. Lionel Giles, 1910</div>
+    </div>
+    <div class="seal-stamp" aria-hidden="true" title="Sun Tz&#365;">&#23403;</div>
+    <div class="level-indicator" id="levelIndicator">Level <b id="levelNum">1</b> · Book map</div>
+  </div>
+</header>
+
+<main class="page">
+
+  <aside class="sidebar" id="sidebar">
+    <button class="sidebar-toggle" id="sidebarToggle" aria-expanded="false">Table of contents</button>
+    <nav class="sidebar-nav" id="sidebarNav" aria-label="Table of contents">
+      <h2>Front matter</h2>
+      <ul class="toc-list" id="tocFront"></ul>
+      <h2>The Thirteen Chapters</h2>
+      <ul class="toc-list" id="tocChapters"></ul>
+    </nav>
+  </aside>
+
+  <div class="main">
+
+    <section class="intro">
+      <div class="lens-label">Narrative Lens</div>
+      <h2>Read it in its intended order</h2>
+      <p>Follow the book the way Lionel Giles prepared it in 1910: from his own preface through the introductory essays into Sun Tzŭ's thirteen terse chapters, and at last down into the spies. A reading spine. Open a card to see its argument, then open a section to read the actual verse alongside Giles' framing notes and the commentators' voices stacked behind it.</p>
+      <div class="meta">
+        <span><b>8</b> front-matter essays</span>
+        <span><b>13</b> canonical chapters</span>
+        <span><b>~270</b> numbered sections</span>
+        <span><b>11</b> named commentators</span>
+      </div>
+    </section>
+
+    <div class="level-legend" aria-label="Depth levels">
+      <div class="level-legend__item"><b>Level 1</b><span>Book map — all chapters as cards, each with a one-line gist.</span></div>
+      <div class="level-legend__item"><b>Level 2</b><span>Chapter summary — key argument bullets and numbered sections.</span></div>
+      <div class="level-legend__item"><b>Level 3</b><span>Section reading — Sun Tzŭ's verse with Giles' framing note.</span></div>
+      <div class="level-legend__item"><b>Level 4</b><span>Close reading — toggle the commentator stack for any verse.</span></div>
+    </div>
+
+    <h3 class="section-heading">Front matter</h3>
+    <div class="cards-grid" id="frontGrid"></div>
+
+    <h3 class="section-heading">The Thirteen Chapters</h3>
+    <div class="cards-grid" id="chapterGrid"></div>
+
+    <footer class="footer">
+      <p><b>About this lens.</b> The text is Lionel Giles' 1910 scholarly translation of <i>Sun Tzŭ on the Art of War</i>, sourced from Project Gutenberg. Sun Tzŭ's verses appear in the primary serif track; Giles' framing notes appear in the secondary track, and when you toggle "Close reading" any bracketed commentator quotations he gathered from Ts'ao Kung, Tu Mu, Chang Yu, Mei Yao-ch'en and others surface as a separate stack. Cross-references inside notes (for example <i>XI.30</i> linking to <i>VI.21</i>) are clickable and jump straight into that verse.</p>
+      <p>Chapter numbers use Giles' Roman numerals. Verse numbers follow Sun Hsing-yen's paragraph divisions, which Giles preserved. Depth levels 1 → 4 correspond to book map → chapter → verse → commentator stack.</p>
+    </footer>
+
+  </div>
+</main>
+
+<div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle" hidden>
+  <div class="modal" id="modal">
+    <div class="modal__header">
+      <div class="modal__title-row">
+        <div class="modal__kind" id="modalKind">CHAPTER</div>
+        <h2 class="modal__title" id="modalTitle"></h2>
+      </div>
+      <button class="modal__close" id="modalClose" aria-label="Close">×</button>
+    </div>
+    <div class="modal__body" id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+/* =============================================================
+   THE ART OF WAR — Narrative Lens data
+   ------------------------------------------------------------- */
+
+const FRONT_MATTER = [
+  {
+    id: "preface-pg",
+    kind: "PREFACE",
+    label: "Preface to the Project Gutenberg Etext",
+    gist: "Why Giles' 1910 edition still matters a century on.",
+    body: [
+      "When Lionel Giles began his translation of Sun Tzŭ's Art of War, the work was virtually unknown in Europe. Its introduction to Europe began in 1782 when a French Jesuit Father living in China, Joseph Amiot, acquired a copy of it, and translated it into French. It was not a good translation because, according to Dr. Giles, 'it contains a great deal that Sun Tzŭ did not write, and very little indeed of what he did.'",
+      "The first translation into English was published in 1905 in Tokyo by Capt. E. F. Calthrop. However, this translation is, in the words of Dr. Giles, 'excessively bad.' Dr. Giles, in justifying his own translation, wrote: 'I could not help feeling that Sun Tzŭ deserved a better fate than had befallen him, and I knew that, at any rate, I could hardly fail to improve on the work of my predecessors.'",
+      "Dr. Giles' work established much of the groundwork for the work of later translators. Of the later editions of the Art of War examined, Giles' 1910 edition is the most scholarly and presents the reader an incredible amount of information concerning Sun Tzŭ's text, much more than any other translation. It was the best translation available for fifty years. — Bob Sutton"
+    ]
+  },
+  {
+    id: "preface-giles",
+    kind: "PREFACE",
+    label: "Preface by Lionel Giles",
+    gist: "Giles' scholarly case against earlier translators, and his own method.",
+    body: [
+      "The seventh volume of Mémoires concernant l'histoire, les sciences, les arts, les mœurs, les usages, &c., des Chinois is devoted to the Art of War, and contains, amongst other treatises, 'Les Treize Articles de Sun-tse,' translated from the Chinese by a Jesuit Father, Joseph Amiot. But his so-called translation of the Sun Tzŭ, if placed side by side with the original, is seen at once to be little better than an imposture. It contains a great deal that Sun Tzŭ did not write, and very little indeed of what he did.",
+      "Throughout the nineteenth century, which saw a wonderful development in the study of Chinese literature, no translator ventured to tackle Sun Tzŭ, although his work was known to be highly valued in China as by far the oldest and best compendium of military science. It was not until 1905 that the first English translation, by Capt. E.F. Calthrop, appeared at Tokyo under the title 'Sonshi.' Unfortunately, it was evident that the translator's knowledge of Chinese was far too scanty to fit him to grapple with the manifold difficulties of Sun Tzŭ.",
+      "A few special features of the present volume may now be noticed. In the first place, the text has been cut up into numbered paragraphs, both in order to facilitate cross-reference and for the convenience of students generally. Another feature is the printing of text, translation and notes on the same page; the notes, however, are inserted, according to the Chinese method, immediately after the passages to which they refer. From the mass of native commentary my aim has been to extract the cream only.",
+      "Having chosen to wield a bludgeon, I shall not cry out if in return I am visited with more than a rap over the knuckles. Indeed, I have been at some pains to put a sword into the hands of future opponents by scrupulously giving either text or reference for every passage translated."
+    ]
+  },
+  {
+    id: "sun-wu",
+    kind: "INTRODUCTION",
+    label: "Sun Wu and his Book",
+    gist: "The famous episode of the 180 concubines — and how Sun Tzŭ drilled them.",
+    body: [
+      "Ssu-ma Ch'ien gives the following biography of Sun Tzŭ: Sun Tzŭ Wu was a native of the Ch'i State. His Art of War brought him to the notice of Ho Lu, King of Wu. Ho Lu said to him: 'I have carefully perused your 13 chapters. May I submit your theory of managing soldiers to a slight test?' Sun Tzŭ replied: 'You may.' Ho Lu asked: 'May the test be applied to women?' The answer was again in the affirmative.",
+      "So arrangements were made to bring 180 ladies out of the Palace. Sun Tzŭ divided them into two companies, and placed one of the King's favourite concubines at the head of each. He then bade them all take spears in their hands. The words of command having been explained, he set up the halberds and battle-axes and began the drill. Then, to the sound of drums, he gave the order 'Right turn.' But the girls only burst out laughing.",
+      "Sun Tzŭ said: 'If words of command are not clear and distinct, if orders are not thoroughly understood, then the general is to blame.' So he started drilling them again, and this time gave the order 'Left turn,' whereupon the girls once more burst into fits of laughter. Sun Tzŭ said: 'If his orders are clear, and the soldiers nevertheless disobey, then it is the fault of their officers.' So saying, he ordered the leaders of the two companies to be beheaded.",
+      "The King of Wu was watching from a raised pavilion, and hurriedly sent down a message: 'We are now quite satisfied as to our general's ability to handle troops. It is our wish that they shall not be beheaded.' Sun Tzŭ replied: 'Having once received His Majesty's commission to be the general of his forces, there are certain commands of His Majesty which, acting in that capacity, I am unable to accept.' Accordingly, he had the two leaders beheaded, and installed the pair next in order as leaders in their place. When the drum was sounded for the drill once more, the girls went through all the evolutions with perfect accuracy and precision, not venturing to utter a sound."
+    ]
+  },
+  {
+    id: "text",
+    kind: "INTRODUCTION",
+    label: "The Text of Sun Tzŭ",
+    gist: "Textual history: from 82 lost chapters to the 13 that survive.",
+    body: [
+      "In the bibliographic section of the Han Shu, there is an entry which has given rise to much discussion: 'The works of Sun Tzŭ of Wu in 82 p'ien (or chapters), with diagrams in 9 chuan.' It is evident that this cannot be merely the 13 chapters known to Ssu-ma Ch'ien, or those we possess today.",
+      "A theory has arisen that the bulk of these 82 chapters consisted of other writings of Sun Tzŭ — we should call them apocryphal — similar to the Wen Ta. It is suggested that before his interview with Ho Lu, Sun Tzŭ had only written the 13 chapters, but afterwards composed a sort of exegesis in the form of question and answer between himself and the King.",
+      "Whatever the exact provenance of the fuller archive, the compact 13-chapter treatise that survives is, for Giles and for every serious reader since, the true kernel — and it is this kernel that has always been referred to simply as 'Sun Tzŭ' in China."
+    ]
+  },
+  {
+    id: "commentators",
+    kind: "INTRODUCTION",
+    label: "The Commentators",
+    gist: "Eleven voices that have annotated Sun Tzŭ for 1700 years.",
+    body: [
+      "Sun Tzŭ can boast an exceptionally long and distinguished roll of commentators, which would do honour to any classic. Ou-yang Hsiu remarks on this fact, though he wrote before the tale was complete, and rather ingeniously explains it by saying that the artifices of war, being inexhaustible, must therefore be susceptible of treatment in a great variety of ways.",
+      "TS'AO TS'AO (Ts'ao Kung, A.D. 155–220) — the earliest commentator, and one of the greatest military geniuses the world has seen, Napoleonic in the scale of his operations. Ts'ao Kung's notes on Sun Tzŭ are models of austere brevity, so thoroughly characteristic of the stern commander known to history that it is hard indeed to conceive of them as the work of a mere littérateur.",
+      "TU MU (803–852) is perhaps the best known as a poet — a bright star even in the glorious galaxy of the T'ang period. Although he had no practical experience of war, he was extremely fond of discussing the subject. His notes are very copious, and replete with historical parallels.",
+      "MEI YAO-CH'EN (1002–1060), like Tu Mu, a poet of distinction. Ou-yang Hsiu praised him: 'Sun Wu loved brevity of diction, but his meaning is always deep. In his own commentary, Mei Sheng-yu has brushed aside all the obstinate prejudices of these critics, and has tried to bring out the true meaning of Sun Tzŭ himself.'",
+      "CHANG YU — 'a commentator of no great originality perhaps, but gifted with admirable powers of lucid exposition. His commentary is based on that of Ts'ao Kung, whose terse sentences he contrives to expand and develop in masterly fashion. Without Chang Yu, it is safe to say that much of Ts'ao Kung's commentary would have remained cloaked in its pristine obscurity.'",
+      "Other voices: MENG SHIH, LI CH'UAN (8th c.), TU YU (d. 812), CH'EN HAO, CHIA LIN, WANG HSI, and HO YEN-HSI (or Ho Shih). Together the eleven form the standard commentarial stack that Giles drew from."
+    ]
+  },
+  {
+    id: "appreciations",
+    kind: "INTRODUCTION",
+    label: "Appreciations of Sun Tzŭ",
+    gist: "What Chinese generals and literati, from Han Hsin to Chu Hsi, said of him.",
+    body: [
+      "Sun Tzŭ has exercised a potent fascination over the minds of some of China's greatest men. Among the famous generals who are known to have studied his pages with enthusiasm may be mentioned Han Hsin (d. 196 B.C.), Feng I (d. 34 A.D.), Lu Meng (d. 219), and Yo Fei (1103–1141).",
+      "Su Hsun (the father of Su Tung-p'o) wrote: 'Sun Wu's saying, that in war one cannot make certain of conquering, is very different indeed from what other books tell us. Wu Ch'i was a man of the same stamp as Sun Wu: they both wrote books on war. But Wu Ch'i's remarks on war are less weighty, his rules are rougher and more crudely stated, and there is not the same unity of plan as in Sun Tzŭ's work, where the style is terse, but the meaning fully brought out.'",
+      "From Cheng Hou's 'Impartial Judgments in the Garden of Literature': 'Sun Tzŭ's 13 chapters are not only the staple and base of all military men's training, but also compel the most careful attention of scholars and men of letters. His sayings are terse yet elegant, simple yet profound, perspicuous and eminently practical.'",
+      "Chu Hsi, commenting on this, fully admits the first part of the criticism, although he dislikes the audacious comparison with the venerated classical works. Language of this sort, he says, 'encourages a ruler's bent towards unrelenting warfare and reckless militarism.'"
+    ]
+  },
+  {
+    id: "apologies",
+    kind: "INTRODUCTION",
+    label: "Apologies for War",
+    gist: "Why a pacific Confucian tradition still made room for military classics.",
+    body: [
+      "Accustomed as we are to think of China as the greatest peace-loving nation on earth, we are in some danger of forgetting that her experience of war in all its phases has also been such as no modern State can parallel. She had built the Great Wall and was maintaining a huge standing army along her frontier centuries before the first Roman legionary was seen on the Danube.",
+      "In spite of all this, the great body of Chinese sentiment, from Lao Tzŭ downwards, has been consistently pacific and intensely opposed to militarism in any form. It is uncommon to find any of the literati defending warfare on principle.",
+      "Ssu-ma Ch'ien: 'Military weapons are the means used by the Sage to punish violence and cruelty, to give peace to troublous times, to remove difficulties and dangers, and to succour those who are in peril. Every animal with blood in its veins and horns on its head will fight when it is attacked. How much more so will man, who carries in his breast the faculties of love and hatred, joy and anger!'",
+      "Tu Mu: 'War may be defined as punishment, which is one of the functions of government. The objects of the rack and of military weapons are essentially the same. There is no intrinsic difference between the punishment of flogging and cutting off heads in war. In both cases, the end in view is to get rid of wicked people, and to give comfort and relief to the good.'"
+    ]
+  },
+  {
+    id: "bibliography",
+    kind: "INTRODUCTION",
+    label: "Bibliography",
+    gist: "Giles' sources — dynastic histories, the commentators' collected editions, Western works.",
+    body: [
+      "Giles drew on the standard Ten Commentators editions, Sun Hsing-yen's scholarly edition of 1791, the T'ung Tien and T'ung K'ao encyclopaedias, the Shih Chi of Ssu-ma Ch'ien, and the Han Shu, San Kuo Chih and Hou Han Shu. For Western parallels he reached for Col. Henderson on Stonewall Jackson, Napoleon's Pensées, General Baden-Powell's Aids to Scouting, and Marshal Turenne's memoirs.",
+      "The concordance of Chinese characters that closes the 1910 printing — 'following in this the admirable example of Legge' — is not reproduced in etext form for technical reasons. See Bob Sutton's preface for details.",
+      "For the full bibliographic notes, consult the 1910 Luzac &amp; Co. edition. Giles observed: 'Owing to the printing off of my sheets as they were completed, the work has not had the benefit of a final revision.'"
+    ]
+  }
+];
+
+/* -----------------------------------------------------
+   THE THIRTEEN CHAPTERS
+   Each with bullets, gist, and a selection of numbered
+   sections (real verses lifted verbatim from Giles).
+   ----------------------------------------------------- */
+
+const CHAPTERS = [
+  {
+    id: "I",
+    roman: "I",
+    title: "Laying Plans",
+    gist: "War is the state's vital business; measure the five factors, and deceive.",
+    bullets: [
+      "War is a matter of life and death for the state and cannot be taken lightly.",
+      "It is governed by five constant factors: the Moral Law, Heaven, Earth, the Commander, and Method and discipline.",
+      "Seven comparisons — of sovereigns, generals, conditions, discipline, strength, training, and reward — can forecast victory or defeat.",
+      "All warfare is based on deception: seem unable when able, near when far, feign disorder and crush.",
+      "The general who makes many calculations in his temple before battle will prevail."
+    ],
+    sections: [
+      { n: 1, text: "Sun Tzŭ said: The art of war is of vital importance to the State." },
+      { n: 2, text: "It is a matter of life and death, a road either to safety or to ruin. Hence it is a subject of inquiry which can on no account be neglected." },
+      { n: 3, text: "The art of war, then, is governed by five constant factors, to be taken into account in one's deliberations, when seeking to determine the conditions obtaining in the field." },
+      { n: 4, text: "These are: (1) The Moral Law; (2) Heaven; (3) Earth; (4) The Commander; (5) Method and discipline.",
+        note: "It appears from what follows that Sun Tzŭ means by 'Moral Law' a principle of harmony, not unlike the Tao of Lao Tzŭ in its moral aspect."
+      },
+      { n: 5, text: "The Moral Law causes the people to be in complete accord with their ruler, so that they will follow him regardless of their lives, undismayed by any danger." },
+      { n: 7, text: "Heaven signifies night and day, cold and heat, times and seasons." },
+      { n: 8, text: "Earth comprises distances, great and small; danger and security; open ground and narrow passes; the chances of life and death." },
+      { n: 9, text: "The Commander stands for the virtues of wisdom, sincerity, benevolence, courage and strictness.",
+        note: "The five cardinal virtues of the Chinese are (1) humanity or benevolence; (2) uprightness of mind; (3) self-respect; (4) wisdom; (5) sincerity. Here wisdom and sincerity are put before humanity, and the two military virtues of courage and strictness substituted.",
+        commentary: [
+          { who: "Tu Yu", quote: "Without constant practice, the officers will be nervous and undecided when mustering for battle; without constant practice, the general will be wavering and irresolute when the crisis is at hand." }
+        ]
+      },
+      { n: 17, text: "According as circumstances are favourable, one should modify one's plans.",
+        note: "Sun Tzŭ, as a practical soldier, will have none of the 'bookish theoric.' He cautions us here not to pin our faith to abstract principles.",
+        commentary: [
+          { who: "Chang Yu", quote: "While the main laws of strategy can be stated clearly enough for the benefit of all and sundry, you must be guided by the actions of the enemy in attempting to secure a favourable position in actual warfare." }
+        ]
+      },
+      { n: 18, text: "All warfare is based on deception.",
+        note: "The truth of this pithy and profound saying will be admitted by every soldier. Col. Henderson tells us that Wellington, great in so many military qualities, was especially distinguished by 'the extraordinary skill with which he concealed his movements and deceived both friend and foe.'",
+        commentary: [
+          { who: "Ts'ao Kung", quote: "The whole secret of the art of war lies in one word — deception. Feign inability; feign inaction; hide your approach." },
+          { who: "Chang Yu", quote: "A good general feigns weakness and immobility, and then suddenly pounces upon his adversary." }
+        ]
+      },
+      { n: 19, text: "Hence, when able to attack, we must seem unable; when using our forces, we must seem inactive; when we are near, we must make the enemy believe we are far away; when far away, we must make him believe we are near." },
+      { n: 20, text: "Hold out baits to entice the enemy. Feign disorder, and crush him." },
+      { n: 22, text: "If your opponent is of choleric temper, seek to irritate him. Pretend to be weak, that he may grow arrogant.",
+        commentary: [
+          { who: "Wang Tzŭ (via Tu Yu)", quote: "The good tactician plays with his adversary as a cat plays with a mouse, first feigning weakness and immobility, and then suddenly pouncing upon him." }
+        ]
+      },
+      { n: 24, text: "Attack him where he is unprepared, appear where you are not expected." },
+      { n: 26, text: "Now the general who wins a battle makes many calculations in his temple ere the battle is fought. The general who loses a battle makes but few calculations beforehand. Thus do many calculations lead to victory, and few calculations to defeat: how much more no calculation at all! It is by attention to this point that I can foresee who is likely to win or lose.",
+        note: "Chang Yu tells us that in ancient times it was customary for a temple to be set apart for the use of a general who was about to take the field, in order that he might there elaborate his plan of campaign."
+      }
+    ]
+  },
+
+  {
+    id: "II",
+    roman: "II",
+    title: "Waging War",
+    gist: "War is expensive — win fast, or not at all.",
+    bullets: [
+      "The cost of raising and maintaining an army is immense and ruinous if prolonged.",
+      "Though we have heard of stupid haste, cleverness has never been seen associated with long delays.",
+      "No nation has ever benefited from prolonged warfare.",
+      "Forage on the enemy: one of his cartloads is worth twenty of your own.",
+      "The leader of armies is the arbiter of the people's fate."
+    ],
+    sections: [
+      { n: 1, text: "Sun Tzŭ said: In the operations of war, where there are in the field a thousand swift chariots, as many heavy chariots, and a hundred thousand mail-clad soldiers, with provisions enough to carry them a thousand li, the expenditure at home and at the front, including entertainment of guests, small items such as glue and paint, and sums spent on chariots and armour, will reach the total of a thousand ounces of silver per day. Such is the cost of raising an army of 100,000 men." },
+      { n: 2, text: "When you engage in actual fighting, if victory is long in coming, the men's weapons will grow dull and their ardour will be damped. If you lay siege to a town, you will exhaust your strength." },
+      { n: 3, text: "Again, if the campaign is protracted, the resources of the State will not be equal to the strain." },
+      { n: 5, text: "Thus, though we have heard of stupid haste in war, cleverness has never been seen associated with long delays.",
+        note: "Sun Tzŭ's point: while speed may sometimes be injudicious, tardiness can never be anything but foolish — if only because it means impoverishment to the nation.",
+        commentary: [
+          { who: "Ho Shih", quote: "Haste may be stupid, but at any rate it saves expenditure of energy and treasure; protracted operations may be very clever, but they bring calamity in their train." },
+          { who: "Wang Hsi", quote: "Lengthy operations mean an army growing old, wealth being expended, an empty exchequer and distress among the people; true cleverness insures against the occurrence of such calamities." }
+        ]
+      },
+      { n: 6, text: "There is no instance of a country having benefited from prolonged warfare." },
+      { n: 8, text: "The skilful soldier does not raise a second levy, neither are his supply-waggons loaded more than twice.",
+        note: "Once war is declared, he will not waste precious time in waiting for reinforcements, nor will he return his army back for fresh supplies, but crosses the enemy's frontier without delay."
+      },
+      { n: 15, text: "Hence a wise general makes a point of foraging on the enemy. One cartload of the enemy's provisions is equivalent to twenty of one's own, and likewise a single picul of his provender is equivalent to twenty from one's own store.",
+        note: "Because twenty cartloads will be consumed in the process of transporting one cartload to the front."
+      },
+      { n: 16, text: "Now in order to kill the enemy, our men must be roused to anger; that there may be advantage from defeating the enemy, they must have their rewards.",
+        commentary: [
+          { who: "Tu Mu", quote: "Rewards are necessary in order to make the soldiers see the advantage of beating the enemy; thus, when you capture spoils from the enemy, they must be used as rewards, so that all your men may have a keen desire to fight, each on his own account." }
+        ]
+      },
+      { n: 19, text: "In war, then, let your great object be victory, not lengthy campaigns.",
+        commentary: [
+          { who: "Ho Shih", quote: "War is not a thing to be trifled with. Sun Tzŭ here reiterates the main lesson which this chapter is intended to enforce." }
+        ]
+      },
+      { n: 20, text: "Thus it may be known that the leader of armies is the arbiter of the people's fate, the man on whom it depends whether the nation shall be in peace or in peril." }
+    ]
+  },
+
+  {
+    id: "III",
+    roman: "III",
+    title: "Attack by Stratagem",
+    gist: "Supreme excellence: break the enemy's resistance without fighting.",
+    bullets: [
+      "The best victory captures the enemy whole and intact, not shattered.",
+      "Supreme excellence consists in breaking the enemy's resistance without fighting.",
+      "The worst policy of all is to besiege walled cities.",
+      "A ruler can ruin his army three ways — hobbling it, meddling with discipline, or deploying officers without discernment.",
+      "Know the enemy and know yourself: a hundred battles without peril."
+    ],
+    sections: [
+      { n: 1, text: "Sun Tzŭ said: In the practical art of war, the best thing of all is to take the enemy's country whole and intact; to shatter and destroy it is not so good. So, too, it is better to capture an army entire than to destroy it, to capture a regiment, a detachment or a company entire than to destroy them." },
+      { n: 2, text: "Hence to fight and conquer in all your battles is not supreme excellence; supreme excellence consists in breaking the enemy's resistance without fighting.",
+        note: "Here again, no modern strategist but will approve the words of the old Chinese general. Moltke's greatest triumph, the capitulation of the huge French army at Sedan, was won practically without bloodshed."
+      },
+      { n: 3, text: "Thus the highest form of generalship is to baulk the enemy's plans; the next best is to prevent the junction of the enemy's forces; the next in order is to attack the enemy's army in the field; and the worst policy of all is to besiege walled cities." },
+      { n: 4, text: "The rule is, not to besiege walled cities if it can possibly be avoided. The preparation of mantlets, movable shelters, and various implements of war, will take up three whole months; and the piling up of mounds over against the walls will take three months more." },
+      { n: 5, text: "The general, unable to control his irritation, will launch his men to the assault like swarming ants, with the result that one-third of his men are slain, while the town still remains untaken. Such are the disastrous effects of a siege.",
+        commentary: [
+          { who: "Ts'ao Kung", quote: "This vivid simile is taken from the spectacle of an army of ants climbing a wall. The meaning is that the general, losing patience at the long delay, may make a premature attempt to storm the place before his engines of war are ready." }
+        ]
+      },
+      { n: 6, text: "Therefore the skilful leader subdues the enemy's troops without any fighting; he captures their cities without laying siege to them; he overthrows their kingdom without lengthy operations in the field." },
+      { n: 8, text: "It is the rule in war, if our forces are ten to the enemy's one, to surround him; if five to one, to attack him; if twice as numerous, to divide our army into two. If equally matched, we can offer battle; if slightly inferior in numbers, we can avoid the enemy; if quite unequal in every way, we can flee from him." },
+      { n: 11, text: "Now the general is the bulwark of the State: if the bulwark is complete at all points, the State will be strong; if the bulwark is defective, the State will be weak." },
+      { n: 17, text: "Thus we may know that there are five essentials for victory: (1) He will win who knows when to fight and when not to fight. (2) He will win who knows how to handle both superior and inferior forces. (3) He will win whose army is animated by the same spirit throughout all its ranks. (4) He will win who, prepared himself, waits to take the enemy unprepared. (5) He will win who has military capacity and is not interfered with by the sovereign." },
+      { n: 18, text: "Hence the saying: If you know the enemy and know yourself, you need not fear the result of a hundred battles. If you know yourself but not the enemy, for every victory gained you will also suffer a defeat. If you know neither the enemy nor yourself, you will succumb in every battle.",
+        note: "Li Ch'uan cites the case of Fu Chien, prince of Ch'in, who in 383 A.D. marched with a vast army against the Chin Emperor. When warned not to despise an enemy who could command the services of such men as Hsieh An and Huan Ch'ung, he boastfully replied: 'I have the population of eight provinces at my back, infantry and horsemen to the number of one million.' Nevertheless, his forces were soon after disastrously routed at the Fei River.",
+        commentary: [
+          { who: "Chang Yu", quote: "Knowing the enemy enables you to take the offensive, knowing yourself enables you to stand on the defensive. Attack is the secret of defence; defence is the planning of an attack. It would be hard to find a better epitome of the root-principle of war." }
+        ]
+      }
+    ]
+  },
+
+  {
+    id: "IV",
+    roman: "IV",
+    title: "Tactical Dispositions",
+    gist: "First make yourself unbeatable, then wait for the enemy to slip.",
+    bullets: [
+      "The good fighters of old first put themselves beyond defeat, then waited for an opportunity.",
+      "Security against defeat is in our hands; defeating the enemy is provided by the enemy himself.",
+      "The consummate leader wins by making no mistakes — conquering an enemy already defeated.",
+      "The defender hides in the deepest earth; the attacker flashes from the highest heaven.",
+      "A victorious army is like a pound's weight against a single grain."
+    ],
+    sections: [
+      { n: 1, text: "Sun Tzŭ said: The good fighters of old first put themselves beyond the possibility of defeat, and then waited for an opportunity of defeating the enemy." },
+      { n: 2, text: "To secure ourselves against defeat lies in our own hands, but the opportunity of defeating the enemy is provided by the enemy himself." },
+      { n: 3, text: "Thus the good fighter is able to secure himself against defeat, but cannot make certain of defeating the enemy.",
+        commentary: [
+          { who: "Chang Yu", quote: "This is done by concealing the disposition of his troops, covering up his tracks, and taking unremitting precautions." }
+        ]
+      },
+      { n: 7, text: "The general who is skilled in defence hides in the most secret recesses of the earth; he who is skilled in attack flashes forth from the topmost heights of heaven. Thus on the one hand we have ability to protect ourselves; on the other, a victory that is complete.",
+        note: "Literally, 'hides under the ninth earth' — a metaphor indicating the utmost secrecy. The attacker 'falls on his adversary like a thunderbolt, against which there is no time to prepare.'"
+      },
+      { n: 8, text: "To see victory only when it is within the ken of the common herd is not the acme of excellence.",
+        commentary: [
+          { who: "Ts'ao Kung", quote: "The thing is to see the plant before it has germinated — to foresee the event before the action has begun." }
+        ]
+      },
+      { n: 10, text: "To lift an autumn hair is no sign of great strength; to see sun and moon is no sign of sharp sight; to hear the noise of thunder is no sign of a quick ear.",
+        note: "'Autumn hair' is explained as the fur of a hare, which is finest in autumn, when it begins to grow afresh."
+      },
+      { n: 11, text: "What the ancients called a clever fighter is one who not only wins, but excels in winning with ease.",
+        commentary: [
+          { who: "Mei Yao-ch'en", quote: "He who only sees the obvious wins his battles with difficulty; he who looks below the surface of things wins with ease." }
+        ]
+      },
+      { n: 13, text: "He wins his battles by making no mistakes. Making no mistakes is what establishes the certainty of victory, for it means conquering an enemy that is already defeated.",
+        commentary: [
+          { who: "Ch'en Hao", quote: "He plans no superfluous marches, he devises no futile attacks." },
+          { who: "Chang Yu", quote: "One who seeks to conquer by sheer strength, clever though he may be at winning pitched battles, is also liable on occasion to be vanquished; whereas he who can look into the future and discern conditions that are not yet manifest will never make a blunder." }
+        ]
+      },
+      { n: 15, text: "Thus it is that in war the victorious strategist only seeks battle after the victory has been won, whereas he who is destined to defeat first fights and afterwards looks for victory." },
+      { n: 19, text: "A victorious army opposed to a routed one, is as a pound's weight placed in the scale against a single grain." },
+      { n: 20, text: "The onrush of a conquering force is like the bursting of pent-up waters into a chasm a thousand fathoms deep. So much for tactical dispositions." }
+    ]
+  },
+
+  {
+    id: "V",
+    roman: "V",
+    title: "Energy",
+    gist: "Direct force joins battle; indirect force wins it — like a crossbow released.",
+    bullets: [
+      "Managing many is the same as managing few: a question of subdivision and signals.",
+      "Direct (cheng) and indirect (ch'i) methods lead on to each other like a circle, endless.",
+      "Energy is like the bending of a crossbow; decision, the releasing of the trigger.",
+      "Simulated disorder postulates perfect discipline; simulated weakness, strength.",
+      "The momentum of a good fighter is as a round stone rolled down a mountain."
+    ],
+    sections: [
+      { n: 1, text: "Sun Tzŭ said: The control of a large force is the same principle as the control of a few men: it is merely a question of dividing up their numbers." },
+      { n: 2, text: "Fighting with a large army under your command is nowise different from fighting with a small one: it is merely a question of instituting signs and signals." },
+      { n: 3, text: "To ensure that your whole host may withstand the brunt of the enemy's attack and remain unshaken — this is effected by manœuvers direct and indirect.",
+        note: "We come to one of the most interesting parts of Sun Tzŭ's treatise, the discussion of the cheng and the ch'i. Any attack or other operation is cheng, on which the enemy has had his attention fixed; whereas that is ch'i, which takes him by surprise or comes from an unexpected quarter.",
+        commentary: [
+          { who: "Li Ch'uan", quote: "Facing the enemy is cheng, making lateral diversion is ch'i." },
+          { who: "Mei Yao-ch'en", quote: "Ch'i is active, cheng is passive; passivity means waiting for an opportunity, activity brings the victory itself." },
+          { who: "T'ai Tsung (via Chang Yu)", quote: "A ch'i manœuver may be cheng, if we make the enemy look upon it as cheng; then our real attack will be ch'i. The whole secret lies in confusing the enemy, so that he cannot fathom our real intent." }
+        ]
+      },
+      { n: 5, text: "In all fighting, the direct method may be used for joining battle, but indirect methods will be needed in order to secure victory." },
+      { n: 7, text: "There are not more than five musical notes, yet the combinations of these five give rise to more melodies than can ever be heard." },
+      { n: 8, text: "There are not more than five primary colours (blue, yellow, red, white, and black), yet in combination they produce more hues than can ever be seen." },
+      { n: 10, text: "In battle, there are not more than two methods of attack — the direct and the indirect; yet these two in combination give rise to an endless series of manœuvers." },
+      { n: 11, text: "The direct and the indirect lead on to each other in turn. It is like moving in a circle — you never come to an end. Who can exhaust the possibilities of their combination?" },
+      { n: 13, text: "The quality of decision is like the well-timed swoop of a falcon which enables it to strike and destroy its victim.",
+        note: "The analogous quality in soldiers is the ability to reserve their fire until the very instant at which it will be most effective. When the 'Victory' went into action at Trafalgar at hardly more than drifting pace, she was for several minutes exposed to a storm of shot before replying with a single gun. Nelson coolly waited until he was within close range."
+      },
+      { n: 15, text: "Energy may be likened to the bending of a crossbow; decision, to the releasing of the trigger." },
+      { n: 17, text: "Simulated disorder postulates perfect discipline; simulated fear postulates courage; simulated weakness postulates strength.",
+        commentary: [
+          { who: "Tu Mu", quote: "If you wish to feign confusion in order to lure the enemy on, you must first have perfect discipline; if you wish to display timidity in order to entrap the enemy, you must have extreme courage; if you wish to parade your weakness in order to make the enemy over-confident, you must have exceeding strength." }
+        ]
+      },
+      { n: 22, text: "When he utilises combined energy, his fighting men become as it were like unto rolling logs or stones. For it is the nature of a log or stone to remain motionless on level ground, and to move when on a slope; if four-cornered, to come to a standstill, but if round-shaped, to go rolling down." },
+      { n: 23, text: "Thus the energy developed by good fighting men is as the momentum of a round stone rolled down a mountain thousands of feet in height. So much on the subject of energy." }
+    ]
+  },
+
+  {
+    id: "VI",
+    roman: "VI",
+    title: "Weak Points and Strong",
+    gist: "Be water — shape yourself against the enemy's gaps, never against his walls.",
+    bullets: [
+      "Whoever is first in the field and awaits the enemy will be fresh; the second arrives exhausted.",
+      "Attack where the enemy must hasten to defend; march where you are not expected.",
+      "Conceal your dispositions, divide his, and you will be many to his few.",
+      "Military tactics are like water: avoid the strong, strike the weak.",
+      "He who modifies his tactics to his opponent may be called heaven-born."
+    ],
+    sections: [
+      { n: 1, text: "Sun Tzŭ said: Whoever is first in the field and awaits the coming of the enemy, will be fresh for the fight; whoever is second in the field and has to hasten to battle, will arrive exhausted." },
+      { n: 2, text: "Therefore the clever combatant imposes his will on the enemy, but does not allow the enemy's will to be imposed on him." },
+      { n: 5, text: "Appear at points which the enemy must hasten to defend; march swiftly to places where you are not expected." },
+      { n: 7, text: "You can be sure of succeeding in your attacks if you only attack places which are undefended. You can ensure the safety of your defence if you only hold positions that cannot be attacked." },
+      { n: 8, text: "Hence that general is skilful in attack whose opponent does not know what to defend; and he is skilful in defence whose opponent does not know what to attack.",
+        note: "An aphorism which puts the whole art of war in a nutshell."
+      },
+      { n: 9, text: "O divine art of subtlety and secrecy! Through you we learn to be invisible, through you inaudible; and hence we can hold the enemy's fate in our hands." },
+      { n: 14, text: "We can form a single united body, while the enemy must split up into fractions. Hence there will be a whole pitted against separate parts of a whole, which means that we shall be many to the enemy's few." },
+      { n: 17, text: "For should the enemy strengthen his van, he will weaken his rear; should he strengthen his rear, he will weaken his van; should he strengthen his left, he will weaken his right; should he strengthen his right, he will weaken his left. If he sends reinforcements everywhere, he will everywhere be weak.",
+        commentary: [
+          { who: "Frederick the Great", quote: "A defensive war is apt to betray us into too frequent detachment. Those generals who have had but little experience attempt to protect every point, while those who are better acquainted with their profession, having only the capital object in view, guard against a decisive blow, and acquiesce in small misfortunes to avoid greater." }
+        ]
+      },
+      { n: 21, text: "Though according to my estimate the soldiers of Yüeh exceed our own in number, that shall advantage them nothing in the matter of victory. I say then that victory can be achieved.",
+        note: "Alas for these brave words. The long feud between the two states ended in 473 B.C. with the total defeat of Wu by Kou Chien. With his present assertion compare <a class='xref' data-xref='XI.30'>XI.30</a>."
+      },
+      { n: 27, text: "All men can see the tactics whereby I conquer, but what none can see is the strategy out of which victory is evolved." },
+      { n: 28, text: "Do not repeat the tactics which have gained you one victory, but let your methods be regulated by the infinite variety of circumstances.",
+        commentary: [
+          { who: "Wang Hsi", quote: "There is but one root-principle underlying victory, but the tactics which lead up to it are infinite in number." }
+        ]
+      },
+      { n: 29, text: "Military tactics are like unto water; for water in its natural course runs away from high places and hastens downwards." },
+      { n: 30, text: "So in war, the way is to avoid what is strong and to strike at what is weak." },
+      { n: 31, text: "Water shapes its course according to the nature of the ground over which it flows; the soldier works out his victory in relation to the foe whom he is facing." },
+      { n: 32, text: "Therefore, just as water retains no constant shape, so in warfare there are no constant conditions." },
+      { n: 33, text: "He who can modify his tactics in relation to his opponent and thereby succeed in winning, may be called a heaven-born captain." }
+    ]
+  },
+
+  {
+    id: "VII",
+    roman: "VII",
+    title: "Manœuvring",
+    gist: "The devious route, taken swiftly, beats the direct — if you know the artifice of deviation.",
+    bullets: [
+      "Tactical manœuvring is the most difficult thing in war.",
+      "Turn the devious into the direct, and misfortune into gain.",
+      "An army without baggage-trains, provisions, or bases is lost.",
+      "Let your rapidity be that of the wind, your compactness of the forest, your raiding of fire, your immobility of a mountain.",
+      "Do not press a desperate foe; when you surround an army, leave an outlet free."
+    ],
+    sections: [
+      { n: 1, text: "Sun Tzŭ said: In war, the general receives his commands from the sovereign." },
+      { n: 3, text: "After that, comes tactical manœuvering, than which there is nothing more difficult. The difficulty of tactical manœuvering consists in turning the devious into the direct, and misfortune into gain.",
+        commentary: [
+          { who: "Ts'ao Kung", quote: "Make it appear that you are a long way off, then cover the distance rapidly and arrive on the scene before your opponent." },
+          { who: "Tu Mu", quote: "Hoodwink the enemy, so that he may be remiss and leisurely while you are dashing along with utmost speed." }
+        ]
+      },
+      { n: 11, text: "We may take it then that an army without its baggage-train is lost; without provisions it is lost; without bases of supply it is lost." },
+      { n: 12, text: "We cannot enter into alliances until we are acquainted with the designs of our neighbours." },
+      { n: 13, text: "We are not fit to lead an army on the march unless we are familiar with the face of the country — its mountains and forests, its pitfalls and precipices, its marshes and swamps.",
+        note: "Repeated at <a class='xref' data-xref='XI.52'>XI.52</a>."
+      },
+      { n: 14, text: "We shall be unable to turn natural advantages to account unless we make use of local guides." },
+      { n: 17, text: "Let your rapidity be that of the wind, your compactness that of the forest." },
+      { n: 18, text: "In raiding and plundering be like fire, in immovability like a mountain." },
+      { n: 19, text: "Let your plans be dark and impenetrable as night, and when you move, fall like a thunderbolt.",
+        commentary: [
+          { who: "Tu Yu", quote: "You cannot shut your ears to the thunder or your eyes to the lightning — so rapid are they. An attack should be made so quickly that it cannot be parried." }
+        ]
+      },
+      { n: 27, text: "A whole army may be robbed of its spirit; a commander-in-chief may be robbed of his presence of mind.",
+        commentary: [
+          { who: "Chang Yu", quote: "Presence of mind is the general's most important asset. It is the quality which enables him to discipline disorder and to inspire courage into the panic-stricken." },
+          { who: "Li Ching", quote: "Attacking does not merely consist in assaulting walled cities or striking at an army in battle array; it must include the art of assailing the enemy's mental equilibrium." }
+        ]
+      },
+      { n: 28, text: "Now a soldier's spirit is keenest in the morning; by noonday it has begun to flag; and in the evening, his mind is bent only on returning to camp." },
+      { n: 29, text: "A clever general, therefore, avoids an army when its spirit is keen, but attacks it when it is sluggish and inclined to return. This is the art of studying moods." },
+      { n: 34, text: "Do not pursue an enemy who simulates flight; do not attack soldiers whose temper is keen." },
+      { n: 36, text: "When you surround an army, leave an outlet free. Do not press a desperate foe too hard.",
+        note: "The object, as Tu Mu puts it, is 'to make him believe that there is a road to safety, and thus prevent his fighting with the courage of despair.' Tu Mu adds pleasantly: 'After that, you may crush him.'",
+        commentary: [
+          { who: "Ch'en Hao", quote: "Birds and beasts when brought to bay will use their claws and teeth." },
+          { who: "Chang Yu", quote: "If your adversary has burned his boats and destroyed his cooking-pots, and is ready to stake all on the issue of a battle, he must not be pushed to extremities." }
+        ]
+      }
+    ]
+  },
+
+  {
+    id: "VIII",
+    roman: "VIII",
+    title: "Variation of Tactics",
+    gist: "Know the rules — then know the circumstances in which you must violate them.",
+    bullets: [
+      "There are roads not to be followed, armies not to be attacked, and sovereign's commands not to be obeyed.",
+      "The wise leader blends considerations of advantage and disadvantage in the same thought.",
+      "Rely not on the enemy not coming, but on your own readiness to receive him.",
+      "Five besetting sins of a general: recklessness, cowardice, hasty temper, delicacy of honour, over-solicitude."
+    ],
+    sections: [
+      { n: 2, text: "When in difficult country, do not encamp. In country where high roads intersect, join hands with your allies. Do not linger in dangerously isolated positions. In hemmed-in situations, you must resort to stratagem. In a desperate position, you must fight." },
+      { n: 3, text: "There are roads which must not be followed, armies which must be not attacked, towns which must not be besieged, positions which must not be contested, commands of the sovereign which must not be obeyed.",
+        note: "This is a hard saying for the Chinese, with their reverence for authority. Wei Liao Tzŭ is moved to exclaim: 'Weapons are baleful instruments, strife is antagonistic to virtue, a military commander is the negation of civil order!' The unpalatable fact remains, however, that even Imperial wishes must be subordinated to military necessity."
+      },
+      { n: 7, text: "Hence in the wise leader's plans, considerations of advantage and of disadvantage will be blended together.",
+        commentary: [
+          { who: "Ts'ao Kung", quote: "Whether in an advantageous position or a disadvantageous one, the opposite state should be always present to your mind." }
+        ]
+      },
+      { n: 11, text: "The art of war teaches us to rely not on the likelihood of the enemy's not coming, but on our own readiness to receive him; not on the chance of his not attacking, but rather on the fact that we have made our position unassailable.",
+        note: "This is the maxim that Lord Roberts told Giles was 'one that the people of this country would do well to take to heart.'"
+      },
+      { n: 12, text: "There are five dangerous faults which may affect a general: (1) Recklessness, which leads to destruction; (2) cowardice, which leads to capture; (3) a hasty temper, which can be provoked by insults; (4) a delicacy of honour which is sensitive to shame; (5) over-solicitude for his men, which exposes him to worry and trouble.",
+        commentary: [
+          { who: "Ts'ao Kung", quote: "Bravery without forethought causes a man to fight blindly and desperately like a mad bull. Such an opponent must not be encountered with brute force, but may be lured into an ambush and slain." },
+          { who: "Mei Yao-ch'en", quote: "The seeker after glory should be careless of public opinion." }
+        ]
+      },
+      { n: 14, text: "When an army is overthrown and its leader slain, the cause will surely be found among these five dangerous faults. Let them be a subject of meditation." }
+    ]
+  },
+
+  {
+    id: "IX",
+    roman: "IX",
+    title: "The Army on the March",
+    gist: "Read the signs: dust, birds, envoys, whispers — every ripple tells the enemy's mind.",
+    bullets: [
+      "Four environments — mountains, rivers, salt-marshes, dry country — demand four different habits of encamping.",
+      "The enemy's condition can be read from small signs: movement in trees, startled birds, dust columns.",
+      "Humble words and increased preparations mean the enemy is about to advance; violent language and forward bluster mean he will retreat.",
+      "Soldiers must be treated with humanity, but kept under iron discipline."
+    ],
+    sections: [
+      { n: 1, text: "Sun Tzŭ said: We come now to the question of encamping the army, and observing signs of the enemy. Pass quickly over mountains, and keep in the neighbourhood of valleys." },
+      { n: 4, text: "When an invading force crosses a river in its onward march, do not advance to meet it in mid-stream. It will be best to let half the army get across, and then deliver your attack." },
+      { n: 18, text: "When the enemy is close at hand and remains quiet, he is relying on the natural strength of his position.",
+        note: "Here begin Sun Tzŭ's remarks on the reading of signs, much of which is so good that it could almost be included in a modern manual like General Baden-Powell's Aids to Scouting."
+      },
+      { n: 21, text: "Movement amongst the trees of a forest shows that the enemy is advancing. The appearance of a number of screens in the midst of thick grass means that the enemy wants to make us suspicious." },
+      { n: 22, text: "The rising of birds in their flight is the sign of an ambuscade. Startled beasts indicate that a sudden attack is coming." },
+      { n: 23, text: "When there is dust rising in a high column, it is the sign of chariots advancing; when the dust is low, but spread over a wide area, it betokens the approach of infantry. When it branches out in different directions, it shows that parties have been sent to collect firewood. A few clouds of dust moving to and fro signify that the army is encamping." },
+      { n: 24, text: "Humble words and increased preparations are signs that the enemy is about to advance. Violent language and driving forward as if to the attack are signs that he will retreat.",
+        commentary: [
+          { who: "Tu Mu", quote: "As though they stood in great fear of us. Their object is to make us contemptuous and careless, after which they will attack us." }
+        ]
+      },
+      { n: 29, text: "When the soldiers stand leaning on their spears, they are faint from want of food." },
+      { n: 30, text: "If those who are sent to draw water begin by drinking themselves, the army is suffering from thirst.",
+        commentary: [
+          { who: "Tu Mu", quote: "One may know the condition of a whole army from the behavior of a single man." }
+        ]
+      },
+      { n: 35, text: "The sight of men whispering together in small knots or speaking in subdued tones points to disaffection amongst the rank and file." },
+      { n: 42, text: "If soldiers are punished before they have grown attached to you, they will not prove submissive; and, unless submissive, then will be practically useless. If, when the soldiers have become attached to you, punishments are not enforced, they will still be useless." },
+      { n: 43, text: "Therefore soldiers must be treated in the first instance with humanity, but kept under control by means of iron discipline. This is a certain road to victory.",
+        commentary: [
+          { who: "Yen Tzŭ (of Ssu-ma Jang-chu)", quote: "His civil virtues endeared him to the people; his martial prowess kept his enemies in awe." },
+          { who: "Wu Tzŭ", quote: "The ideal commander unites culture with a warlike temper; the profession of arms requires a combination of hardness and tenderness." }
+        ]
+      }
+    ]
+  },
+
+  {
+    id: "X",
+    roman: "X",
+    title: "Terrain",
+    gist: "Six kinds of ground; six ways of courting defeat; and one test of a great general.",
+    bullets: [
+      "The six classes of terrain: accessible, entangling, temporising, narrow passes, precipitous heights, distant positions.",
+      "The six calamities not caused by nature but by the general: flight, insubordination, collapse, ruin, disorganisation, rout.",
+      "The general who advances without coveting fame and retreats without fearing disgrace is the jewel of the kingdom.",
+      "Regard your soldiers as your children: they will follow you into the deepest valleys.",
+      "Know Earth, know Heaven, know yourself, know the enemy: your victory will be complete."
+    ],
+    sections: [
+      { n: 1, text: "Sun Tzŭ said: We may distinguish six kinds of terrain, to wit: (1) Accessible ground; (2) entangling ground; (3) temporising ground; (4) narrow passes; (5) precipitous heights; (6) positions at a great distance from the enemy." },
+      { n: 14, text: "Now an army is exposed to six several calamities, not arising from natural causes, but from faults for which the general is responsible. These are: (1) Flight; (2) insubordination; (3) collapse; (4) ruin; (5) disorganisation; (6) rout." },
+      { n: 17, text: "When the higher officers are angry and insubordinate, and on meeting the enemy give battle on their own account from a feeling of resentment, before the commander-in-chief can tell whether or no he is in a position to fight, the result is ruin." },
+      { n: 18, text: "When the general is weak and without authority; when his orders are not clear and distinct; when there are no fixed duties assigned to officers and men, and the ranks are formed in a slovenly haphazard manner, the result is utter disorganisation.",
+        commentary: [
+          { who: "Wei Liao Tzŭ", quote: "If the commander gives his orders with decision, the soldiers will not wait to hear them twice; if his moves are made without vacillation, the soldiers will not be in two minds about doing their duty." },
+          { who: "Baden-Powell", quote: "The secret of getting successful work out of your trained men lies in one nutshell — in the clearness of the instructions they receive." }
+        ]
+      },
+      { n: 21, text: "The natural formation of the country is the soldier's best ally; but a power of estimating the adversary, of controlling the forces of victory, and of shrewdly calculating difficulties, dangers and distances, constitutes the test of a great general." },
+      { n: 23, text: "If fighting is sure to result in victory, then you must fight, even though the ruler forbid it; if fighting will not result in victory, then you must not fight even at the ruler's bidding." },
+      { n: 24, text: "The general who advances without coveting fame and retreats without fearing disgrace, whose only thought is to protect his country and do good service for his sovereign, is the jewel of the kingdom.",
+        commentary: [
+          { who: "Ho Shih", quote: "Such a man, even if he had to suffer punishment, would not regret his conduct." }
+        ]
+      },
+      { n: 25, text: "Regard your soldiers as your children, and they will follow you into the deepest valleys; look on them as your own beloved sons, and they will stand by you even unto death.",
+        note: "Tu Mu draws for us an engaging picture of the famous general Wu Ch'i: 'He wore the same clothes and ate the same food as the meanest of his soldiers, carried his own surplus rations wrapped in a parcel, and shared every hardship with his men. One of his soldiers was suffering from an abscess, and Wu Ch'i himself sucked out the virus. The soldier's mother, hearing this, began wailing and lamenting.'"
+      },
+      { n: 26, text: "If, however, you are indulgent, but unable to make your authority felt; kind-hearted, but unable to enforce your commands; and incapable, moreover, of quelling disorder: then your soldiers must be likened to spoilt children; they are useless for any practical purpose." },
+      { n: 31, text: "Hence the saying: If you know the enemy and know yourself, your victory will not stand in doubt; if you know Heaven and know Earth, you may make your victory complete.",
+        commentary: [
+          { who: "Li Ch'uan", quote: "Given a knowledge of three things — the affairs of men, the seasons of heaven and the natural advantages of earth — victory will invariably crown your battles." }
+        ]
+      }
+    ]
+  },
+
+  {
+    id: "XI",
+    roman: "XI",
+    title: "The Nine Situations",
+    gist: "Nine kinds of ground — and how to place an army so it fights like the shuai-jan snake.",
+    bullets: [
+      "The nine grounds: dispersive, facile, contentious, open, intersecting highways, serious, difficult, hemmed-in, desperate.",
+      "On desperate ground, fight; on dispersive ground, fight not.",
+      "The skilful tactician is like the shuai-jan: strike its head, you are attacked by its tail.",
+      "Throw soldiers into positions with no escape, and they will prefer death to flight.",
+      "At first be coy as a maiden; afterwards emulate the rapidity of a running hare."
+    ],
+    sections: [
+      { n: 1, text: "Sun Tzŭ said: The art of war recognises nine varieties of ground: (1) Dispersive ground; (2) facile ground; (3) contentious ground; (4) open ground; (5) ground of intersecting highways; (6) serious ground; (7) difficult ground; (8) hemmed-in ground; (9) desperate ground." },
+      { n: 10, text: "Ground on which we can only be saved from destruction by fighting without delay, is desperate ground.",
+        commentary: [
+          { who: "Ch'en Hao", quote: "To be on desperate ground is like sitting in a leaking boat or crouching in a burning house." }
+        ]
+      },
+      { n: 11, text: "On dispersive ground, therefore, fight not. On facile ground, halt not. On contentious ground, attack not." },
+      { n: 14, text: "On hemmed-in ground, resort to stratagem. On desperate ground, fight." },
+      { n: 18, text: "If asked how to cope with a great host of the enemy in orderly array and on the point of marching to the attack, I should say: Begin by seizing something which your opponent holds dear; then he will be amenable to your will.",
+        commentary: [
+          { who: "Tu Mu", quote: "The three things which an enemy is anxious to do, and on the accomplishment of which his success depends, are: (1) to capture our favourable positions; (2) to ravage our cultivated land; (3) to guard his own communications. Our object then must be to thwart his plans in these three directions and thus render him helpless." }
+        ]
+      },
+      { n: 19, text: "Rapidity is the essence of war: take advantage of the enemy's unreadiness, make your way by unexpected routes, and attack unguarded spots." },
+      { n: 23, text: "Throw your soldiers into positions whence there is no escape, and they will prefer death to flight. If they will face death, there is nothing they may not achieve. Officers and men alike will put forth their uttermost strength." },
+      { n: 29, text: "The skilful tactician may be likened to the shuai-jan. Now the shuai-jan is a snake that is found in the Ch'ang mountains. Strike at its head, and you will be attacked by its tail; strike at its tail, and you will be attacked by its head; strike at its middle, and you will be attacked by head and tail both." },
+      { n: 30, text: "Asked if an army can be made to imitate the shuai-jan, I should answer, Yes. For the men of Wu and the men of Yüeh are enemies; yet if they are crossing a river in the same boat and are caught by a storm, they will come to each other's assistance just as the left hand helps the right.",
+        note: "See also <a class='xref' data-xref='VI.21'>VI.21</a> for the same pair of warring states."
+      },
+      { n: 35, text: "It is the business of a general to be quiet and thus ensure secrecy; upright and just, and thus maintain order." },
+      { n: 36, text: "He must be able to mystify his officers and men by false reports and appearances, and thus keep them in total ignorance.",
+        commentary: [
+          { who: "Ts'ao Kung", quote: "The troops must not be allowed to share your schemes in the beginning; they may only rejoice with you over their happy outcome." },
+          { who: "Chang Yu", quote: "The axiom that war is based on deception does not apply only to deception of the enemy. You must deceive even your own soldiers. Make them follow you, but without letting them know why." }
+        ]
+      },
+      { n: 38, text: "At the critical moment, the leader of an army acts like one who has climbed up a height and then kicks away the ladder behind him. He carries his men deep into hostile territory before he shows his hand." },
+      { n: 39, text: "He burns his boats and breaks his cooking-pots; like a shepherd driving a flock of sheep, he drives his men this way and that, and none knows whither he is going." },
+      { n: 52, text: "We cannot enter into alliance with neighbouring princes until we are acquainted with their designs. We are not fit to lead an army on the march unless we are familiar with the face of the country — its mountains and forests, its pitfalls and precipices, its marshes and swamps. We shall be unable to turn natural advantages to account unless we make use of local guides.",
+        note: "These sentences are repeated from <a class='xref' data-xref='VII.12'>VII.12</a>–14 — the commentators think for emphasis."
+      },
+      { n: 58, text: "Place your army in deadly peril, and it will survive; plunge it into desperate straits, and it will come off in safety.",
+        note: "These words were once quoted by Han Hsin in explanation of the tactics he employed in one of his most brilliant battles. In 204 B.C., he was sent against the army of Chao and formed his men in line of battle with their backs to the River Ti. Seeing this manœuver, the whole army of Chao broke into loud laughter — and were routed by the day's end.",
+        commentary: [
+          { who: "Han Hsin", quote: "Had I taken the usual course, I should never have been able to bring my colleague round. If I had not placed my troops in a position where they were obliged to fight for their lives, there would have been a general débandade." }
+        ]
+      },
+      { n: 68, text: "At first, then, exhibit the coyness of a maiden, until the enemy gives you an opening; afterwards emulate the rapidity of a running hare, and it will be too late for the enemy to oppose you." }
+    ]
+  },
+
+  {
+    id: "XII",
+    roman: "XII",
+    title: "The Attack by Fire",
+    gist: "Fire needs the right season, the right wind, and a ruler cool enough not to start it out of spite.",
+    bullets: [
+      "Five ways of attacking with fire: burn soldiers, stores, baggage-trains, arsenals, or hurl dropping fire.",
+      "There is a proper season for fire and special days of rising wind.",
+      "Water can intercept, but fire has the truly destructive power.",
+      "No ruler should put troops into the field merely to gratify his own spleen; no general should fight a battle simply out of pique.",
+      "A kingdom destroyed cannot come again into being; nor can the dead ever be brought back to life."
+    ],
+    sections: [
+      { n: 1, text: "Sun Tzŭ said: There are five ways of attacking with fire. The first is to burn soldiers in their camp; the second is to burn stores; the third is to burn baggage-trains; the fourth is to burn arsenals and magazines; the fifth is to hurl dropping fire amongst the enemy." },
+      { n: 3, text: "There is a proper season for making attacks with fire, and special days for starting a conflagration." },
+      { n: 4, text: "The proper season is when the weather is very dry; the special days are those when the moon is in the constellations of the Sieve, the Wall, the Wing or the Cross-bar; for these four are all days of rising wind.",
+        note: "These are, respectively, the 7th, 14th, 27th, and 28th of the Twenty-eight Stellar Mansions, corresponding roughly to Sagittarius, Pegasus, Crater and Corvus."
+      },
+      { n: 13, text: "Hence those who use fire as an aid to the attack show intelligence; those who use water as an aid to the attack gain an accession of strength." },
+      { n: 14, text: "By means of water, an enemy may be intercepted, but not robbed of all his belongings.",
+        commentary: [
+          { who: "Ts'ao Kung", quote: "We can merely obstruct the enemy's road or divide his army, but not sweep away all his accumulated stores." }
+        ]
+      },
+      { n: 15, text: "Unhappy is the fate of one who tries to win his battles and succeed in his attacks without cultivating the spirit of enterprise; for the result is waste of time and general stagnation.",
+        commentary: [
+          { who: "Mei Yao-ch'en", quote: "Those who want to make sure of succeeding in their battles and assaults must seize the favourable moments when they come and not shrink on occasion from heroic measures. What they must not do, and what will prove fatal, is to sit still and simply hold to the advantages they have got." }
+        ]
+      },
+      { n: 16, text: "Hence the saying: The enlightened ruler lays his plans well ahead; the good general cultivates his resources." },
+      { n: 17, text: "Move not unless you see an advantage; use not your troops unless there is something to be gained; fight not unless the position is critical.",
+        note: "Sun Tzŭ may at times appear to be over-cautious, but he never goes so far in that direction as the remarkable passage in the Tao Te Ching, ch. 69: 'I dare not take the initiative, but prefer to act on the defensive; I dare not advance an inch, but prefer to retreat a foot.'"
+      },
+      { n: 18, text: "No ruler should put troops into the field merely to gratify his own spleen; no general should fight a battle simply out of pique." },
+      { n: 20, text: "Anger may in time change to gladness; vexation may be succeeded by content." },
+      { n: 21, text: "But a kingdom that has once been destroyed can never come again into being; nor can the dead ever be brought back to life." },
+      { n: 22, text: "Hence the enlightened ruler is heedful, and the good general full of caution. This is the way to keep a country at peace and an army intact." }
+    ]
+  },
+
+  {
+    id: "XIII",
+    roman: "XIII",
+    title: "The Use of Spies",
+    gist: "Foreknowledge cannot come from spirits — only from men. Therefore: spies, five kinds.",
+    bullets: [
+      "Ignorance of the enemy's condition, grudging the cost of spies, is the height of inhumanity.",
+      "Foreknowledge cannot be got from spirits, from analogy, or from calculation — only from men.",
+      "There are five kinds of spy: local, inward, converted, doomed, and surviving.",
+      "The converted spy is the most important — he makes the use of all the others possible.",
+      "Only the enlightened ruler and the wise general will use the army's highest intelligence for spying."
+    ],
+    sections: [
+      { n: 1, text: "Sun Tzŭ said: Raising a host of a hundred thousand men and marching them great distances entails heavy loss on the people and a drain on the resources of the State. The daily expenditure will amount to a thousand ounces of silver. There will be commotion at home and abroad, and men will drop down exhausted on the highways. As many as seven hundred thousand families will be impeded in their labor.",
+        note: "Compare <a class='xref' data-xref='II.1'>II.1</a>."
+      },
+      { n: 2, text: "Hostile armies may face each other for years, striving for the victory which is decided in a single day. This being so, to remain in ignorance of the enemy's condition simply because one grudges the outlay of a hundred ounces of silver in honours and emoluments, is the height of inhumanity.",
+        note: "Sun Tzŭ's argument is ingenious. Unless you are kept informed of the enemy's condition, and are ready to strike at the right moment, a war may drag on for years. The only way to get this information is to employ spies. But it is surely false economy to grudge a comparatively trifling amount for this purpose, when every day that the war lasts eats up an incalculably greater sum. Hence Sun Tzŭ concludes that to neglect the use of spies is nothing less than a crime against humanity."
+      },
+      { n: 3, text: "One who acts thus is no leader of men, no present help to his sovereign, no master of victory." },
+      { n: 4, text: "Thus, what enables the wise sovereign and the good general to strike and conquer, and achieve things beyond the reach of ordinary men, is foreknowledge." },
+      { n: 5, text: "Now this foreknowledge cannot be elicited from spirits; it cannot be obtained inductively from experience, nor by any deductive calculation.",
+        commentary: [
+          { who: "Li Ch'uan", quote: "Quantities like length, breadth, distance and magnitude are susceptible of exact mathematical determination; human actions cannot be so calculated." }
+        ]
+      },
+      { n: 6, text: "Knowledge of the enemy's dispositions can only be obtained from other men.",
+        commentary: [
+          { who: "Mei Yao-ch'en", quote: "Knowledge of the spirit-world is to be obtained by divination; information in natural science may be sought by inductive reasoning; the laws of the universe can be verified by mathematical calculation: but the dispositions of an enemy are ascertainable through spies and spies alone." }
+        ]
+      },
+      { n: 7, text: "Hence the use of spies, of whom there are five classes: (1) Local spies; (2) inward spies; (3) converted spies; (4) doomed spies; (5) surviving spies." },
+      { n: 8, text: "When these five kinds of spy are all at work, none can discover the secret system. This is called 'divine manipulation of the threads.' It is the sovereign's most precious faculty." },
+      { n: 9, text: "Having local spies means employing the services of the inhabitants of a district." },
+      { n: 10, text: "Having inward spies, making use of officials of the enemy.",
+        commentary: [
+          { who: "Tu Mu", quote: "Worthy men who have been degraded from office, criminals who have undergone punishment; also favourite concubines who are greedy for gold, men who are aggrieved at being in subordinate positions, others who are anxious that their side should be defeated in order that they may have a chance of displaying their ability, fickle turncoats who always want to have a foot in each boat. Officials of these several kinds should be secretly approached and bound to one's interests by means of rich presents." }
+        ]
+      },
+      { n: 11, text: "Having converted spies, getting hold of the enemy's spies and using them for our own purposes." },
+      { n: 12, text: "Having doomed spies, doing certain things openly for purposes of deception, and allowing our own spies to know of them and report them to the enemy.",
+        commentary: [
+          { who: "Tu Yu", quote: "We ostentatiously do things calculated to deceive our own spies, who must be led to believe that they have been unwittingly disclosed. Then, when these spies are captured in the enemy's lines, they will make an entirely false report, and the enemy will take measures accordingly, only to find that we do something quite different. The spies will thereupon be put to death." }
+        ]
+      },
+      { n: 13, text: "Surviving spies, finally, are those who bring back news from the enemy's camp.",
+        commentary: [
+          { who: "Tu Mu", quote: "Your surviving spy must be a man of keen intellect, though in outward appearance a fool; of shabby exterior, but with a will of iron. He must be active, robust, endowed with physical strength and courage; thoroughly accustomed to all sorts of dirty work, able to endure hunger and cold, and to put up with shame and ignominy." }
+        ]
+      },
+      { n: 14, text: "Hence it is that with none in the whole army are more intimate relations to be maintained than with spies. None should be more liberally rewarded. In no other business should greater secrecy be preserved.",
+        commentary: [
+          { who: "Turenne", quote: "Spies are attached to those who give them most; he who pays them ill is never served. They should never be known to anybody; nor should they know one another." }
+        ]
+      },
+      { n: 25, text: "The end and aim of spying in all its five varieties is knowledge of the enemy; and this knowledge can only be derived, in the first instance, from the converted spy. Hence it is essential that the converted spy be treated with the utmost liberality." },
+      { n: 27, text: "Hence it is only the enlightened ruler and the wise general who will use the highest intelligence of the army for purposes of spying and thereby they achieve great results. Spies are a most important element in war, because on them depends an army's ability to move.",
+        commentary: [
+          { who: "Chia Lin", quote: "An army without spies is like a man without ears or eyes." },
+          { who: "Tu Mu", quote: "Just as water, which carries a boat from bank to bank, may also be the means of sinking it, so reliance on spies, while productive of great results, is oft-times the cause of utter destruction." }
+        ]
+      }
+    ]
+  }
+];
+
+/* =============================================================
+   APP
+   ------------------------------------------------------------- */
+
+const state = {
+  level: 1,
+  openChapter: null,    // chapter id or front matter id
+  openSection: null,    // verse number
+  openKind: null,       // 'front' | 'chapter'
+  _unbindSectionScroll: null, // cleanup function for section scroll listener
+  _closeTimer: null     // pending closeModal cleanup timeout
+};
+
+const el = (sel, root = document) => root.querySelector(sel);
+const els = (sel, root = document) => [...root.querySelectorAll(sel)];
+
+function romanToArabic(r){
+  const m = {I:1,II:2,III:3,IV:4,V:5,VI:6,VII:7,VIII:8,IX:9,X:10,XI:11,XII:12,XIII:13};
+  return m[r] || 0;
+}
+
+function findChapter(id){ return CHAPTERS.find(c => c.id === id); }
+function findFront(id){ return FRONT_MATTER.find(f => f.id === id); }
+function findSection(chap, n){ return chap && chap.sections.find(s => s.n === n); }
+
+/* -------- Build TOC sidebar -------- */
+function renderTOC(){
+  const tocFront = el("#tocFront");
+  const tocChap = el("#tocChapters");
+  tocFront.innerHTML = "";
+  tocChap.innerHTML = "";
+
+  FRONT_MATTER.forEach((f, i) => {
+    const li = document.createElement("li");
+    li.className = "toc-item";
+    li.dataset.kind = "front";
+    li.dataset.id = f.id;
+    li.setAttribute("tabindex", "0");
+    li.setAttribute("role", "button");
+    li.innerHTML = `<span class="toc-num">§ ${i+1}</span><span class="toc-label">${f.label}</span>`;
+    li.addEventListener("click", () => openFront(f.id));
+    li.addEventListener("keydown", e => { if(e.key === "Enter" || e.key === " "){ e.preventDefault(); openFront(f.id); }});
+    tocFront.appendChild(li);
+  });
+
+  CHAPTERS.forEach(c => {
+    const li = document.createElement("li");
+    li.className = "toc-item";
+    li.dataset.kind = "chapter";
+    li.dataset.id = c.id;
+    li.setAttribute("tabindex", "0");
+    li.setAttribute("role", "button");
+    li.innerHTML = `<span class="toc-num">${c.roman}.</span><span class="toc-label">${c.title}</span>`;
+    li.addEventListener("click", () => openChapter(c.id));
+    li.addEventListener("keydown", e => { if(e.key === "Enter" || e.key === " "){ e.preventDefault(); openChapter(c.id); }});
+    tocChap.appendChild(li);
+  });
+}
+
+/* -------- Build card grids -------- */
+function renderFrontGrid(){
+  const grid = el("#frontGrid");
+  grid.innerHTML = "";
+  FRONT_MATTER.forEach((f, i) => {
+    const card = document.createElement("button");
+    card.className = "card";
+    card.type = "button";
+    card.dataset.id = f.id;
+    card.innerHTML = `
+      <div class="card__head">
+        <div class="card__num">§${i+1}</div>
+        <div class="card__kind">${f.kind}</div>
+      </div>
+      <h4 class="card__title">${f.label}</h4>
+      <p class="card__gist">${f.gist}</p>
+    `;
+    card.addEventListener("click", () => openFront(f.id));
+    grid.appendChild(card);
+  });
+}
+
+function renderChapterGrid(){
+  const grid = el("#chapterGrid");
+  grid.innerHTML = "";
+  CHAPTERS.forEach(c => {
+    const card = document.createElement("button");
+    card.className = "card";
+    card.type = "button";
+    card.dataset.id = c.id;
+    card.innerHTML = `
+      <div class="card__head">
+        <div class="card__num">${c.roman}</div>
+        <div class="card__kind">CHAPTER</div>
+      </div>
+      <h4 class="card__title">${c.title}</h4>
+      <p class="card__gist">${c.gist}</p>
+      <div class="card__sections-count"><b>${c.sections.length}</b> numbered sections available</div>
+    `;
+    card.addEventListener("click", () => openChapter(c.id));
+    grid.appendChild(card);
+  });
+}
+
+/* -------- Modal core -------- */
+const modalBackdrop = el("#modalBackdrop");
+const modalEl = el("#modal");
+const modalBody = el("#modalBody");
+const modalTitle = el("#modalTitle");
+const modalKind = el("#modalKind");
+const modalClose = el("#modalClose");
+
+function setLevel(n, label){
+  state.level = n;
+  el("#levelIndicator").innerHTML = `Level <b id="levelNum">${n}</b> · ${label}`;
+}
+
+function openModal(){
+  // Cancel any pending close-cleanup so it doesn't destroy the new content
+  if(state._closeTimer){ clearTimeout(state._closeTimer); state._closeTimer = null; }
+  modalBackdrop.hidden = false;
+  // next frame for transition
+  requestAnimationFrame(() => modalBackdrop.classList.add("open"));
+  document.body.classList.add("modal-open");
+  modalClose.focus();
+}
+
+function closeModal(){
+  const returnId = state.openChapter;
+  modalBackdrop.classList.remove("open");
+  document.body.classList.remove("modal-open");
+  if(state._unbindSectionScroll) { state._unbindSectionScroll(); state._unbindSectionScroll = null; }
+  state._closeTimer = setTimeout(() => {
+    modalBackdrop.hidden = true;
+    modalBody.innerHTML = "";
+    state._closeTimer = null;
+  }, 240);
+  state.openChapter = null;
+  state.openSection = null;
+  state.openKind = null;
+  setLevel(1, "Book map");
+  history.replaceState(null, "", window.location.pathname);
+  updateActiveTOC();
+  // Return focus to the element that triggered the modal
+  if(returnId){
+    const trigger = document.querySelector(`.card[data-id="${returnId}"]`);
+    if(trigger) trigger.focus();
+  }
+}
+
+modalClose.addEventListener("click", closeModal);
+modalBackdrop.addEventListener("click", e => {
+  if(e.target === modalBackdrop) closeModal();
+});
+document.addEventListener("keydown", e => {
+  if(e.key === "Escape" && !modalBackdrop.hidden) closeModal();
+  // Trap focus inside the modal when open
+  if(e.key === "Tab" && !modalBackdrop.hidden){
+    const focusable = modalEl.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+    if(focusable.length === 0) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if(e.shiftKey){
+      if(document.activeElement === first){ e.preventDefault(); last.focus(); }
+    } else {
+      if(document.activeElement === last){ e.preventDefault(); first.focus(); }
+    }
+  }
+});
+
+/* -------- Open front matter item -------- */
+function openFront(id){
+  const f = findFront(id);
+  if(!f) return;
+  state.openChapter = id;
+  state.openKind = "front";
+  state.openSection = null;
+  setLevel(2, "Chapter reading");
+  history.replaceState(null, "", "#front:" + id);
+
+  modalKind.textContent = f.kind;
+  modalTitle.innerHTML = f.label;
+
+  const idx = FRONT_MATTER.findIndex(x => x.id === id);
+  const prev = idx > 0 ? FRONT_MATTER[idx - 1] : null;
+  const next = idx < FRONT_MATTER.length - 1 ? FRONT_MATTER[idx + 1] :
+               (idx === FRONT_MATTER.length - 1 ? { kind: "chapter", target: CHAPTERS[0] } : null);
+
+  modalBody.innerHTML = `
+    <div class="modal-breadcrumb">
+      <button data-breadcrumb="home">Book map</button>
+      <span class="sep">›</span>
+      <span>${f.label}</span>
+    </div>
+    <div class="front-matter-body">
+      ${f.body.map(p => `<p>${p}</p>`).join("")}
+    </div>
+    <div class="modal-nav">
+      <button class="prev" ${!prev ? "disabled" : ""} data-go="front-prev">${prev ? prev.label : "Beginning"}</button>
+      <button class="center" data-go="home">Close</button>
+      <button class="next" data-go="front-next">${next ? (next.kind === "chapter" ? "I. Laying Plans" : next.label) : "End"}</button>
+    </div>
+  `;
+
+  wireModalNav(id, "front");
+  openModal();
+  updateActiveTOC();
+  modalEl.scrollTop = 0;
+  const backdrop = el("#modalBackdrop");
+  backdrop.scrollTop = 0;
+}
+
+/* -------- Open chapter (level 2) -------- */
+function openChapter(id){
+  const c = findChapter(id);
+  if(!c) return;
+  state.openChapter = id;
+  state.openKind = "chapter";
+  state.openSection = null;
+  setLevel(2, `${c.roman}. ${c.title}`);
+  history.replaceState(null, "", "#" + c.roman);
+
+  modalKind.textContent = `CHAPTER ${c.roman}`;
+  modalTitle.innerHTML = `<span class="numeral">${c.roman}.</span>${c.title}`;
+
+  const idx = CHAPTERS.findIndex(x => x.id === id);
+  const prev = idx > 0 ? CHAPTERS[idx - 1] : null;
+  const next = idx < CHAPTERS.length - 1 ? CHAPTERS[idx + 1] : null;
+
+  const sectionsListHtml = c.sections.map(s => {
+    const hasCommentary = s.commentary && s.commentary.length;
+    const preview = (s.text || "").replace(/<[^>]+>/g,"").slice(0, 110);
+    return `
+      <li>
+        <button class="section-row" data-verse="${s.n}">
+          <span class="section-row__num">${s.n}.</span>
+          <span class="section-row__preview">${preview}${preview.length >= 110 ? "…" : ""}</span>
+          ${hasCommentary ? '<span class="section-row__marker has-commentary">Commentary</span>' : '<span class="section-row__marker">Verse</span>'}
+        </button>
+      </li>`;
+  }).join("");
+
+  modalBody.innerHTML = `
+    <div class="modal-breadcrumb">
+      <button data-breadcrumb="home">Book map</button>
+      <span class="sep">›</span>
+      <span>Chapter ${c.roman}</span>
+    </div>
+    <div class="chapter-gist">${c.gist}</div>
+    <ul class="chapter-bullets">
+      ${c.bullets.map(b => `<li><span>${b}</span></li>`).join("")}
+    </ul>
+    <div class="sections-list-header">Numbered sections &mdash; tap any to read</div>
+    <ul class="sections-list">
+      ${sectionsListHtml}
+    </ul>
+    <div class="modal-nav">
+      <button class="prev" ${!prev ? "disabled" : ""} data-go="chapter-prev">${prev ? `${prev.roman}. ${prev.title}` : "Beginning"}</button>
+      <button class="center" data-go="home">Close</button>
+      <button class="next" ${!next ? "disabled" : ""} data-go="chapter-next">${next ? `${next.roman}. ${next.title}` : "End"}</button>
+    </div>
+  `;
+
+  // wire section buttons
+  els(".section-row", modalBody).forEach(btn => {
+    btn.addEventListener("click", () => {
+      const n = parseInt(btn.dataset.verse, 10);
+      openSection(id, n);
+    });
+  });
+
+  wireModalNav(id, "chapter");
+  openModal();
+  updateActiveTOC();
+  modalEl.scrollTop = 0;
+}
+
+/* -------- Open section (level 3 / 4) -------- */
+function openSection(chapId, verseNum){
+  const c = findChapter(chapId);
+  if(!c) return;
+  const s = findSection(c, verseNum);
+  if(!s) return;
+  state.openChapter = chapId;
+  state.openKind = "chapter";
+  state.openSection = verseNum;
+  setLevel(3, `${c.roman}.${verseNum}`);
+  history.replaceState(null, "", "#" + c.roman + "." + verseNum);
+
+  modalKind.textContent = `CHAPTER ${c.roman} · VERSE ${verseNum}`;
+  modalTitle.innerHTML = `<span class="numeral">${c.roman}.${verseNum}</span>${c.title}`;
+
+  // Build reading-view: show all sections, scroll to requested one
+  const verses = c.sections.map(sec => {
+    const hasComm = sec.commentary && sec.commentary.length > 0;
+    const commHtml = hasComm
+      ? `<button class="commentary-toggle" data-comm-target="comm-${c.id}-${sec.n}">Show commentators (${sec.commentary.length})</button>
+         <div class="commentary-stack" id="comm-${c.id}-${sec.n}">
+           ${sec.commentary.map(cm => `
+             <div class="commentator-entry">
+               <span class="commentator-name">${cm.who}</span>
+               <span class="commentator-quote">${cm.quote}</span>
+             </div>`).join("")}
+         </div>`
+      : "";
+    return `
+      <div class="verse-block" id="verse-${c.id}-${sec.n}" data-verse-block="${sec.n}">
+        <p class="verse-text"><span class="verse-num">${sec.n}.</span>${sec.text}</p>
+        ${sec.note ? `<div class="giles-note">${sec.note}</div>` : ""}
+        ${commHtml}
+      </div>`;
+  }).join("");
+
+  const idx = CHAPTERS.findIndex(x => x.id === chapId);
+  const prev = idx > 0 ? CHAPTERS[idx - 1] : null;
+  const next = idx < CHAPTERS.length - 1 ? CHAPTERS[idx + 1] : null;
+
+  modalBody.innerHTML = `
+    <div class="modal-breadcrumb">
+      <button data-breadcrumb="home">Book map</button>
+      <span class="sep">›</span>
+      <button data-breadcrumb="chapter">Chapter ${c.roman}</button>
+      <span class="sep">›</span>
+      <span>§ ${verseNum}</span>
+    </div>
+    <div class="chapter-progress"><div class="chapter-progress__fill" id="chapterProgressFill"></div></div>
+    <div class="reading-view" id="readingView">
+      ${verses}
+    </div>
+    <div class="modal-nav">
+      <button class="prev" ${!prev ? "disabled" : ""} data-go="chapter-prev">${prev ? `${prev.roman}. ${prev.title}` : "Beginning"}</button>
+      <button class="center" data-go="chapter">Chapter view</button>
+      <button class="next" ${!next ? "disabled" : ""} data-go="chapter-next">${next ? `${next.roman}. ${next.title}` : "End"}</button>
+    </div>
+  `;
+
+  // Wire commentary toggles
+  els(".commentary-toggle", modalBody).forEach(btn => {
+    const targetId = btn.dataset.commTarget;
+    const sectionN = parseInt(targetId.split("-").pop(), 10);
+    const thisSec = findSection(c, sectionN);
+    const defaultLabel = `Show commentators (${thisSec.commentary.length})`;
+    btn.addEventListener("click", () => {
+      const target = el("#" + targetId);
+      const isOpen = target.classList.toggle("open");
+      btn.classList.toggle("active", isOpen);
+      btn.textContent = isOpen ? "Hide commentators" : defaultLabel;
+      if(isOpen){
+        setLevel(4, `${c.roman}.${sectionN} · Close reading`);
+      } else {
+        // Only drop back to L3 if no other commentary is open
+        const anyOpen = els(".commentary-stack.open", modalBody).length > 0;
+        setLevel(anyOpen ? 4 : 3, `${c.roman}.${sectionN}${anyOpen ? " · Close reading" : ""}`);
+      }
+    });
+  });
+
+  // Wire cross-reference links
+  els("a.xref", modalBody).forEach(a => {
+    a.addEventListener("click", e => {
+      e.preventDefault();
+      const [chap, n] = a.dataset.xref.split(".");
+      openSection(chap, parseInt(n, 10));
+    });
+  });
+
+  wireModalNav(chapId, "chapter");
+
+  // Clean up previous scroll listener if any
+  if(state._unbindSectionScroll) { state._unbindSectionScroll(); state._unbindSectionScroll = null; }
+
+  // Wire section-view chapter progress on scroll
+  const backdrop = el("#modalBackdrop");
+  const progressFill = el("#chapterProgressFill");
+  const updateChapterProgress = () => {
+    const view = el("#readingView");
+    if(!view || !progressFill) return;
+    const totalH = backdrop.scrollHeight - backdrop.clientHeight;
+    if(totalH <= 0) { progressFill.style.width = "0%"; return; }
+    const pct = (backdrop.scrollTop / totalH) * 100;
+    progressFill.style.width = Math.max(0, Math.min(100, pct)) + "%";
+  };
+  backdrop.addEventListener("scroll", updateChapterProgress);
+  state._unbindSectionScroll = () => backdrop.removeEventListener("scroll", updateChapterProgress);
+  setTimeout(updateChapterProgress, 80);
+
+  openModal();
+  updateActiveTOC();
+
+  // Scroll to the requested verse
+  setTimeout(() => {
+    const target = el(`#verse-${c.id}-${verseNum}`);
+    if(target){
+      const backdropRect = backdrop.getBoundingClientRect();
+      const targetRect = target.getBoundingClientRect();
+      backdrop.scrollTop += targetRect.top - backdropRect.top - 120;
+      target.style.background = "linear-gradient(90deg, rgba(139,30,30,0.08), transparent 70%)";
+      target.style.transition = "background 900ms";
+      setTimeout(() => target.style.background = "transparent", 1400);
+    }
+  }, 80);
+}
+
+/* -------- Modal nav wiring -------- */
+function wireModalNav(currentId, kind){
+  els("[data-go]", modalBody).forEach(btn => {
+    btn.addEventListener("click", () => {
+      const go = btn.dataset.go;
+      if(go === "home"){ closeModal(); return; }
+      if(go === "chapter"){ openChapter(currentId); return; }
+      if(kind === "chapter"){
+        const idx = CHAPTERS.findIndex(x => x.id === currentId);
+        if(go === "chapter-prev" && idx > 0) openChapter(CHAPTERS[idx-1].id);
+        if(go === "chapter-next" && idx < CHAPTERS.length-1) openChapter(CHAPTERS[idx+1].id);
+      }
+      if(kind === "front"){
+        const idx = FRONT_MATTER.findIndex(x => x.id === currentId);
+        if(go === "front-prev" && idx > 0) openFront(FRONT_MATTER[idx-1].id);
+        if(go === "front-next"){
+          if(idx < FRONT_MATTER.length - 1) openFront(FRONT_MATTER[idx+1].id);
+          else openChapter(CHAPTERS[0].id);
+        }
+      }
+    });
+  });
+
+  els("[data-breadcrumb]", modalBody).forEach(btn => {
+    btn.addEventListener("click", () => {
+      if(btn.dataset.breadcrumb === "home") closeModal();
+      if(btn.dataset.breadcrumb === "chapter") openChapter(currentId);
+    });
+  });
+}
+
+/* -------- TOC active state -------- */
+function updateActiveTOC(){
+  els(".toc-item", el("#sidebarNav")).forEach(li => {
+    const isActive = li.dataset.id === state.openChapter;
+    li.classList.toggle("active", isActive);
+    if(isActive && window.innerWidth > 900){
+      const rect = li.getBoundingClientRect();
+      const parent = el("#sidebar");
+      const pRect = parent.getBoundingClientRect();
+      if(rect.top < pRect.top || rect.bottom > pRect.bottom){
+        parent.scrollTop += rect.top - pRect.top - 80;
+      }
+    }
+  });
+}
+
+/* -------- Top progress ribbon (scroll-linked) -------- */
+function updateTopProgress(){
+  const fill = el("#progressFill");
+  const docH = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = docH > 0 ? (window.scrollY / docH) * 100 : 0;
+  fill.style.width = Math.max(0, Math.min(100, pct)) + "%";
+}
+window.addEventListener("scroll", updateTopProgress, { passive: true });
+window.addEventListener("resize", updateTopProgress);
+
+/* -------- Sidebar toggle (mobile) -------- */
+el("#sidebarToggle").addEventListener("click", () => {
+  const s = el("#sidebar");
+  const isOpen = s.classList.toggle("open");
+  el("#sidebarToggle").setAttribute("aria-expanded", String(isOpen));
+});
+
+/* -------- Init -------- */
+renderTOC();
+renderFrontGrid();
+renderChapterGrid();
+setLevel(1, "Book map");
+updateTopProgress();
+
+/* Allow deep-linking via hash: #I, #I.18, #front:preface-giles */
+function handleHash(){
+  const h = window.location.hash.replace(/^#/,"");
+  if(!h) return;
+  if(h.startsWith("front:")){
+    openFront(h.slice(6));
+  } else if(h.includes(".")){
+    const [chap, n] = h.split(".");
+    openSection(chap, parseInt(n, 10));
+  } else {
+    openChapter(h);
+  }
+}
+window.addEventListener("hashchange", handleHash);
+handleHash();
+</script>
+</body>
+</html>

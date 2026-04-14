@@ -1,0 +1,2057 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+<title>Principle Web — The Art of War</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/d3@7.8.5/dist/d3.min.js"></script>
+<style>
+  :root {
+    --bg: #1b140b;
+    --bg-2: #241a0e;
+    --ink: #f4ead3;
+    --ink-dim: #cbbd98;
+    --ink-muted: #8f8268;
+    --rule: #4a3b22;
+    --rule-soft: #362a18;
+    --accent: #e9b64b;
+    --paper: #f7efd9;
+    --paper-2: #efe4c1;
+    --paper-ink: #2a2012;
+
+    --planning: #e0a13b;
+    --tactics:  #d65b4a;
+    --terrain:  #6e9b55;
+    --people:   #c26bb5;
+    --intel:    #4aa0c8;
+
+    --serif: "EB Garamond", "Iowan Old Style", Georgia, serif;
+    --sans:  "Inter", -apple-system, system-ui, "Helvetica Neue", sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; height: 100%; }
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+
+  /* ---------- Header ---------- */
+  header.topbar {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 22px;
+    background: linear-gradient(180deg, rgba(27,20,11,0.96) 0%, rgba(27,20,11,0.82) 70%, rgba(27,20,11,0) 100%);
+    border-bottom: 1px solid transparent;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+  header.topbar .back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--sans);
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    text-decoration: none;
+    padding: 7px 13px;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    background: rgba(36, 26, 14, 0.6);
+    transition: color .2s, border-color .2s, background .2s;
+  }
+  header.topbar .back:hover { color: var(--accent); border-color: var(--accent); }
+  header.topbar .back::before { content: "←"; font-size: 14px; }
+
+  header.topbar .title {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+    flex: 1;
+    min-width: 0;
+  }
+  header.topbar .title .eyebrow {
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 3px;
+  }
+  header.topbar .title h1 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 22px;
+    margin: 0;
+    color: var(--ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  header.topbar .title h1 em {
+    font-style: italic;
+    color: var(--ink-dim);
+    font-weight: 400;
+  }
+
+  .search-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .search-wrap input {
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--ink);
+    background: rgba(247, 239, 217, 0.05);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    padding: 8px 14px 8px 34px;
+    width: 220px;
+    outline: none;
+    transition: border-color .2s, background .2s, width .2s;
+  }
+  .search-wrap input::placeholder { color: var(--ink-muted); }
+  .search-wrap input:focus { border-color: var(--accent); background: rgba(247, 239, 217, 0.08); }
+  .search-wrap::before {
+    content: "";
+    position: absolute;
+    left: 13px; top: 50%; transform: translateY(-50%);
+    width: 12px; height: 12px;
+    border: 1.5px solid var(--ink-muted);
+    border-radius: 50%;
+  }
+  .search-wrap::after {
+    content: "";
+    position: absolute;
+    left: 23px; top: 50%;
+    width: 7px; height: 1.5px;
+    background: var(--ink-muted);
+    transform: rotate(45deg);
+    transform-origin: left center;
+  }
+
+  /* ---------- Layout ---------- */
+  .stage {
+    position: fixed;
+    inset: 0;
+    padding-top: 56px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 440px;
+    gap: 0;
+  }
+  .graph-panel {
+    position: relative;
+    background:
+      radial-gradient(ellipse at 30% 20%, rgba(233, 182, 75, 0.08), transparent 60%),
+      radial-gradient(ellipse at 75% 85%, rgba(198, 107, 181, 0.05), transparent 55%),
+      var(--bg);
+    overflow: hidden;
+  }
+  .graph-panel::before {
+    content: "";
+    position: absolute; inset: 0;
+    background-image: radial-gradient(rgba(244, 234, 211, 0.045) 1px, transparent 1px);
+    background-size: 24px 24px;
+    pointer-events: none;
+    opacity: 0.6;
+  }
+
+  svg#graph {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    touch-action: none;
+  }
+  svg#graph text { user-select: none; }
+
+  .graph-ui {
+    position: absolute;
+    left: 18px;
+    bottom: 18px;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    pointer-events: none;
+  }
+  .graph-ui > * { pointer-events: auto; }
+
+  .legend {
+    background: rgba(24, 17, 8, 0.85);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 12px 14px;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    max-width: 220px;
+  }
+  .legend h3 {
+    margin: 0 0 8px 0;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--ink-dim);
+    padding: 3px 0;
+    cursor: pointer;
+    transition: color .15s;
+  }
+  .legend-item:hover, .legend-item:focus-visible { color: var(--ink); }
+  .legend-item:focus { outline: none; }
+  .legend-item:focus-visible { box-shadow: 0 0 0 2px var(--accent); border-radius: 4px; }
+  .legend-item .dot {
+    width: 11px; height: 11px;
+    border-radius: 50%;
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.1);
+  }
+  .legend-item.dim { opacity: 0.35; }
+
+  .zoom-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    background: rgba(24, 17, 8, 0.85);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 4px;
+    backdrop-filter: blur(4px);
+  }
+  .zoom-controls button {
+    width: 32px; height: 32px;
+    border: none;
+    background: transparent;
+    color: var(--ink-dim);
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 6px;
+    font-family: var(--sans);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background .15s, color .15s;
+  }
+  .zoom-controls button:hover { background: rgba(233, 182, 75, 0.1); color: var(--accent); }
+  .zoom-controls button:active { background: rgba(233, 182, 75, 0.2); }
+
+  .hint {
+    position: absolute;
+    top: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 11.5px;
+    color: var(--ink-muted);
+    font-style: italic;
+    letter-spacing: 0.03em;
+    pointer-events: none;
+    text-align: center;
+    animation: fadeHint 8s forwards;
+  }
+  @keyframes fadeHint {
+    0%, 80% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+
+  /* ---------- Sidebar ---------- */
+  aside.sidebar {
+    background: var(--paper);
+    color: var(--paper-ink);
+    border-left: 1px solid #d4c89d;
+    box-shadow: -8px 0 32px rgba(0,0,0,0.3);
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+  }
+  aside.sidebar::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse at top right, rgba(194, 156, 58, 0.08), transparent 60%),
+      radial-gradient(ellipse at bottom left, rgba(155, 95, 30, 0.06), transparent 55%);
+  }
+
+  .dossier {
+    position: relative;
+    padding: 32px 36px 60px 36px;
+    font-family: var(--serif);
+    color: var(--paper-ink);
+  }
+  .dossier .breadcrumb {
+    font-family: var(--sans);
+    font-size: 10.5px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a734a;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .dossier .breadcrumb .swatch {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+  }
+  .dossier h2 {
+    font-family: var(--serif);
+    font-size: 40px;
+    line-height: 1.05;
+    font-weight: 500;
+    margin: 0 0 6px 0;
+    color: #1e1608;
+    letter-spacing: -0.01em;
+  }
+  .dossier h2 em {
+    font-style: italic;
+    color: #6b4e1c;
+  }
+  .dossier .tagline {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 16px;
+    color: #5a4725;
+    margin-bottom: 20px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid rgba(107, 78, 28, 0.25);
+  }
+
+  .dossier h3 {
+    font-family: var(--sans);
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #8a734a;
+    margin: 22px 0 10px 0;
+  }
+
+  .definition {
+    font-family: var(--serif);
+    font-size: 16.5px;
+    line-height: 1.55;
+    color: #2a2012;
+  }
+
+  .passage {
+    position: relative;
+    font-family: var(--serif);
+    font-size: 16px;
+    line-height: 1.58;
+    color: #2a2012;
+    padding: 2px 0 2px 22px;
+    margin-bottom: 16px;
+    border-left: 2px solid #c0a35a;
+  }
+  .passage::before {
+    content: "";
+    position: absolute;
+    left: -4px; top: 6px;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  .passage .cite {
+    display: block;
+    font-family: var(--sans);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #8a734a;
+    margin-top: 6px;
+    font-weight: 500;
+  }
+  .passage .quote-text { display: block; }
+  .passage .quote-text::before { content: "“"; font-size: 22px; color: #b0914c; margin-right: 2px; line-height: 0; vertical-align: -2px; }
+  .passage .quote-text::after  { content: "”"; font-size: 22px; color: #b0914c; margin-left: 2px;  line-height: 0; vertical-align: -2px; }
+
+  .commentary {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14px;
+    line-height: 1.55;
+    color: #6b5630;
+    margin: 8px 0 14px 0;
+    padding-left: 24px;
+  }
+  .commentary::before { content: "Commentary — "; font-variant: small-caps; font-style: normal; color: #8a734a; font-weight: 500; letter-spacing: 0.04em; }
+
+  .related {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .related .chip {
+    font-family: var(--sans);
+    font-size: 11.5px;
+    color: #3a2e16;
+    background: rgba(194, 156, 58, 0.18);
+    border: 1px solid rgba(107, 78, 28, 0.3);
+    padding: 5px 10px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background .15s, border-color .15s, transform .15s;
+  }
+  .related .chip:hover,
+  .related .chip:focus-visible {
+    background: rgba(233, 182, 75, 0.35);
+    border-color: #8a6a22;
+    transform: translateY(-1px);
+  }
+  .related .chip:focus { outline: none; }
+  .related .chip:focus-visible {
+    box-shadow: 0 0 0 2px #c0a35a;
+  }
+  .back-to-graph {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a734a;
+    background: rgba(194, 156, 58, 0.12);
+    border: 1px solid rgba(107, 78, 28, 0.3);
+    border-radius: 999px;
+    padding: 6px 14px;
+    cursor: pointer;
+    margin-top: 22px;
+    transition: background .15s, border-color .15s, color .15s;
+  }
+  .back-to-graph:hover { background: rgba(233, 182, 75, 0.3); border-color: #8a6a22; color: #5a4725; }
+  .back-to-graph::before { content: "←"; font-size: 13px; }
+  .related .chip .dot {
+    display: inline-block;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    margin-right: 5px;
+    vertical-align: 0;
+  }
+
+  /* Overview (shown before a node is selected) */
+  .overview {
+    padding: 32px 36px 60px 36px;
+    font-family: var(--serif);
+    color: var(--paper-ink);
+  }
+  .overview .eyebrow {
+    font-family: var(--sans);
+    font-size: 10.5px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #8a734a;
+    margin-bottom: 8px;
+  }
+  .overview h2 {
+    font-family: var(--serif);
+    font-size: 34px;
+    font-weight: 500;
+    line-height: 1.08;
+    margin: 0 0 14px 0;
+    color: #1e1608;
+  }
+  .overview p.lede {
+    font-family: var(--serif);
+    font-size: 17px;
+    line-height: 1.55;
+    color: #4a3a1c;
+    font-style: italic;
+    margin: 0 0 20px 0;
+  }
+  .overview .cluster-strip {
+    display: grid;
+    gap: 10px;
+    margin: 18px 0 8px 0;
+  }
+  .overview .cluster-card {
+    display: grid;
+    grid-template-columns: 10px 1fr;
+    gap: 12px;
+    align-items: start;
+    padding: 12px 14px;
+    background: rgba(194, 156, 58, 0.10);
+    border: 1px solid rgba(107, 78, 28, 0.2);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background .15s, border-color .15s;
+  }
+  .overview .cluster-card:hover {
+    background: rgba(233, 182, 75, 0.22);
+    border-color: #8a6a22;
+  }
+  .overview .cluster-card .rail {
+    width: 4px;
+    align-self: stretch;
+    border-radius: 2px;
+  }
+  .overview .cluster-card h4 {
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin: 0 0 2px 0;
+    color: #3a2e16;
+  }
+  .overview .cluster-card p {
+    font-family: var(--serif);
+    font-size: 14px;
+    line-height: 1.45;
+    margin: 0;
+    color: #5a4725;
+  }
+  .overview .instr {
+    font-family: var(--sans);
+    font-size: 11px;
+    color: #8a734a;
+    margin-top: 22px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(107, 78, 28, 0.2);
+    letter-spacing: 0.04em;
+  }
+
+  /* SVG elements */
+  .link {
+    stroke: #6f5a2f;
+    stroke-opacity: 0.3;
+    fill: none;
+    transition: stroke-opacity .2s, stroke .2s;
+  }
+  .link.hl { stroke: var(--accent); stroke-opacity: 0.85; }
+  .link.dim { stroke-opacity: 0.04; }
+
+  .node circle.glow {
+    fill: none;
+    stroke-opacity: 0;
+    transition: stroke-opacity .2s;
+  }
+  .node:hover circle.glow,
+  .node.hl circle.glow,
+  .node.selected circle.glow {
+    stroke-opacity: 0.25;
+  }
+  .node circle.bg {
+    stroke: #1b140b;
+    stroke-width: 2px;
+    transition: stroke .2s, stroke-width .2s, filter .2s;
+  }
+  .node.hl circle.bg { stroke: var(--accent); stroke-width: 3px; filter: drop-shadow(0 0 12px rgba(233, 182, 75, 0.55)); }
+  .node.selected circle.bg { stroke: var(--ink); stroke-width: 3px; filter: drop-shadow(0 0 14px rgba(244, 234, 211, 0.65)); }
+  .node.dim circle.bg { opacity: 0.15; }
+  .node.dim text { opacity: 0.2; }
+
+  .node text {
+    font-family: var(--sans);
+    font-size: 11.5px;
+    font-weight: 500;
+    fill: var(--ink);
+    text-anchor: middle;
+    paint-order: stroke;
+    stroke: rgba(27, 20, 11, 0.9);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+    pointer-events: none;
+    transition: fill .15s;
+  }
+  .node.hl text, .node.selected text {
+    fill: var(--accent);
+    font-weight: 600;
+  }
+  .node:focus { outline: none; }
+  .node:focus-visible circle.bg {
+    stroke: var(--accent);
+    stroke-width: 3px;
+    filter: drop-shadow(0 0 10px rgba(233, 182, 75, 0.6));
+  }
+
+  /* Tooltip */
+  .graph-tooltip {
+    position: absolute;
+    z-index: 30;
+    pointer-events: none;
+    background: rgba(24, 17, 8, 0.92);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 10px 14px;
+    max-width: 260px;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    opacity: 0;
+    transition: opacity .15s;
+    transform: translate(-50%, -100%);
+  }
+  .graph-tooltip.visible { opacity: 1; }
+  .graph-tooltip .tt-name {
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 3px;
+  }
+  .graph-tooltip .tt-tagline {
+    font-family: var(--serif);
+    font-size: 12.5px;
+    font-style: italic;
+    color: var(--ink-dim);
+    line-height: 1.35;
+  }
+
+  /* scrollbar on sidebar */
+  aside.sidebar::-webkit-scrollbar { width: 10px; }
+  aside.sidebar::-webkit-scrollbar-track { background: #ebe0bb; }
+  aside.sidebar::-webkit-scrollbar-thumb { background: #c0a35a; border-radius: 6px; border: 2px solid #ebe0bb; }
+  aside.sidebar::-webkit-scrollbar-thumb:hover { background: #8a6a22; }
+
+  /* ---------- Mobile ---------- */
+  .mobile-toggle {
+    display: none;
+    position: fixed;
+    z-index: 50;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--accent);
+    color: #1b140b;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 999px;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    cursor: pointer;
+  }
+  .mobile-toggle:active { transform: translateX(-50%) scale(0.97); }
+
+  @media (max-width: 900px) {
+    header.topbar { padding: 10px 14px; gap: 10px; flex-wrap: wrap; }
+    header.topbar .title h1 { font-size: 17px; }
+    header.topbar .title .eyebrow { font-size: 9.5px; letter-spacing: 0.18em; }
+    .search-wrap input { width: 140px; font-size: 12px; padding: 7px 12px 7px 30px; }
+    .search-wrap::before { left: 11px; width: 10px; height: 10px; }
+    .search-wrap::after { left: 19px; width: 6px; }
+
+    .stage {
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr 1fr;
+      padding-top: 52px;
+    }
+    aside.sidebar {
+      border-left: none;
+      border-top: 1px solid #d4c89d;
+      box-shadow: 0 -8px 28px rgba(0,0,0,0.4);
+      max-height: 50vh;
+    }
+    .dossier, .overview { padding: 22px 22px 40px 22px; }
+    .dossier h2 { font-size: 30px; }
+    .overview h2 { font-size: 26px; }
+
+    .legend { max-width: 180px; padding: 10px 12px; }
+    .legend h3 { font-size: 9px; }
+    .legend-item { font-size: 11px; }
+    .hint { font-size: 10.5px; top: 60px; padding: 0 12px; }
+  }
+
+  @media (max-width: 600px) {
+    header.topbar .title h1 { font-size: 15px; }
+    header.topbar .title .eyebrow { display: none; }
+    .search-wrap input { width: 110px; }
+    .stage {
+      grid-template-rows: 55vh 45vh;
+    }
+    .dossier h2 { font-size: 26px; }
+    .dossier .tagline { font-size: 15px; }
+    .passage { font-size: 15px; }
+    .definition { font-size: 15.5px; }
+    /* Increase tap target for nodes on mobile */
+    .node circle.bg { stroke-width: 3px; }
+    .graph-tooltip { display: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="../../index.html" class="back">Book</a>
+  <div class="title">
+    <div class="eyebrow">Principle Web · Lens</div>
+    <h1>The Art of War <em>— Sun Tzŭ, tr. Lionel Giles</em></h1>
+  </div>
+  <div class="search-wrap">
+    <input id="search" type="text" placeholder="Search principles…" autocomplete="off" spellcheck="false" aria-label="Search principles" />
+  </div>
+</header>
+
+<div class="stage">
+  <div class="graph-panel">
+    <svg id="graph" role="img" aria-label="Force-directed graph of 30 principles from The Art of War"><title>Principle Web — interactive graph of Sun Tzu's doctrines</title></svg>
+    <div class="hint" id="hint">Drag to pan · scroll to zoom · tap a node to open its dossier</div>
+    <div class="graph-tooltip" id="tooltip"><div class="tt-name"></div><div class="tt-tagline"></div></div>
+    <div class="graph-ui">
+      <div class="legend" id="legend">
+        <h3>Clusters</h3>
+      </div>
+      <div class="zoom-controls">
+        <button id="zoom-in" aria-label="Zoom in">+</button>
+        <button id="zoom-reset" aria-label="Reset zoom">○</button>
+        <button id="zoom-out" aria-label="Zoom out">−</button>
+      </div>
+    </div>
+  </div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="overview" id="overview">
+      <div class="eyebrow">Level 1 · Principle Map</div>
+      <h2>A web of thirty doctrines</h2>
+      <p class="lede">Sun Tzŭ’s thirteen chapters are not a checklist but a lattice. Every doctrine hangs on every other: deception feeds foreknowledge, terrain conditions tactics, morale is the ballast of method. Tap any node to read the canonical verses, or begin with a cluster below.</p>
+      <div class="cluster-strip" id="cluster-strip"></div>
+      <div class="instr">Node size encodes how often the idea is cross-referenced elsewhere in the treatise. Edges exist only where the text itself draws the link.</div>
+    </div>
+    <div class="dossier" id="dossier" style="display:none"></div>
+  </aside>
+</div>
+
+<button class="mobile-toggle" id="mobile-toggle">Show Graph</button>
+
+<script>
+/* ======================================================================
+   DATA — principles extracted from The Art of War (Giles, 1910)
+   Each passage's verse citation uses chapter.section (e.g. "I. 18").
+   Cross-references are drawn only where the text self-references.
+   ====================================================================== */
+
+const CLUSTERS = {
+  planning: {
+    name: "Planning",
+    color: "#e0a13b",
+    desc: "Deliberation before action — the calculus of war in the temple."
+  },
+  tactics: {
+    name: "Tactics",
+    color: "#d65b4a",
+    desc: "Direct and indirect, energy and decision, the shape of engagement."
+  },
+  terrain: {
+    name: "Terrain",
+    color: "#6e9b55",
+    desc: "The ground conditions everything: mountain, river, marsh, and the nine situations."
+  },
+  people: {
+    name: "People & Morale",
+    color: "#c26bb5",
+    desc: "The commander, the troops, discipline, spirit — the human weight of the army."
+  },
+  intel: {
+    name: "Intelligence",
+    color: "#4aa0c8",
+    desc: "Foreknowledge: spies, signs, and the reading of the enemy's mind."
+  }
+};
+
+const PRINCIPLES = [
+  // ---------- PLANNING ----------
+  {
+    id: "five-factors",
+    name: "The Five Factors",
+    cluster: "planning",
+    tagline: "Moral Law, Heaven, Earth, Commander, Method — the pillars of deliberation.",
+    definition: "The art of war is governed by five constant factors, to be taken into account in one's deliberations when seeking to determine the conditions obtaining in the field. These are the Moral Law, Heaven, Earth, the Commander, and Method and discipline. These five heads should be familiar to every general; he who knows them will be victorious, he who knows them not will fail.",
+    passages: [
+      {
+        cite: "I. 3–4",
+        text: "The art of war, then, is governed by five constant factors, to be taken into account in one's deliberations, when seeking to determine the conditions obtaining in the field. These are: (1) The Moral Law; (2) Heaven; (3) Earth; (4) The Commander; (5) Method and discipline."
+      },
+      {
+        cite: "I. 10",
+        text: "By Method and discipline are to be understood the marshalling of the army in its proper subdivisions, the gradations of rank among the officers, the maintenance of roads by which supplies may reach the army, and the control of military expenditure."
+      },
+      {
+        cite: "I. 11",
+        text: "These five heads should be familiar to every general: he who knows them will be victorious; he who knows them not will fail."
+      }
+    ],
+    commentary: "Giles glosses the Moral Law as a principle of harmony between ruler and people — Tao-like in cast — not merely morale, but the bond that makes soldiers follow unto death.",
+    related: ["moral-law", "heaven", "earth", "commander", "method", "calculation"]
+  },
+  {
+    id: "moral-law",
+    name: "The Moral Law",
+    cluster: "planning",
+    tagline: "Harmony between ruler and people: the unshakeable bond of purpose.",
+    definition: "The Moral Law causes the people to be in complete accord with their ruler, so that they will follow him regardless of their lives, undismayed by any danger. It is the first of the Five Factors and is treated as an attribute of the sovereign, measured in the preliminary comparison by asking which of the two rulers is imbued with it.",
+    passages: [
+      {
+        cite: "I. 5–6",
+        text: "The Moral Law causes the people to be in complete accord with their ruler, so that they will follow him regardless of their lives, undismayed by any danger."
+      },
+      {
+        cite: "I. 13 (1)",
+        text: "Which of the two sovereigns is imbued with the Moral Law? — that is, which is in harmony with his subjects."
+      },
+      {
+        cite: "IV. 16",
+        text: "The consummate leader cultivates the moral law, and strictly adheres to method and discipline; thus it is in his power to control success."
+      }
+    ],
+    commentary: "Not unlike the Tao of Lao Tzŭ in its moral aspect, Giles explains; one might be tempted to render it 'morale,' were it not treated as an attribute of the ruler himself.",
+    related: ["five-factors", "method", "commander", "spirit-morale"]
+  },
+  {
+    id: "calculation",
+    name: "Calculation in the Temple",
+    cluster: "planning",
+    tagline: "Many calculations lead to victory, few to defeat — how much more, none at all.",
+    definition: "Before battle the general retires to the temple and weighs the seven considerations: Moral Law, generalship, Heaven and Earth, discipline, strength, training, reward and punishment. By these he forecasts victory or defeat. The victorious army wins the battle in the temple before it is fought on the field.",
+    passages: [
+      {
+        cite: "I. 14",
+        text: "By means of these seven considerations I can forecast victory or defeat."
+      },
+      {
+        cite: "I. 26",
+        text: "Now the general who wins a battle makes many calculations in his temple ere the battle is fought. The general who loses a battle makes but few calculations beforehand. Thus do many calculations lead to victory, and few calculations to defeat: how much more no calculation at all!"
+      },
+      {
+        cite: "IV. 15",
+        text: "Thus it is that in war the victorious strategist only seeks battle after the victory has been won, whereas he who is destined to defeat first fights and afterwards looks for victory."
+      }
+    ],
+    commentary: "Chang Yu tells us that in ancient times it was customary for a temple to be set apart for the use of a general about to take the field, that there he might elaborate his plan of campaign.",
+    related: ["five-factors", "foreknowledge", "know-self-enemy", "measurement"]
+  },
+  {
+    id: "measurement",
+    name: "Measurement & Estimation",
+    cluster: "planning",
+    tagline: "Measurement, quantity, calculation, balance — and then victory.",
+    definition: "In respect of military method, there are five stages: Measurement, Estimation of quantity, Calculation, Balancing of chances, and Victory. Measurement owes its existence to Earth; estimation to measurement; calculation to estimation; balance to calculation; and victory to balance. The weight of a victorious army against a routed one is as a pound against a grain.",
+    passages: [
+      {
+        cite: "IV. 17–18",
+        text: "In respect of military method, we have, firstly, Measurement; secondly, Estimation of quantity; thirdly, Calculation; fourthly, Balancing of chances; fifthly, Victory. Measurement owes its existence to Earth; Estimation of quantity to Measurement; Calculation to Estimation of quantity; Balancing of chances to Calculation; and Victory to Balancing of chances."
+      },
+      {
+        cite: "IV. 19",
+        text: "A victorious army opposed to a routed one, is as a pound's weight placed in the scale against a single grain."
+      }
+    ],
+    commentary: "Each stage springs from the last: survey the ground, count the enemy, compute the odds, weigh the chances — then and only then does victory follow. It is arithmetic as metaphysics.",
+    related: ["calculation", "earth", "five-factors", "foreknowledge"]
+  },
+  {
+    id: "wage-war",
+    name: "The Cost of War",
+    cluster: "planning",
+    tagline: "Rapidity pays; long campaigns bankrupt the state and rot the army.",
+    definition: "Raising an army of a hundred thousand men costs a thousand ounces of silver a day. Though we have heard of stupid haste in war, cleverness has never been seen associated with long delays. No instance exists of a country having benefited from prolonged warfare. Let the great object be victory, not lengthy campaigns.",
+    passages: [
+      {
+        cite: "II. 2–4",
+        text: "When you engage in actual fighting, if victory is long in coming, the men's weapons will grow dull and their ardour will be damped. If you lay siege to a town, you will exhaust your strength. Again, if the campaign is protracted, the resources of the State will not be equal to the strain."
+      },
+      {
+        cite: "II. 5–6",
+        text: "Thus, though we have heard of stupid haste in war, cleverness has never been seen associated with long delays. There is no instance of a country having benefited from prolonged warfare."
+      },
+      {
+        cite: "II. 19",
+        text: "In war, then, let your great object be victory, not lengthy campaigns."
+      }
+    ],
+    commentary: "Tardiness can never be anything but foolish — if only because it means impoverishment to the nation. Rapidity is therefore not recklessness but economy.",
+    related: ["rapidity", "attack-stratagem", "method", "commander"]
+  },
+  {
+    id: "attack-stratagem",
+    name: "Attack by Stratagem",
+    cluster: "planning",
+    tagline: "Supreme excellence: to break the enemy's resistance without fighting.",
+    definition: "In the practical art of war, the best thing of all is to take the enemy's country whole and intact; to shatter and destroy it is not so good. Supreme excellence consists in breaking the enemy's resistance without fighting. The highest form of generalship is to baulk the enemy's plans; the worst policy is to besiege walled cities.",
+    passages: [
+      {
+        cite: "III. 1–2",
+        text: "In the practical art of war, the best thing of all is to take the enemy's country whole and intact; to shatter and destroy it is not so good. Hence to fight and conquer in all your battles is not supreme excellence; supreme excellence consists in breaking the enemy's resistance without fighting."
+      },
+      {
+        cite: "III. 3",
+        text: "Thus the highest form of generalship is to baulk the enemy's plans; the next best is to prevent the junction of the enemy's forces; the next in order is to attack the enemy's army in the field; and the worst policy of all is to besiege walled cities."
+      },
+      {
+        cite: "III. 6",
+        text: "Therefore the skilful leader subdues the enemy's troops without any fighting; he captures their cities without laying siege to them; he overthrows their kingdom without lengthy operations in the field."
+      }
+    ],
+    commentary: "Moltke's greatest triumph, the capitulation of the huge French army at Sedan, was won practically without bloodshed — no modern strategist will dispute the old Chinese general's words.",
+    related: ["wage-war", "deception", "foreknowledge", "know-self-enemy", "weak-points"]
+  },
+
+  // ---------- TACTICS ----------
+  {
+    id: "deception",
+    name: "Deception",
+    cluster: "tactics",
+    tagline: "All warfare is based on deception — appear unable when able, far when near.",
+    definition: "All warfare is based on deception. Hence, when able to attack, we must seem unable; when using our forces, we must seem inactive; when near, we must make the enemy believe we are far away; when far, we must make him believe we are near. Hold out baits to entice the enemy; feign disorder and crush him. Attack him where he is unprepared, appear where you are not expected.",
+    passages: [
+      {
+        cite: "I. 18",
+        text: "All warfare is based on deception."
+      },
+      {
+        cite: "I. 19–20",
+        text: "Hence, when able to attack, we must seem unable; when using our forces, we must seem inactive; when we are near, we must make the enemy believe we are far away; when far away, we must make him believe we are near. Hold out baits to entice the enemy. Feign disorder, and crush him."
+      },
+      {
+        cite: "I. 24",
+        text: "Attack him where he is unprepared, appear where you are not expected."
+      },
+      {
+        cite: "VII. 15",
+        text: "In war, practise dissimulation, and you will succeed."
+      }
+    ],
+    commentary: "Col. Henderson tells us that Wellington, great in so many military qualities, was especially distinguished by the extraordinary skill with which he concealed his movements and deceived both friend and foe.",
+    related: ["cheng-chi", "weak-points", "variation", "rapidity", "spies", "mystify"]
+  },
+  {
+    id: "cheng-chi",
+    name: "Cheng & Ch'i",
+    cluster: "tactics",
+    tagline: "Direct and indirect: the two forces that weave into endless manœuvres.",
+    definition: "In battle there are not more than two methods of attack — the direct (cheng) and the indirect (ch'i) — yet these two in combination give rise to an endless series of manœuvres. The direct and the indirect lead on to each other in turn, like moving in a circle. Any attack on which the enemy has had his attention fixed is cheng; whatever takes him by surprise is ch'i — and they are inextricably interwoven.",
+    passages: [
+      {
+        cite: "V. 3",
+        text: "To ensure that your whole host may withstand the brunt of the enemy's attack and remain unshaken — this is effected by manœuvres direct and indirect."
+      },
+      {
+        cite: "V. 5",
+        text: "In all fighting, the direct method may be used for joining battle, but indirect methods will be needed in order to secure victory."
+      },
+      {
+        cite: "V. 10–11",
+        text: "In battle, there are not more than two methods of attack — the direct and the indirect; yet these two in combination give rise to an endless series of manœuvres. The direct and the indirect lead on to each other in turn. It is like moving in a circle — you never come to an end."
+      }
+    ],
+    commentary: "Mei Yao-ch'en: ch'i is active, cheng is passive; passivity means waiting for an opportunity, activity brings the victory itself. The whole secret lies in confusing the enemy, so that he cannot fathom our real intent.",
+    related: ["deception", "energy", "weak-points", "variation", "tactical-dispositions"]
+  },
+  {
+    id: "energy",
+    name: "Energy & Decision",
+    cluster: "tactics",
+    tagline: "Energy like a bent crossbow; decision like the falcon's swoop.",
+    definition: "The onset of troops is like the rush of a torrent which rolls stones along. The quality of decision is like the well-timed swoop of a falcon. Energy may be likened to the bending of a crossbow; decision to the releasing of the trigger. The good fighter is terrible in his onset and prompt in his decision, and looks to the effect of combined energy rather than demanding too much from individuals.",
+    passages: [
+      {
+        cite: "V. 12–13",
+        text: "The onset of troops is like the rush of a torrent which will even roll stones along in its course. The quality of decision is like the well-timed swoop of a falcon which enables it to strike and destroy its victim."
+      },
+      {
+        cite: "V. 14–15",
+        text: "Therefore the good fighter will be terrible in his onset, and prompt in his decision. Energy may be likened to the bending of a crossbow; decision, to the releasing of the trigger."
+      },
+      {
+        cite: "V. 23",
+        text: "Thus the energy developed by good fighting men is as the momentum of a round stone rolled down a mountain thousands of feet in height."
+      }
+    ],
+    commentary: "When Nelson went into action at Trafalgar, the Victory was for several minutes exposed to shot and shell before replying with a single gun — the broadside he brought to bear, when within close range, wrought fearful havoc. Such is decision.",
+    related: ["cheng-chi", "rapidity", "tactical-dispositions", "weak-points", "spirit-morale"]
+  },
+  {
+    id: "tactical-dispositions",
+    name: "Tactical Dispositions",
+    cluster: "tactics",
+    tagline: "First make yourself invincible; then wait for the enemy to err.",
+    definition: "The good fighters of old first put themselves beyond the possibility of defeat, and then waited for an opportunity of defeating the enemy. To secure ourselves against defeat lies in our own hands, but the opportunity of defeating the enemy is provided by the enemy himself. The skilful in defence hides in the most secret recesses of the earth; he who is skilled in attack flashes forth from the topmost heights of heaven.",
+    passages: [
+      {
+        cite: "IV. 1–2",
+        text: "The good fighters of old first put themselves beyond the possibility of defeat, and then waited for an opportunity of defeating the enemy. To secure ourselves against defeat lies in our own hands, but the opportunity of defeating the enemy is provided by the enemy himself."
+      },
+      {
+        cite: "IV. 7",
+        text: "The general who is skilled in defence hides in the most secret recesses of the earth; he who is skilled in attack flashes forth from the topmost heights of heaven. Thus on the one hand we have ability to protect ourselves; on the other, a victory that is complete."
+      },
+      {
+        cite: "IV. 13",
+        text: "He wins his battles by making no mistakes. Making no mistakes is what establishes the certainty of victory, for it means conquering an enemy that is already defeated."
+      }
+    ],
+    commentary: "Conceal your dispositions, says Tu Mu, and your condition will remain secret, which leads to victory. Show them, and your condition becomes patent — which leads to defeat.",
+    related: ["cheng-chi", "weak-points", "calculation", "mystify", "energy"]
+  },
+  {
+    id: "weak-points",
+    name: "Weak Points & Strong",
+    cluster: "tactics",
+    tagline: "Avoid strength, strike weakness — like water, take the line of least resistance.",
+    definition: "The clever combatant imposes his will on the enemy but does not allow the enemy's will to be imposed on him. Appear at points the enemy must hasten to defend; march to places where you are not expected. Attack only where the enemy is undefended; defend only where he cannot attack. In war, the way is to avoid what is strong and to strike at what is weak. Military tactics are like unto water.",
+    passages: [
+      {
+        cite: "VI. 2",
+        text: "Therefore the clever combatant imposes his will on the enemy, but does not allow the enemy's will to be imposed on him."
+      },
+      {
+        cite: "VI. 5",
+        text: "Appear at points which the enemy must hasten to defend; march swiftly to places where you are not expected."
+      },
+      {
+        cite: "VI. 8",
+        text: "Hence that general is skilful in attack whose opponent does not know what to defend; and he is skilful in defence whose opponent does not know what to attack."
+      },
+      {
+        cite: "VI. 30–32",
+        text: "So in war, the way is to avoid what is strong and to strike at what is weak. Water shapes its course according to the nature of the ground over which it flows; the soldier works out his victory in relation to the foe whom he is facing. Therefore, just as water retains no constant shape, so in warfare there are no constant conditions."
+      }
+    ],
+    commentary: "An aphorism which puts the whole art of war in a nutshell. He who can modify his tactics in relation to his opponent and thereby succeed in winning may be called a heaven-born captain.",
+    related: ["deception", "cheng-chi", "variation", "rapidity", "tactical-dispositions", "attack-stratagem", "foreknowledge"]
+  },
+  {
+    id: "rapidity",
+    name: "Rapidity",
+    cluster: "tactics",
+    tagline: "Rapidity is the essence of war — take the enemy at his unreadiness.",
+    definition: "Rapidity is the essence of war: take advantage of the enemy's unreadiness, make your way by unexpected routes, and attack unguarded spots. Let your rapidity be that of the wind; in raiding and plundering be like fire. When you move, fall like a thunderbolt. You may advance and be absolutely irresistible if you make for the enemy's weak points.",
+    passages: [
+      {
+        cite: "VI. 10",
+        text: "You may advance and be absolutely irresistible, if you make for the enemy's weak points; you may retire and be safe from pursuit if your movements are more rapid than those of the enemy."
+      },
+      {
+        cite: "VII. 17–19",
+        text: "Let your rapidity be that of the wind, your compactness that of the forest. In raiding and plundering be like fire, in immovability like a mountain. Let your plans be dark and impenetrable as night, and when you move, fall like a thunderbolt."
+      },
+      {
+        cite: "XI. 19",
+        text: "Rapidity is the essence of war: take advantage of the enemy's unreadiness, make your way by unexpected routes, and attack unguarded spots."
+      }
+    ],
+    commentary: "Ssu-ma I brought his army 1200 li in eight days to crush the rebel Meng Ta, who wrote in his last letter: 'What miraculous rapidity is this!' Li Ching: 'To the soldier, overwhelming speed is of paramount importance.'",
+    related: ["deception", "weak-points", "wage-war", "energy", "variation"]
+  },
+  {
+    id: "variation",
+    name: "Variation of Tactics",
+    cluster: "tactics",
+    tagline: "No battle repeats itself; the wise leader blends advantage with disadvantage.",
+    definition: "There are roads which must not be followed, armies which must not be attacked, towns which must not be besieged, positions which must not be contested, commands of the sovereign which must not be obeyed. The general who thoroughly understands the advantages that accompany variation of tactics knows how to handle his troops. Do not repeat the tactics which have gained you one victory.",
+    passages: [
+      {
+        cite: "VIII. 3",
+        text: "There are roads which must not be followed, armies which must be not attacked, towns which must not be besieged, positions which must not be contested, commands of the sovereign which must not be obeyed."
+      },
+      {
+        cite: "VI. 28",
+        text: "Do not repeat the tactics which have gained you one victory, but let your methods be regulated by the infinite variety of circumstances."
+      },
+      {
+        cite: "VIII. 7",
+        text: "Hence in the wise leader's plans, considerations of advantage and of disadvantage will be blended together."
+      }
+    ],
+    commentary: "Wang Hsi: there is but one root-principle underlying victory, but the tactics which lead up to it are infinite in number. Such knowledge will no more teach a man to lead like Napoleon than grammar will teach him to write like Gibbon.",
+    related: ["cheng-chi", "deception", "weak-points", "nine-grounds", "commander"]
+  },
+
+  // ---------- TERRAIN ----------
+  {
+    id: "heaven",
+    name: "Heaven",
+    cluster: "terrain",
+    tagline: "Night and day, cold and heat, times and seasons — the temporal field.",
+    definition: "Heaven signifies night and day, cold and heat, times and seasons. It is one of the Five Factors, comprising what Wang Hsi calls 'the general economy of Heaven' — the five elements, the four seasons, wind and clouds, and other phenomena. To know Heaven alongside Earth is to make one's victory complete.",
+    passages: [
+      {
+        cite: "I. 7",
+        text: "Heaven signifies night and day, cold and heat, times and seasons."
+      },
+      {
+        cite: "I. 13 (3)",
+        text: "With whom lie the advantages derived from Heaven and Earth?"
+      },
+      {
+        cite: "X. 31",
+        text: "If you know the enemy and know yourself, your victory will not stand in doubt; if you know Heaven and know Earth, you may make your victory complete."
+      }
+    ],
+    commentary: "Li Ch'uan sums it up: given a knowledge of three things — the affairs of men, the seasons of heaven, and the natural advantages of earth — victory will invariably crown your battles.",
+    related: ["five-factors", "earth", "fire-attack", "know-self-enemy", "commander"]
+  },
+  {
+    id: "earth",
+    name: "Earth",
+    cluster: "terrain",
+    tagline: "Distances, security, life and death — the ground is the soldier's ally.",
+    definition: "Earth comprises distances great and small; danger and security; open ground and narrow passes; the chances of life and death. The natural formation of the country is the soldier's best ally; but it is the power to estimate the adversary, to calculate difficulties, dangers, and distances, that constitutes the test of a great general.",
+    passages: [
+      {
+        cite: "I. 8",
+        text: "Earth comprises distances, great and small; danger and security; open ground and narrow passes; the chances of life and death."
+      },
+      {
+        cite: "X. 21",
+        text: "The natural formation of the country is the soldier's best ally; but a power of estimating the adversary, of controlling the forces of victory, and of shrewdly calculating difficulties, dangers and distances, constitutes the test of a great general."
+      },
+      {
+        cite: "X. 13",
+        text: "These six are the principles connected with Earth. The general who has attained a responsible post must be careful to study them."
+      }
+    ],
+    commentary: "Ch'en Hao: the advantages of weather and season are not equal to those connected with ground. Col. Henderson: 'the study of ground is often overlooked, and by no means sufficient importance is attached to the selection of positions.'",
+    related: ["five-factors", "heaven", "six-terrains", "nine-grounds", "measurement", "army-march"]
+  },
+  {
+    id: "six-terrains",
+    name: "The Six Terrains",
+    cluster: "terrain",
+    tagline: "Accessible, entangling, temporising, narrow, precipitous, distant — know each by its law.",
+    definition: "Six kinds of ground the general must know: accessible (freely traversed by both sides), entangling (hard to re-occupy once abandoned), temporising (where neither side gains by the first move), narrow passes, precipitous heights, and positions at great distance. Each has its own rule; each rewards or punishes the general who does or does not study it.",
+    passages: [
+      {
+        cite: "X. 1",
+        text: "We may distinguish six kinds of terrain, to wit: (1) Accessible ground; (2) entangling ground; (3) temporising ground; (4) narrow passes; (5) precipitous heights; (6) positions at a great distance from the enemy."
+      },
+      {
+        cite: "X. 8",
+        text: "With regard to narrow passes, if you can occupy them first, let them be strongly garrisoned and await the advent of the enemy. Should the enemy forestall you in occupying a pass, do not go after him if the pass is fully garrisoned, but only if it is weakly garrisoned."
+      },
+      {
+        cite: "X. 10",
+        text: "With regard to precipitous heights, if you are beforehand with your adversary, you should occupy the raised and sunny spots, and there wait for him to come up."
+      }
+    ],
+    commentary: "Ts'ao Kung: the particular advantage of securing heights and defiles is that your actions cannot then be dictated by the enemy.",
+    related: ["earth", "nine-grounds", "army-march", "variation", "weak-points"]
+  },
+  {
+    id: "nine-grounds",
+    name: "The Nine Situations",
+    cluster: "terrain",
+    tagline: "Dispersive, facile, contentious… desperate — ground dictates spirit.",
+    definition: "The art of war recognises nine varieties of ground: dispersive, facile, contentious, open, ground of intersecting highways, serious, difficult, hemmed-in, and desperate. On dispersive ground, fight not. On facile ground, halt not. On contentious ground, attack not. On hemmed-in ground, resort to stratagem. On desperate ground, fight. Throw your soldiers into positions whence there is no escape, and they will prefer death to flight.",
+    passages: [
+      {
+        cite: "XI. 1",
+        text: "The art of war recognises nine varieties of ground: (1) Dispersive ground; (2) facile ground; (3) contentious ground; (4) open ground; (5) ground of intersecting highways; (6) serious ground; (7) difficult ground; (8) hemmed-in ground; (9) desperate ground."
+      },
+      {
+        cite: "XI. 11–14",
+        text: "On dispersive ground, therefore, fight not. On facile ground, halt not. On contentious ground, attack not. On open ground, do not try to block the enemy's way. On ground of intersecting highways, join hands with your allies. On serious ground, gather in plunder. In difficult ground, keep steadily on the march. On hemmed-in ground, resort to stratagem. On desperate ground, fight."
+      },
+      {
+        cite: "XI. 23",
+        text: "Throw your soldiers into positions whence there is no escape, and they will prefer death to flight. If they will face death, there is nothing they may not achieve."
+      }
+    ],
+    commentary: "Sun Tzŭ returns to this theme again and again. The ninth, desperate ground, is compared by Ch'en Hao to sitting in a leaking boat or crouching in a burning house — and is precisely where the general must force his men to be, that they may conquer.",
+    related: ["earth", "six-terrains", "variation", "spirit-morale", "army-march", "shuai-jan"]
+  },
+  {
+    id: "army-march",
+    name: "Army on the March",
+    cluster: "terrain",
+    tagline: "Mountains, rivers, marshes, plains — and the reading of the enemy's signs.",
+    definition: "In campaigning, pass quickly over mountains and keep near valleys; after crossing a river, get far from it; cross salt marshes without delay; in dry country, take an accessible position with rising ground at your right rear. These are the four branches that enabled the Yellow Emperor to vanquish four sovereigns. And watching the enemy — dust, birds, words of envoys, movement of trees — is itself a field of knowledge.",
+    passages: [
+      {
+        cite: "IX. 1–2",
+        text: "We come now to the question of encamping the army, and observing signs of the enemy. Pass quickly over mountains, and keep in the neighbourhood of valleys. Camp in high places, facing the sun. Do not climb heights in order to fight."
+      },
+      {
+        cite: "IX. 10",
+        text: "These are the four useful branches of military knowledge which enabled the Yellow Emperor to vanquish four several sovereigns."
+      },
+      {
+        cite: "IX. 22",
+        text: "The rising of birds in their flight is the sign of an ambuscade. Startled beasts indicate that a sudden attack is coming."
+      }
+    ],
+    commentary: "Giles notes: here begin Sun Tzŭ's remarks on the reading of signs, much of which could almost be included in a modern manual like Gen. Baden-Powell's 'Aids to Scouting.'",
+    related: ["earth", "six-terrains", "nine-grounds", "foreknowledge", "spies"]
+  },
+  {
+    id: "fire-attack",
+    name: "Attack by Fire",
+    cluster: "terrain",
+    tagline: "Five fires — camp, stores, baggage, arsenal, dropping flame — and the season of wind.",
+    definition: "There are five ways of attacking with fire: burn soldiers in their camp, burn stores, burn baggage-trains, burn arsenals and magazines, or hurl dropping fire amongst the enemy. The proper season is when the weather is very dry, on days of rising wind. One should be prepared to meet five possible developments when the fire breaks out. Those who use fire to aid the attack show intelligence; water can intercept but never destroy.",
+    passages: [
+      {
+        cite: "XII. 1",
+        text: "There are five ways of attacking with fire. The first is to burn soldiers in their camp; the second is to burn stores; the third is to burn baggage-trains; the fourth is to burn arsenals and magazines; the fifth is to hurl dropping fire amongst the enemy."
+      },
+      {
+        cite: "XII. 3–4",
+        text: "There is a proper season for making attacks with fire, and special days for starting a conflagration. The proper season is when the weather is very dry; the special days are those when the moon is in the constellations of the Sieve, the Wall, the Wing or the Cross-bar; for these four are all days of rising wind."
+      },
+      {
+        cite: "XII. 13",
+        text: "Hence those who use fire as an aid to the attack show intelligence; those who use water as an aid to the attack gain an accession of strength."
+      }
+    ],
+    commentary: "Pan Ch'ao's famous night attack on the Hsiung-nu envoy's camp ('Never venture, never win — unless you enter the tiger's lair, you cannot get hold of the tiger's cubs') exemplifies the doctrine.",
+    related: ["heaven", "rapidity", "deception", "foreknowledge"]
+  },
+
+  // ---------- PEOPLE & MORALE ----------
+  {
+    id: "commander",
+    name: "The Commander",
+    cluster: "people",
+    tagline: "Wisdom, sincerity, benevolence, courage, strictness — the five virtues.",
+    definition: "The Commander stands for the virtues of wisdom, sincerity, benevolence, courage and strictness. He is the bulwark of the state: if complete at all points, the state will be strong. He receives his commands from the sovereign, but on the field he must be trusted absolutely — there are commands which must not be obeyed. The general who advances without coveting fame, and retreats without fearing disgrace, is the jewel of the kingdom.",
+    passages: [
+      {
+        cite: "I. 9",
+        text: "The Commander stands for the virtues of wisdom, sincerity, benevolence, courage and strictness."
+      },
+      {
+        cite: "III. 11",
+        text: "Now the general is the bulwark of the State: if the bulwark is complete at all points; the State will be strong; if the bulwark is defective, the State will be weak."
+      },
+      {
+        cite: "X. 24",
+        text: "The general who advances without coveting fame and retreats without fearing disgrace, whose only thought is to protect his country and do good service for his sovereign, is the jewel of the kingdom."
+      }
+    ],
+    commentary: "The five cardinal virtues of the Chinese are humanity, uprightness, self-respect, wisdom, and sincerity; here wisdom and sincerity come first, and the two military virtues of courage and strictness replace self-respect.",
+    related: ["five-factors", "moral-law", "sovereign", "discipline", "besetting-sins", "spirit-morale"]
+  },
+  {
+    id: "method",
+    name: "Method & Discipline",
+    cluster: "people",
+    tagline: "Subdivision, rank, supplies, expenditure — the marshalling machinery of war.",
+    definition: "By Method and discipline are to be understood the marshalling of the army in its proper subdivisions, the gradations of rank among the officers, the maintenance of roads by which supplies may reach the army, and the control of military expenditure. The control of a large force is the same principle as the control of a few men: it is merely a question of dividing up their numbers.",
+    passages: [
+      {
+        cite: "I. 10",
+        text: "By Method and discipline are to be understood the marshalling of the army in its proper subdivisions, the gradations of rank among the officers, the maintenance of roads by which supplies may reach the army, and the control of military expenditure."
+      },
+      {
+        cite: "V. 1",
+        text: "The control of a large force is the same principle as the control of a few men: it is merely a question of dividing up their numbers."
+      },
+      {
+        cite: "IV. 16",
+        text: "The consummate leader cultivates the moral law, and strictly adheres to method and discipline; thus it is in his power to control success."
+      }
+    ],
+    commentary: "Subdivision is the secret of scale. Whether 100 or 100,000, the general's problem is the same: imposing form upon a body of men so that every signal reaches every ear.",
+    related: ["five-factors", "moral-law", "commander", "discipline", "spirit-morale"]
+  },
+  {
+    id: "discipline",
+    name: "Discipline & Kindness",
+    cluster: "people",
+    tagline: "Regard your soldiers as sons; but without discipline, they are spoilt children.",
+    definition: "Soldiers must be treated in the first instance with humanity, but kept under control by means of iron discipline. Regard them as your children, and they will follow you into the deepest valleys; look on them as your beloved sons, and they will stand by you even unto death. Yet if you are indulgent but unable to make your authority felt, they are useless for any practical purpose.",
+    passages: [
+      {
+        cite: "IX. 43",
+        text: "Therefore soldiers must be treated in the first instance with humanity, but kept under control by means of iron discipline. This is a certain road to victory."
+      },
+      {
+        cite: "X. 25",
+        text: "Regard your soldiers as your children, and they will follow you into the deepest valleys; look on them as your own beloved sons, and they will stand by you even unto death."
+      },
+      {
+        cite: "X. 26",
+        text: "If, however, you are indulgent, but unable to make your authority felt; kind-hearted, but unable to enforce your commands; and incapable, moreover, of quelling disorder: then your soldiers must be likened to spoilt children; they are useless for any practical purpose."
+      }
+    ],
+    commentary: "Yen Tzŭ said of Ssu-ma Jang-chu: 'His civil virtues endeared him to the people; his martial prowess kept his enemies in awe.' Wu Tzŭ: 'The ideal commander unites culture with a warlike temper.'",
+    related: ["commander", "method", "moral-law", "spirit-morale", "besetting-sins"]
+  },
+  {
+    id: "spirit-morale",
+    name: "Spirit & Morale",
+    cluster: "people",
+    tagline: "A whole army may be robbed of its spirit; a commander of his presence of mind.",
+    definition: "A whole army may be robbed of its spirit; a commander-in-chief may be robbed of his presence of mind. A soldier's spirit is keenest in the morning, flags by noonday, and in the evening bends on returning to camp. The clever general avoids an army when its spirit is keen and attacks it when sluggish. Set up one standard of courage which all must reach — let the resolution of every part of the army be of the same quality.",
+    passages: [
+      {
+        cite: "VII. 27",
+        text: "A whole army may be robbed of its spirit; a commander-in-chief may be robbed of his presence of mind."
+      },
+      {
+        cite: "VII. 28–29",
+        text: "Now a soldier's spirit is keenest in the morning; by noonday it has begun to flag; and in the evening, his mind is bent only on returning to camp. A clever general, therefore, avoids an army when its spirit is keen, but attacks it when it is sluggish and inclined to return. This is the art of studying moods."
+      },
+      {
+        cite: "XI. 32",
+        text: "The principle on which to manage an army is to set up one standard of courage which all must reach."
+      }
+    ],
+    commentary: "Wu Tzŭ puts spirit first among the four important influences in war: 'The value of a whole army — a mighty host of a million men — is dependent on one man alone: such is the influence of spirit!'",
+    related: ["commander", "moral-law", "discipline", "nine-grounds", "energy", "shuai-jan"]
+  },
+  {
+    id: "besetting-sins",
+    name: "Five Faults of a General",
+    cluster: "people",
+    tagline: "Recklessness, cowardice, hasty temper, delicacy of honour, over-solicitude.",
+    definition: "There are five dangerous faults which may affect a general: recklessness, which leads to destruction; cowardice, which leads to capture; a hasty temper, which can be provoked by insults; a delicacy of honour sensitive to shame; and over-solicitude for his men, exposing him to worry and trouble. These are the five besetting sins, ruinous to the conduct of war; when an army is overthrown, the cause will surely be found among them.",
+    passages: [
+      {
+        cite: "VIII. 12",
+        text: "There are five dangerous faults which may affect a general: (1) Recklessness, which leads to destruction; (2) cowardice, which leads to capture; (3) a hasty temper, which can be provoked by insults; (4) a delicacy of honour which is sensitive to shame; (5) over-solicitude for his men, which exposes him to worry and trouble."
+      },
+      {
+        cite: "VIII. 13–14",
+        text: "These are the five besetting sins of a general, ruinous to the conduct of war. When an army is overthrown and its leader slain, the cause will surely be found among these five dangerous faults. Let them be a subject of meditation."
+      }
+    ],
+    commentary: "Ssu-ma Fa: 'Simply going to one's death does not bring about victory.' Nor does mere kindness — a mistaken feeling of pity will often induce a general to relieve a beleaguered city, contrary to his military instincts.",
+    related: ["commander", "variation", "discipline", "sovereign"]
+  },
+  {
+    id: "sovereign",
+    name: "Sovereign & General",
+    cluster: "people",
+    tagline: "The ruler commissions, but the commander decides the field.",
+    definition: "There are three ways in which a ruler brings misfortune on his army: hobbling it by orders to advance or retreat against its power to obey, attempting to govern it as he governs a kingdom, and employing officers without discrimination. The general who has military capacity and is not interfered with by the sovereign will win. If fighting is sure to result in victory, then you must fight even though the ruler forbid it; if not, you must not fight even at the ruler's bidding.",
+    passages: [
+      {
+        cite: "III. 12–15",
+        text: "There are three ways in which a ruler can bring misfortune upon his army: (1) By commanding the army to advance or retreat, being ignorant of the fact that it cannot obey. This is called hobbling the army. (2) By attempting to govern an army in the same way as he administers a kingdom. (3) By employing the officers of his army without discrimination."
+      },
+      {
+        cite: "III. 17 (5)",
+        text: "He will win who has military capacity and is not interfered with by the sovereign."
+      },
+      {
+        cite: "X. 23",
+        text: "If fighting is sure to result in victory, then you must fight, even though the ruler forbid it; if fighting will not result in victory, then you must not fight even at the ruler's bidding."
+      }
+    ],
+    commentary: "Chang Yu quotes: 'Decrees from the Son of Heaven do not penetrate the walls of a camp.' Napoleon undoubtedly owed much of his success to the fact that he was not hampered by central authority.",
+    related: ["commander", "variation", "besetting-sins", "moral-law"]
+  },
+  {
+    id: "shuai-jan",
+    name: "The Shuai-jan",
+    cluster: "people",
+    tagline: "Like the snake of the Ch'ang mountains — strike the head, the tail replies.",
+    definition: "The skilful tactician is like the shuai-jan, a snake of the Ch'ang mountains: strike at its head, you are attacked by its tail; strike at its tail, you are attacked by its head; strike at its middle, you are attacked by both. Can an army be made to imitate the shuai-jan? Yes — for even the men of Wu and Yüeh, if they are in the same boat in a storm, will help each other as the left hand helps the right. Unity of spirit, not tethered horses, saves an army.",
+    passages: [
+      {
+        cite: "XI. 29",
+        text: "The skilful tactician may be likened to the shuai-jan. Now the shuai-jan is a snake that is found in the Ch'ang mountains. Strike at its head, and you will be attacked by its tail; strike at its tail, and you will be attacked by its head; strike at its middle, and you will be attacked by head and tail both."
+      },
+      {
+        cite: "XI. 30",
+        text: "For the men of Wu and the men of Yüeh are enemies; yet if they are crossing a river in the same boat and are caught by a storm, they will come to each other's assistance just as the left hand helps the right."
+      },
+      {
+        cite: "XI. 31",
+        text: "Hence it is not enough to put one's trust in the tethering of horses, and the burying of chariot wheels in the ground."
+      }
+    ],
+    commentary: "The ideal army is a single organic whole — and only a spirit of sympathetic cooperation, not mechanical restraint, can weld it together.",
+    related: ["spirit-morale", "nine-grounds", "method", "discipline"]
+  },
+
+  // ---------- INTELLIGENCE ----------
+  {
+    id: "foreknowledge",
+    name: "Foreknowledge",
+    cluster: "intel",
+    tagline: "Not from spirits, not from analogy, not from calculation — only from men.",
+    definition: "What enables the wise sovereign and the good general to strike and conquer, and achieve things beyond the reach of ordinary men, is foreknowledge. Now this foreknowledge cannot be elicited from spirits; it cannot be obtained inductively from experience, nor by any deductive calculation. Knowledge of the enemy's dispositions can only be obtained from other men.",
+    passages: [
+      {
+        cite: "XIII. 4",
+        text: "Thus, what enables the wise sovereign and the good general to strike and conquer, and achieve things beyond the reach of ordinary men, is foreknowledge."
+      },
+      {
+        cite: "XIII. 5–6",
+        text: "Now this foreknowledge cannot be elicited from spirits; it cannot be obtained inductively from experience, nor by any deductive calculation. Knowledge of the enemy's dispositions can only be obtained from other men."
+      },
+      {
+        cite: "VI. 22",
+        text: "Scheme so as to discover his plans and the likelihood of their success. Rouse him, and learn the principle of his activity or inactivity. Force him to reveal himself, so as to find out his vulnerable spots."
+      }
+    ],
+    commentary: "Mei Yao-ch'en: knowledge of the spirit-world is obtained by divination; natural science by induction; the laws of the universe by calculation — but the dispositions of an enemy through spies and spies alone.",
+    related: ["spies", "know-self-enemy", "calculation", "attack-stratagem", "weak-points", "army-march"]
+  },
+  {
+    id: "spies",
+    name: "The Five Spies",
+    cluster: "intel",
+    tagline: "Local, inward, converted, doomed, surviving — the divine manipulation of threads.",
+    definition: "There are five classes of spies: local spies (inhabitants of the enemy's country), inward spies (the enemy's officials), converted spies (the enemy's spies turned to our use), doomed spies (those sent to carry false information and be caught), and surviving spies (who return with news). When all five are at work, none can discover the secret system. This is called 'divine manipulation of the threads' — the sovereign's most precious faculty.",
+    passages: [
+      {
+        cite: "XIII. 7–8",
+        text: "Hence the use of spies, of whom there are five classes: (1) Local spies; (2) inward spies; (3) converted spies; (4) doomed spies; (5) surviving spies. When these five kinds of spy are all at work, none can discover the secret system. This is called 'divine manipulation of the threads.' It is the sovereign's most precious faculty."
+      },
+      {
+        cite: "XIII. 14",
+        text: "Hence it is that with none in the whole army are more intimate relations to be maintained than with spies. None should be more liberally rewarded. In no other business should greater secrecy be preserved."
+      },
+      {
+        cite: "XIII. 27",
+        text: "Hence it is only the enlightened ruler and the wise general who will use the highest intelligence of the army for purposes of spying and thereby they achieve great results. Spies are a most important element in war, because on them depends an army's ability to move."
+      }
+    ],
+    commentary: "Chia Lin says that an army without spies is like a man without ears or eyes. Turenne, who made perhaps larger use of spies than any previous commander: 'Spies are attached to those who give them most; he who pays them ill is never served.'",
+    related: ["foreknowledge", "deception", "mystify", "sovereign", "commander"]
+  },
+  {
+    id: "know-self-enemy",
+    name: "Know Yourself, Know Enemy",
+    cluster: "intel",
+    tagline: "In a hundred battles you will not be imperilled.",
+    definition: "If you know the enemy and know yourself, you need not fear the result of a hundred battles. If you know yourself but not the enemy, for every victory gained you will also suffer a defeat. If you know neither the enemy nor yourself, you will succumb in every battle. And if you know Heaven and know Earth, you may make your victory complete.",
+    passages: [
+      {
+        cite: "III. 18",
+        text: "If you know the enemy and know yourself, you need not fear the result of a hundred battles. If you know yourself but not the enemy, for every victory gained you will also suffer a defeat. If you know neither the enemy nor yourself, you will succumb in every battle."
+      },
+      {
+        cite: "X. 31",
+        text: "If you know the enemy and know yourself, your victory will not stand in doubt; if you know Heaven and know Earth, you may make your victory complete."
+      },
+      {
+        cite: "VI. 24",
+        text: "Carefully compare the opposing army with your own, so that you may know where strength is superabundant and where it is deficient."
+      }
+    ],
+    commentary: "Chang Yu: 'Knowing the enemy enables you to take the offensive; knowing yourself enables you to stand on the defensive. Attack is the secret of defence; defence is the planning of an attack.'",
+    related: ["foreknowledge", "calculation", "heaven", "earth", "attack-stratagem", "weak-points"]
+  },
+  {
+    id: "mystify",
+    name: "Mystify Your Own Men",
+    cluster: "intel",
+    tagline: "Confront your soldiers with the deed, never with the design.",
+    definition: "It is the business of a general to be quiet and thus ensure secrecy; upright and just, and thus maintain order. He must be able to mystify his officers and men by false reports and appearances. Confront your soldiers with the deed itself; never let them know your design. At the critical moment, the leader acts like one who has climbed a height and kicks away the ladder behind him.",
+    passages: [
+      {
+        cite: "XI. 35–36",
+        text: "It is the business of a general to be quiet and thus ensure secrecy; upright and just, and thus maintain order. He must be able to mystify his officers and men by false reports and appearances, and thus keep them in total ignorance."
+      },
+      {
+        cite: "XI. 38–39",
+        text: "At the critical moment, the leader of an army acts like one who has climbed up a height and then kicks away the ladder behind him. He carries his men deep into hostile territory before he shows his hand. He burns his boats and breaks his cooking-pots; like a shepherd driving a flock of sheep, he drives his men this way and that, and none knows whither he is going."
+      },
+      {
+        cite: "XI. 57",
+        text: "Confront your soldiers with the deed itself; never let them know your design. When the outlook is bright, bring it before their eyes; but tell them nothing when the situation is gloomy."
+      }
+    ],
+    commentary: "Chang Yu: 'The axiom that war is based on deception does not apply only to deception of the enemy. You must deceive even your own soldiers. Make them follow you, but without letting them know why.'",
+    related: ["deception", "spies", "tactical-dispositions", "commander", "nine-grounds", "spirit-morale"]
+  }
+];
+
+/* Build edges automatically from the `related` arrays — only real cross-references */
+function buildEdges(principles) {
+  const ids = new Set(principles.map(p => p.id));
+  const pairs = new Map();
+  for (const p of principles) {
+    for (const r of p.related) {
+      if (!ids.has(r)) continue;
+      const key = p.id < r ? p.id + "|" + r : r + "|" + p.id;
+      pairs.set(key, (pairs.get(key) || 0) + 1);
+    }
+  }
+  return Array.from(pairs, ([k, w]) => {
+    const [a, b] = k.split("|");
+    return { source: a, target: b, weight: w };
+  });
+}
+
+const EDGES = buildEdges(PRINCIPLES);
+
+/* Compute each node's degree for sizing */
+const degree = Object.fromEntries(PRINCIPLES.map(p => [p.id, 0]));
+for (const e of EDGES) { degree[e.source]++; degree[e.target]++; }
+
+/* ======================================================================
+   RENDER — Overview panel
+   ====================================================================== */
+const overviewEl = document.getElementById("overview");
+const dossierEl = document.getElementById("dossier");
+const clusterStripEl = document.getElementById("cluster-strip");
+const legendEl = document.getElementById("legend");
+
+const principleMap = Object.fromEntries(PRINCIPLES.map(p => [p.id, p]));
+
+/* Cluster cards */
+for (const [id, c] of Object.entries(CLUSTERS)) {
+  const card = document.createElement("div");
+  card.className = "cluster-card";
+  const count = PRINCIPLES.filter(p => p.cluster === id).length;
+  card.innerHTML = `
+    <div class="rail" style="background:${c.color}"></div>
+    <div>
+      <h4>${c.name} <span style="font-weight:400;color:#8a734a;font-size:10px;letter-spacing:0.05em">(${count})</span></h4>
+      <p>${c.desc}</p>
+    </div>
+  `;
+  card.addEventListener("click", () => focusCluster(id));
+  clusterStripEl.appendChild(card);
+}
+
+/* Legend */
+const legendState = {};
+for (const [id, c] of Object.entries(CLUSTERS)) {
+  legendState[id] = true;
+  const row = document.createElement("div");
+  row.className = "legend-item";
+  row.dataset.cluster = id;
+  row.setAttribute("tabindex", "0");
+  row.setAttribute("role", "button");
+  row.setAttribute("aria-pressed", "true");
+  row.setAttribute("aria-label", "Toggle " + c.name + " cluster");
+  row.innerHTML = `<span class="dot" style="background:${c.color}"></span><span>${c.name}</span>`;
+  function toggleCluster() {
+    legendState[id] = !legendState[id];
+    row.classList.toggle("dim", !legendState[id]);
+    row.setAttribute("aria-pressed", legendState[id]);
+    applyClusterFilter();
+  }
+  row.addEventListener("click", toggleCluster);
+  row.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggleCluster(); }
+  });
+  legendEl.appendChild(row);
+}
+
+/* ======================================================================
+   GRAPH — D3 force simulation
+   ====================================================================== */
+const svg = d3.select("#graph");
+const svgNode = svg.node();
+const gRoot = svg.append("g").attr("class", "root");
+const gLinks = gRoot.append("g").attr("class", "links");
+const gNodes = gRoot.append("g").attr("class", "nodes");
+
+/* Defs — radial gradients for nodes */
+const defs = svg.append("defs");
+for (const [id, c] of Object.entries(CLUSTERS)) {
+  const grad = defs.append("radialGradient")
+    .attr("id", `grad-${id}`)
+    .attr("cx", "35%").attr("cy", "35%");
+  grad.append("stop").attr("offset", "0%").attr("stop-color", d3.rgb(c.color).brighter(0.6));
+  grad.append("stop").attr("offset", "100%").attr("stop-color", d3.rgb(c.color).darker(0.5));
+}
+
+const nodes = PRINCIPLES.map(p => ({
+  id: p.id,
+  name: p.name,
+  cluster: p.cluster,
+  r: 8 + Math.sqrt(degree[p.id]) * 3.4,
+  degree: degree[p.id]
+}));
+
+const links = EDGES.map(e => ({
+  source: e.source,
+  target: e.target,
+  weight: e.weight
+}));
+
+/* Initial dimensions */
+function getSize() {
+  const r = document.querySelector(".graph-panel").getBoundingClientRect();
+  return { w: r.width, h: r.height };
+}
+
+/* Force simulation */
+let { w, h } = getSize();
+
+const sim = d3.forceSimulation(nodes)
+  .force("charge", d3.forceManyBody().strength(-380).distanceMax(560))
+  .force("link", d3.forceLink(links).id(d => d.id).distance(d => 70 + 30 / (d.weight || 1)).strength(0.7))
+  .force("center", d3.forceCenter(w / 2, h / 2))
+  .force("collide", d3.forceCollide().radius(d => d.r + 18).strength(0.9))
+  .force("cluster", clusterForce(0.06))
+  .alphaDecay(0.025);
+
+function clusterForce(strength) {
+  /* Attract nodes towards the centroid of their cluster */
+  const clusterOrder = Object.keys(CLUSTERS);
+  return function(alpha) {
+    const centers = {};
+    for (let i = 0; i < clusterOrder.length; i++) {
+      const angle = (i / clusterOrder.length) * Math.PI * 2 - Math.PI / 2;
+      centers[clusterOrder[i]] = {
+        x: w / 2 + Math.cos(angle) * Math.min(w, h) * 0.28,
+        y: h / 2 + Math.sin(angle) * Math.min(w, h) * 0.28
+      };
+    }
+    for (const n of nodes) {
+      const c = centers[n.cluster];
+      n.vx += (c.x - n.x) * strength * alpha;
+      n.vy += (c.y - n.y) * strength * alpha;
+    }
+  };
+}
+
+/* Links — curved paths for visual richness */
+const linkSel = gLinks.selectAll("path")
+  .data(links)
+  .join("path")
+  .attr("class", "link")
+  .attr("stroke-width", d => 0.8 + Math.sqrt(d.weight) * 0.9);
+
+/* Nodes */
+const nodeSel = gNodes.selectAll("g.node")
+  .data(nodes)
+  .join("g")
+  .attr("class", "node")
+  .attr("data-id", d => d.id)
+  .attr("data-cluster", d => d.cluster)
+  .attr("tabindex", 0)
+  .attr("role", "button")
+  .attr("aria-label", d => d.name + " — " + CLUSTERS[d.cluster].name + " cluster")
+  .style("cursor", "pointer")
+  .call(d3.drag()
+    .on("start", dragStart)
+    .on("drag", dragged)
+    .on("end", dragEnd));
+
+nodeSel.append("circle")
+  .attr("class", "glow")
+  .attr("r", d => d.r + 8)
+  .attr("stroke", d => CLUSTERS[d.cluster].color)
+  .attr("stroke-width", 6);
+
+nodeSel.append("circle")
+  .attr("class", "bg")
+  .attr("r", d => d.r)
+  .attr("fill", d => `url(#grad-${d.cluster})`);
+
+/* Label — wrap to two lines if needed */
+nodeSel.append("text")
+  .attr("dy", d => d.r + 14)
+  .each(function(d) {
+    const words = d.name.split(/\s+/);
+    const lines = [];
+    if (words.length > 2 && d.name.length > 14) {
+      const mid = Math.ceil(words.length / 2);
+      lines.push(words.slice(0, mid).join(" "));
+      lines.push(words.slice(mid).join(" "));
+    } else {
+      lines.push(d.name);
+    }
+    const sel = d3.select(this);
+    sel.text(null);
+    lines.forEach((line, i) => {
+      sel.append("tspan")
+        .attr("x", 0)
+        .attr("dy", i === 0 ? 0 : 12)
+        .text(line);
+    });
+  });
+
+nodeSel.on("click", (ev, d) => {
+  ev.stopPropagation();
+  hideTooltip();
+  selectPrinciple(d.id);
+});
+
+const tooltipEl = document.getElementById("tooltip");
+const ttName = tooltipEl.querySelector(".tt-name");
+const ttTagline = tooltipEl.querySelector(".tt-tagline");
+
+function showTooltip(ev, d) {
+  const p = principleMap[d.id];
+  if (!p) return;
+  ttName.textContent = p.name;
+  ttTagline.textContent = p.tagline;
+  const panel = document.querySelector(".graph-panel");
+  const rect = panel.getBoundingClientRect();
+  const t = d3.zoomTransform(svgNode);
+  const sx = t.applyX(d.x);
+  const sy = t.applyY(d.y);
+  tooltipEl.style.left = sx + "px";
+  tooltipEl.style.top = (sy - d.r - 12) + "px";
+  tooltipEl.classList.add("visible");
+}
+function hideTooltip() {
+  tooltipEl.classList.remove("visible");
+}
+
+nodeSel.on("mouseenter", (ev, d) => {
+  showTooltip(ev, d);
+  if (selectedId) return; // don't disturb selection hover
+  highlightNode(d.id, false);
+});
+nodeSel.on("mouseleave", () => {
+  hideTooltip();
+  if (selectedId) return;
+  clearHighlight();
+});
+
+nodeSel.on("keydown", (ev, d) => {
+  if (ev.key === "Enter" || ev.key === " ") {
+    ev.preventDefault();
+    ev.stopPropagation();
+    selectPrinciple(d.id);
+  }
+  /* Arrow-key navigation to nearest neighbor in that direction */
+  if (["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(ev.key)) {
+    ev.preventDefault();
+    const nIds = Array.from(neighbors(d.id)).filter(n => n !== d.id);
+    if (!nIds.length) return;
+    const nNodes = nIds.map(id => nodes.find(n => n.id === id)).filter(Boolean);
+    const angle = { ArrowRight: 0, ArrowDown: Math.PI/2, ArrowLeft: Math.PI, ArrowUp: -Math.PI/2 }[ev.key];
+    let best = null, bestScore = -Infinity;
+    for (const n of nNodes) {
+      const a = Math.atan2(n.y - d.y, n.x - d.x);
+      const diff = Math.cos(a - angle);
+      if (diff > bestScore) { bestScore = diff; best = n; }
+    }
+    if (best) {
+      const el = svgNode.querySelector(`[data-id="${best.id}"]`);
+      if (el) el.focus();
+    }
+  }
+});
+
+nodeSel.on("focus", (ev, d) => {
+  if (selectedId) return;
+  highlightNode(d.id, false);
+});
+nodeSel.on("focusout", () => {
+  if (selectedId) return;
+  clearHighlight();
+});
+
+/* Background click — deselect */
+svg.on("click", () => {
+  selectedId = null;
+  clearHighlight();
+  showOverview();
+});
+
+/* Tick */
+sim.on("tick", () => {
+  linkSel.attr("d", d => {
+    const dx = d.target.x - d.source.x;
+    const dy = d.target.y - d.source.y;
+    const dr = Math.sqrt(dx * dx + dy * dy) * 1.6;
+    return `M${d.source.x},${d.source.y}A${dr},${dr} 0 0,1 ${d.target.x},${d.target.y}`;
+  });
+  nodeSel.attr("transform", d => `translate(${d.x},${d.y})`);
+});
+
+/* Drag handlers */
+function dragStart(ev, d) {
+  if (!ev.active) sim.alphaTarget(0.3).restart();
+  d.fx = d.x; d.fy = d.y;
+}
+function dragged(ev, d) {
+  d.fx = ev.x; d.fy = ev.y;
+}
+function dragEnd(ev, d) {
+  if (!ev.active) sim.alphaTarget(0);
+  d.fx = null; d.fy = null;
+}
+
+/* Zoom */
+const zoom = d3.zoom()
+  .scaleExtent([0.3, 4])
+  .on("zoom", (ev) => {
+    gRoot.attr("transform", ev.transform);
+  });
+svg.call(zoom);
+
+document.getElementById("zoom-in").onclick = () => svg.transition().duration(220).call(zoom.scaleBy, 1.35);
+document.getElementById("zoom-out").onclick = () => svg.transition().duration(220).call(zoom.scaleBy, 1/1.35);
+document.getElementById("zoom-reset").onclick = () => svg.transition().duration(320).call(zoom.transform, d3.zoomIdentity);
+
+/* ======================================================================
+   INTERACTION — selection, highlight, search
+   ====================================================================== */
+let selectedId = null;
+
+function neighbors(id) {
+  const s = new Set([id]);
+  for (const e of links) {
+    const sId = e.source.id || e.source;
+    const tId = e.target.id || e.target;
+    if (sId === id) s.add(tId);
+    if (tId === id) s.add(sId);
+  }
+  return s;
+}
+
+function highlightNode(id, persist) {
+  const n = neighbors(id);
+  nodeSel.classed("hl", d => n.has(d.id) && d.id !== id);
+  nodeSel.classed("selected", d => d.id === id && persist);
+  nodeSel.classed("dim", d => !n.has(d.id));
+  linkSel.classed("hl", d => (d.source.id === id || d.target.id === id));
+  linkSel.classed("dim", d => !(d.source.id === id || d.target.id === id));
+}
+
+function clearHighlight() {
+  nodeSel.classed("hl", false).classed("selected", false).classed("dim", false);
+  linkSel.classed("hl", false).classed("dim", false);
+}
+
+function selectPrinciple(id) {
+  selectedId = id;
+  highlightNode(id, true);
+  showDossier(id);
+  // Gentle pan to the node on mobile
+  if (window.innerWidth <= 900) {
+    const node = nodes.find(n => n.id === id);
+    if (node) {
+      const { w: W, h: H } = getSize();
+      const t = d3.zoomTransform(svgNode);
+      const targetX = W / 2 - node.x * t.k;
+      const targetY = H / 2 - node.y * t.k;
+      svg.transition().duration(420)
+        .call(zoom.transform, d3.zoomIdentity.translate(targetX, targetY).scale(t.k));
+    }
+  }
+}
+
+function focusCluster(clusterId) {
+  // Highlight nodes in the cluster, dim others
+  nodeSel.classed("hl", d => d.cluster === clusterId)
+         .classed("dim", d => d.cluster !== clusterId)
+         .classed("selected", false);
+  linkSel.classed("hl", d => d.source.cluster === clusterId && d.target.cluster === clusterId);
+  linkSel.classed("dim", d => d.source.cluster !== clusterId || d.target.cluster !== clusterId);
+
+  // Pick the highest-degree node in the cluster to lead with
+  const members = PRINCIPLES.filter(p => p.cluster === clusterId)
+    .sort((a, b) => degree[b.id] - degree[a.id]);
+  if (members.length) {
+    selectedId = members[0].id;
+    showDossier(members[0].id);
+  }
+}
+
+function applyClusterFilter() {
+  nodeSel.style("display", d => legendState[d.cluster] ? null : "none");
+  linkSel.style("display", d => (legendState[d.source.cluster] && legendState[d.target.cluster]) ? null : "none");
+}
+
+/* ======================================================================
+   DOSSIER RENDERING
+   ====================================================================== */
+function showOverview() {
+  overviewEl.style.display = "";
+  dossierEl.style.display = "none";
+}
+function showDossier(id) {
+  const p = principleMap[id];
+  if (!p) return;
+  const cluster = CLUSTERS[p.cluster];
+
+  const neighborIds = Array.from(neighbors(id)).filter(n => n !== id);
+  const relatedHtml = neighborIds.length
+    ? neighborIds.map(nid => {
+        const n = principleMap[nid];
+        const c = CLUSTERS[n.cluster];
+        return `<span class="chip" data-id="${nid}" tabindex="0" role="button"><span class="dot" style="background:${c.color}"></span>${n.name}</span>`;
+      }).join("")
+    : '<span class="chip" style="opacity:.6">No cross-references in text</span>';
+
+  const passagesHtml = p.passages.map(ps => `
+    <div class="passage">
+      <span class="quote-text">${escapeHtml(ps.text)}</span>
+      <span class="cite">${escapeHtml(ps.cite)}</span>
+    </div>
+  `).join("");
+
+  dossierEl.innerHTML = `
+    <div class="breadcrumb">
+      <span class="swatch" style="background:${cluster.color}"></span>
+      <span>${cluster.name} · Level 3 · Principle dossier</span>
+    </div>
+    <h2>${escapeHtml(p.name)}</h2>
+    <div class="tagline">${escapeHtml(p.tagline)}</div>
+
+    <h3>Definition</h3>
+    <div class="definition">${escapeHtml(p.definition)}</div>
+
+    <h3>Canonical passages</h3>
+    ${passagesHtml}
+
+    ${p.commentary ? `<h3>Commentary</h3><div class="commentary">${escapeHtml(p.commentary)}</div>` : ""}
+
+    <h3>Related principles</h3>
+    <div class="related">${relatedHtml}</div>
+
+    <button class="back-to-graph" id="back-to-graph">Back to overview</button>
+  `;
+
+  overviewEl.style.display = "none";
+  dossierEl.style.display = "";
+  dossierEl.scrollTop = 0;
+  document.getElementById("sidebar").scrollTop = 0;
+
+  // Wire back-to-graph button
+  const backBtn = document.getElementById("back-to-graph");
+  if (backBtn) {
+    backBtn.addEventListener("click", () => {
+      selectedId = null;
+      clearHighlight();
+      showOverview();
+    });
+  }
+
+  // Wire chips
+  dossierEl.querySelectorAll(".chip[data-id]").forEach(el => {
+    el.addEventListener("click", () => selectPrinciple(el.dataset.id));
+    el.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        selectPrinciple(el.dataset.id);
+      }
+    });
+  });
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  }[c]));
+}
+
+/* ======================================================================
+   SEARCH
+   ====================================================================== */
+const searchEl = document.getElementById("search");
+searchEl.addEventListener("input", () => {
+  const q = searchEl.value.trim().toLowerCase();
+  if (!q) {
+    if (selectedId) {
+      highlightNode(selectedId, true);
+    } else {
+      clearHighlight();
+      showOverview();
+    }
+    return;
+  }
+  /* When searching, clear existing selection so results take over */
+  const matches = new Set(PRINCIPLES.filter(p =>
+    p.name.toLowerCase().includes(q) ||
+    p.tagline.toLowerCase().includes(q) ||
+    p.definition.toLowerCase().includes(q) ||
+    p.passages.some(ps => ps.text.toLowerCase().includes(q))
+  ).map(p => p.id));
+
+  nodeSel.classed("hl", d => matches.has(d.id))
+         .classed("dim", d => !matches.has(d.id))
+         .classed("selected", false);
+  linkSel.classed("hl", d => matches.has(d.source.id) && matches.has(d.target.id));
+  linkSel.classed("dim", d => !matches.has(d.source.id) && !matches.has(d.target.id));
+
+  if (matches.size === 1) {
+    const only = Array.from(matches)[0];
+    selectPrinciple(only);
+  }
+});
+searchEl.addEventListener("keydown", e => {
+  if (e.key === "Escape") { searchEl.value = ""; searchEl.dispatchEvent(new Event("input")); searchEl.blur(); }
+});
+
+/* Global Escape to deselect node */
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && selectedId && document.activeElement !== searchEl) {
+    selectedId = null;
+    clearHighlight();
+    showOverview();
+  }
+});
+
+/* ======================================================================
+   RESIZE
+   ====================================================================== */
+function onResize() {
+  const s = getSize();
+  w = s.w; h = s.h;
+  sim.force("center", d3.forceCenter(w / 2, h / 2));
+  sim.alpha(0.4).restart();
+}
+window.addEventListener("resize", onResize);
+
+/* ======================================================================
+   MOBILE TOGGLE — swap focus between graph and sidebar
+   ====================================================================== */
+const mobileToggle = document.getElementById("mobile-toggle");
+let mobileMode = "split"; // split | graph | panel
+function updateMobileMode() {
+  if (window.innerWidth > 900) {
+    document.querySelector(".stage").style.gridTemplateRows = "";
+    document.querySelector(".graph-panel").style.display = "";
+    document.querySelector(".sidebar").style.display = "";
+    mobileToggle.style.display = "none";
+    return;
+  }
+  mobileToggle.style.display = "inline-block";
+  const stage = document.querySelector(".stage");
+  const gp = document.querySelector(".graph-panel");
+  const sb = document.querySelector(".sidebar");
+  if (mobileMode === "split") {
+    stage.style.gridTemplateRows = "55vh 45vh";
+    gp.style.display = ""; sb.style.display = "";
+    mobileToggle.textContent = selectedId ? "Focus graph" : "Show reading";
+  } else if (mobileMode === "graph") {
+    stage.style.gridTemplateRows = "1fr 0";
+    gp.style.display = ""; sb.style.display = "none";
+    mobileToggle.textContent = "Show reading";
+  } else {
+    stage.style.gridTemplateRows = "0 1fr";
+    gp.style.display = "none"; sb.style.display = "";
+    mobileToggle.textContent = "Show graph";
+  }
+}
+mobileToggle.addEventListener("click", () => {
+  mobileMode = mobileMode === "split" ? (selectedId ? "panel" : "graph")
+              : mobileMode === "graph" ? "panel"
+              : "split";
+  updateMobileMode();
+  onResize();
+});
+window.addEventListener("resize", updateMobileMode);
+
+/* Warm-start layout */
+setTimeout(() => {
+  sim.alpha(0.7).restart();
+  onResize();
+  updateMobileMode();
+  // Hide hint after animation
+  setTimeout(() => { const h = document.getElementById("hint"); if (h) h.style.display = "none"; }, 9000);
+}, 40);
+</script>
+</body>
+</html>

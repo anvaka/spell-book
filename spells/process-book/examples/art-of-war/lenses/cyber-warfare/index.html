@@ -1,0 +1,1538 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Cyber & Hybrid Warfare — The Art of War (Sun Tzŭ)</title>
+<meta name="description" content="Sun Tzŭ's doctrine of deception, foreknowledge, spies and attack by fire mapped onto modern cyber operations, information warfare, and gray-zone conflict." />
+<style>
+  /* ---------- tokens ---------- */
+  :root{
+    --parchment:      #f2ead6;
+    --parchment-deep: #e6dcc0;
+    --parchment-edge: #d8cba4;
+    --ink:            #1d1a14;
+    --ink-soft:       #3a342a;
+    --ink-faint:      #6a6252;
+    --rule:           #b9ac85;
+    --seal:           #a8372a;
+    --seal-deep:      #7f2a20;
+    --terminal:       #2fa36b;   /* quiet phosphor */
+    --terminal-dim:   #1c6a44;
+    --terminal-glow:  rgba(47,163,107,0.18);
+    --amber:          #c4892a;
+    --grid-dark:      rgba(29,26,20,0.06);
+    --grid-glow:      rgba(47,163,107,0.08);
+
+    --serif: "EB Garamond", "Garamond", "Hoefler Text", "Cormorant Garamond", Georgia, "Times New Roman", serif;
+    --sans:  "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    --mono:  "JetBrains Mono", "IBM Plex Mono", "SFMono-Regular", ui-monospace, Menlo, monospace;
+
+    --max: 1200px;
+  }
+
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+  body{
+    font-family: var(--serif);
+    color: var(--ink);
+    background: var(--parchment);
+    font-size: 18px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    background-image:
+      radial-gradient(1200px 700px at 15% -10%, rgba(255,255,255,0.55), transparent 60%),
+      radial-gradient(900px 600px at 110% 10%, rgba(168,55,42,0.06), transparent 60%),
+      linear-gradient(180deg, var(--parchment) 0%, var(--parchment-deep) 100%);
+    background-attachment: fixed;
+    min-height:100vh;
+  }
+
+  /* faint digital grid overlay — "parchment meets terminal" */
+  body::before{
+    content:"";
+    position: fixed; inset:0;
+    pointer-events:none;
+    background-image:
+      linear-gradient(to right, var(--grid-dark) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grid-dark) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mix-blend-mode: multiply;
+    opacity: .55;
+    z-index: 0;
+  }
+  body::after{
+    content:"";
+    position:fixed; inset:0;
+    pointer-events:none;
+    background: radial-gradient(ellipse at 50% 0%, transparent 55%, rgba(29,26,20,0.12) 100%);
+    z-index: 0;
+  }
+
+  a{ color: var(--seal); text-decoration: none; border-bottom: 1px dashed rgba(168,55,42,.4); }
+  a:hover{ color: var(--seal-deep); border-bottom-style: solid; }
+
+  /* ---------- layout ---------- */
+  .wrap{
+    position: relative;
+    z-index: 1;
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 28px 28px 96px;
+    overflow-x: hidden;
+  }
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    gap: 16px;
+    font-family: var(--sans);
+    font-size: 13px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 28px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .back{
+    display:inline-flex; align-items:center; gap:8px;
+    color: var(--ink-soft);
+    border:none;
+    padding: 6px 10px;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    background: rgba(255,255,255,.35);
+    transition: all .2s ease;
+  }
+  .back:hover{
+    background: rgba(255,255,255,.7);
+    color: var(--seal);
+    border-color: var(--seal);
+  }
+  .back::before{ content:"←"; font-family: var(--serif); font-size:16px; }
+  .topbar .crumbs{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .crumbs .sep{ opacity:.4; }
+  .prompt{
+    font-family: var(--mono);
+    color: var(--terminal-dim);
+    font-size: 12px;
+    display:inline-flex; align-items:center; gap:6px;
+  }
+  .prompt .cursor{
+    display:inline-block; width:7px; height:12px;
+    background: var(--terminal);
+    box-shadow: 0 0 6px var(--terminal-glow);
+    animation: blink 1.1s steps(2) infinite;
+  }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  /* ---------- hero ---------- */
+  header.hero{
+    position: relative;
+    padding: 36px 0 44px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 48px;
+  }
+  header.hero::before{
+    content:"";
+    position:absolute; left:0; right:0; top:0;
+    height: 1px; background: var(--ink);
+    opacity: .35;
+  }
+  .kicker{
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--terminal-dim);
+    display:inline-flex; align-items:center; gap:10px;
+    padding: 5px 10px;
+    background: var(--terminal-glow);
+    border: 1px solid rgba(47,163,107,0.35);
+    border-radius: 2px;
+    margin-bottom: 22px;
+  }
+  .kicker::before{
+    content:""; width:8px; height:8px; border-radius:50%;
+    background: var(--terminal);
+    box-shadow: 0 0 10px var(--terminal);
+  }
+  h1.title{
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: clamp(38px, 6vw, 68px);
+    line-height: 1.02;
+    margin: 0 0 18px;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  h1.title .amp{ color: var(--seal); font-style: italic; }
+  .sub{
+    font-size: clamp(17px, 2.2vw, 22px);
+    max-width: 62ch;
+    color: var(--ink-soft);
+    line-height: 1.45;
+    margin: 0 0 22px;
+  }
+  .meta{
+    display:flex; flex-wrap:wrap; gap: 6px 24px;
+    font-family: var(--sans);
+    font-size: 12px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .meta b{ color: var(--ink-soft); font-weight: 600; }
+
+  /* seal */
+  .seal{
+    position: absolute;
+    top: 36px; right: 0;
+    width: 108px; height: 108px;
+    border-radius: 50%;
+    border: 2px solid var(--seal);
+    color: var(--seal);
+    display:grid; place-items:center;
+    text-align:center;
+    font-family: var(--serif);
+    font-size: 11px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    background: rgba(168,55,42,0.05);
+    transform: rotate(-6deg);
+    box-shadow: 0 0 0 4px var(--parchment), 0 0 0 5px rgba(168,55,42,.35);
+  }
+  .seal span{ display:block; }
+  .seal .big{ font-size: 15px; letter-spacing: .04em; padding: 4px 0; }
+  @media (max-width: 720px){
+    .seal{ display:none; }
+  }
+
+  /* ---------- section ---------- */
+  section{ margin-top: 72px; position:relative; }
+  section > h2{
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: clamp(26px, 3.4vw, 36px);
+    margin: 0 0 6px;
+    letter-spacing: -0.01em;
+  }
+  section > h2 .num{
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--terminal-dim);
+    vertical-align: middle;
+    margin-right: 12px;
+    padding: 3px 8px;
+    border: 1px solid rgba(47,163,107,.4);
+    background: var(--terminal-glow);
+    border-radius: 2px;
+    letter-spacing: .1em;
+  }
+  section > h2 + .lede{
+    font-family: var(--serif);
+    font-size: 18px;
+    color: var(--ink-soft);
+    max-width: 72ch;
+    margin: 0 0 28px;
+    font-style: italic;
+  }
+
+  /* ---------- level 1: domain overview grid ---------- */
+  .overview{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 2px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+  }
+  .tile{
+    background: rgba(255,255,255,.45);
+    padding: 22px 20px 24px;
+    position:relative;
+    display:flex; flex-direction:column; gap:10px;
+    min-height: 172px;
+    min-width: 0;
+    overflow-wrap: break-word;
+    transition: background .25s ease;
+  }
+  .tile:hover, .tile:focus-visible{ background: rgba(255,255,255,.72); outline: 2px solid var(--seal); outline-offset: -2px; }
+  .tile .glyph{
+    font-family: var(--serif);
+    font-size: 36px;
+    color: var(--seal);
+    line-height: 1;
+    font-weight: 500;
+  }
+  .tile .st{
+    font-family: var(--serif);
+    font-size: 19px;
+    color: var(--ink);
+    line-height: 1.25;
+  }
+  .tile .arrow{
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .18em;
+    color: var(--terminal-dim);
+    text-transform: uppercase;
+    margin-top: auto;
+    padding-top: 6px;
+    border-top: 1px dashed rgba(47,163,107,.35);
+  }
+  .tile .mod{
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--ink-soft);
+    font-weight: 500;
+  }
+
+  /* ---------- level 2: mapping cards ---------- */
+  .mapping{
+    margin-top: 28px;
+    border: 1px solid var(--rule);
+    background: rgba(255,255,255,.5);
+    position: relative;
+  }
+  .mapping.expanded{ background: rgba(255,255,255,.78); }
+  .mapping > header{
+    display:flex; align-items:center; gap: 18px;
+    padding: 18px 22px;
+    cursor:pointer;
+    user-select:none;
+    border-bottom: 1px solid transparent;
+  }
+  .mapping.expanded > header{ border-bottom-color: var(--rule); }
+  .mapping > header:hover{ background: rgba(255,255,255,.35); }
+  .mapping > header:focus-visible{ outline: 2px solid var(--seal); outline-offset: -2px; background: rgba(255,255,255,.35); }
+  .mapping .idx{
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .14em;
+    color: var(--terminal-dim);
+    width: 42px; flex-shrink:0;
+  }
+  .mapping .label{
+    display:flex; align-items:center; gap: 14px;
+    flex-wrap: wrap;
+    flex: 1;
+  }
+  .mapping .label .st{
+    font-family: var(--serif);
+    font-size: 20px;
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .mapping .label .bridge{
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .14em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    background: rgba(0,0,0,0.02);
+  }
+  .mapping .label .mod{
+    font-family: var(--sans);
+    font-size: 15px;
+    color: var(--seal);
+    font-weight: 500;
+  }
+  .mapping .chev{
+    font-family: var(--mono);
+    color: var(--terminal-dim);
+    font-size: 14px;
+    transition: transform .25s ease;
+  }
+  .mapping.expanded .chev{ transform: rotate(90deg); }
+
+  .mapping .body{
+    display:none;
+    padding: 6px 22px 24px;
+    overflow-wrap: break-word;
+  }
+  .mapping.expanded .body{ display:block; }
+
+  /* pair columns */
+  .pair{
+    display:grid;
+    grid-template-columns: 1fr 56px 1fr;
+    gap: 0;
+    margin: 22px 0 14px;
+    align-items: stretch;
+  }
+  .pair .col{
+    padding: 20px 22px;
+    background: rgba(242,234,214,.5);
+    border: 1px solid var(--rule);
+    position: relative;
+    overflow-wrap: break-word;
+    min-width: 0;
+  }
+  .pair .col.ancient{
+    background:
+      linear-gradient(180deg, rgba(255,253,245,.8), rgba(242,234,214,.65));
+  }
+  .pair .col.modern{
+    background:
+      linear-gradient(180deg, rgba(25,40,30,.9), rgba(14,22,18,.95));
+    color: #cfe9d9;
+    border-color: rgba(47,163,107,.4);
+    font-family: var(--mono);
+    font-size: 13.5px;
+    line-height: 1.55;
+  }
+  .pair .col.modern .tag{ color: var(--terminal); }
+  .pair .col.modern a{ color: #6fd7a0; border-bottom-color: rgba(111,215,160,.4); }
+  .pair .col.modern a:hover{ color: #9fefbd; }
+
+  .pair .bridge-vert{
+    background: transparent;
+    position: relative;
+    display: grid; place-items: center;
+  }
+  .pair .bridge-vert::before{
+    content:"";
+    position: absolute;
+    left:50%; top:10%; bottom:10%;
+    width:1px;
+    background: repeating-linear-gradient(to bottom, var(--ink-faint) 0, var(--ink-faint) 3px, transparent 3px, transparent 7px);
+    transform: translateX(-0.5px);
+  }
+  .pair .bridge-vert .node{
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: var(--parchment);
+    border: 1.5px solid var(--seal);
+    color: var(--seal);
+    display:grid; place-items:center;
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 700;
+    position:relative; z-index:1;
+  }
+
+  .col .tag{
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 10px;
+    display:block;
+  }
+  .col .chap{
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 6px;
+  }
+  .col .verse{
+    font-family: var(--serif);
+    font-size: 18px;
+    line-height: 1.4;
+    color: var(--ink);
+    margin: 0;
+    font-style: italic;
+  }
+  .col .verse::before{ content:"“"; color: var(--seal); font-size: 26px; line-height: 0; position: relative; top: 6px; margin-right: 2px;}
+  .col .verse::after { content:"”"; color: var(--seal); font-size: 26px; line-height: 0; position: relative; top: 10px; margin-left: 2px;}
+
+  .col.modern .doctrine{
+    margin: 0 0 10px;
+  }
+  .col.modern .doctrine strong{ color: #eaf7ef; font-weight: 600; }
+  .col.modern .cite{
+    font-size: 11px;
+    color: #8fbfa4;
+    margin-top: 14px;
+    padding-top: 10px;
+    border-top: 1px dashed rgba(111,215,160,.3);
+    letter-spacing: .02em;
+  }
+
+  /* case vignette */
+  .vignette{
+    margin-top: 18px;
+    padding: 20px 22px;
+    background: rgba(168,55,42,.05);
+    border: 1px solid rgba(168,55,42,.3);
+    border-left: 3px solid var(--seal);
+    overflow-wrap: break-word;
+  }
+  .vignette .tag{
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--seal);
+    display:flex; align-items:center; gap:8px;
+    margin-bottom: 8px;
+  }
+  .vignette .tag::before{
+    content:""; width:6px; height:6px; border-radius:50%; background: var(--seal);
+  }
+  .vignette h4{
+    font-family: var(--serif);
+    font-size: 20px;
+    margin: 0 0 8px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .vignette p{
+    margin: 0 0 10px;
+    font-family: var(--serif);
+    font-size: 16px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+  }
+  .vignette .when{
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-faint);
+    letter-spacing: .12em;
+  }
+  .vignette .refs{
+    font-family: var(--sans);
+    font-size: 12px;
+    margin-top: 10px;
+    color: var(--ink-faint);
+  }
+
+  /* verse trace */
+  .verse-trace{
+    margin-top: 18px;
+    padding: 16px 22px;
+    background: rgba(255,253,245,.7);
+    border: 1px solid var(--rule);
+    border-top: 2px solid var(--ink);
+  }
+  .verse-trace .tag{
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 10px;
+    display:block;
+  }
+  .verse-trace blockquote{
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 16px;
+    color: var(--ink-soft);
+    margin: 8px 0;
+    padding-left: 14px;
+    border-left: 2px solid var(--amber);
+    line-height: 1.5;
+  }
+  .verse-trace blockquote .loc{
+    display:block;
+    font-style: normal;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-top: 4px;
+  }
+
+  /* ---------- sources panel ---------- */
+  .sources{
+    margin-top: 80px;
+    padding: 36px 30px;
+    background:
+      linear-gradient(180deg, rgba(10,16,12,0.96), rgba(14,22,18,0.98));
+    color: #cfe9d9;
+    font-family: var(--mono);
+    font-size: 13px;
+    border: 1px solid rgba(47,163,107,.35);
+    position: relative;
+    overflow-x: hidden;
+  }
+  .sources::before{
+    content:"";
+    position: absolute; top:0; left:0; right:0; height:26px;
+    background: rgba(0,0,0,.35);
+    border-bottom: 1px solid rgba(47,163,107,.3);
+  }
+  .sources .dots{
+    position:absolute; top:6px; left:10px;
+    display:flex; gap:6px;
+  }
+  .sources .dots span{
+    width:10px; height:10px; border-radius:50%;
+    background:#3a3a3a;
+  }
+  .sources .dots span:nth-child(1){ background:#e0554a; }
+  .sources .dots span:nth-child(2){ background:#e0b23c; }
+  .sources .dots span:nth-child(3){ background: var(--terminal); }
+  .sources .path{
+    position:absolute; top:7px; left:0; right:0;
+    text-align:center;
+    font-size:11px; color: #8fbfa4;
+    letter-spacing: .08em;
+  }
+  .sources h2{
+    margin: 18px 0 18px;
+    font-family: var(--mono);
+    font-size: 15px;
+    color: var(--terminal);
+    letter-spacing: .1em;
+    font-weight: 600;
+  }
+  .sources h2::before{ content:"$ "; color: #8fbfa4; }
+  .sources ol{
+    margin: 0; padding: 0;
+    counter-reset: src;
+    list-style: none;
+  }
+  .sources ol li{
+    counter-increment: src;
+    padding: 9px 0 9px 38px;
+    position: relative;
+    border-bottom: 1px dashed rgba(111,215,160,.2);
+    line-height: 1.45;
+    overflow-wrap: break-word;
+  }
+  .sources ol li:last-child{ border-bottom:0; }
+  .sources ol li::before{
+    content: "[" counter(src, decimal-leading-zero) "]";
+    position:absolute; left:0; top:9px;
+    color: var(--terminal);
+  }
+  .sources ol li .author{ color: #eaf7ef; }
+  .sources ol li .year{ color: #8fbfa4; }
+  .sources ol li .pub{ color: #b8dcc8; font-style: italic; }
+  .sources ol li a{ color: #6fd7a0; border-bottom-color: rgba(111,215,160,.3); word-break: break-word; }
+  .sources ol li a:hover{ color:#9fefbd; }
+
+  /* footer */
+  footer{
+    margin-top: 80px;
+    padding-top: 22px;
+    border-top: 1px solid var(--rule);
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--ink-faint);
+    letter-spacing: .06em;
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px;
+  }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 860px){
+    .pair{
+      grid-template-columns: 1fr;
+    }
+    .pair .bridge-vert{
+      padding: 6px 0;
+    }
+    .pair .bridge-vert::before{
+      top: 50%; bottom: auto;
+      left: 10%; right: 10%;
+      width: auto;
+      height: 1px;
+      transform: translateY(-0.5px);
+      background: repeating-linear-gradient(to right, var(--ink-faint) 0, var(--ink-faint) 3px, transparent 3px, transparent 7px);
+    }
+  }
+  @media (max-width: 560px){
+    body{ font-size: 17px; }
+    .wrap{ padding: 18px 18px 72px; }
+    h1.title{ font-size: 40px; }
+    section{ margin-top: 56px; }
+    .mapping > header{ padding: 14px 16px; gap:10px; }
+    .mapping .idx{ width: 30px; font-size: 10px; }
+    .mapping .label .st{ font-size: 17px; }
+    .mapping .label .mod{ font-size: 13px; }
+    .mapping .label .bridge{ display: none; }
+    .mapping .body{ padding: 4px 14px 18px; }
+    .pair .col{ padding: 16px 16px; }
+    .pair .col.modern{ font-size: 13px; }
+    .vignette{ padding: 16px 16px; }
+    .verse-trace{ padding: 14px 16px; }
+    .sources{ padding: 40px 18px 24px; font-size: 12px; }
+    .topbar{ font-size: 11px; }
+    .kicker{ font-size: 10px; }
+  }
+  @media (max-width: 380px){
+    h1.title{ font-size: 34px; }
+    .sub{ font-size: 16px; }
+  }
+
+  /* print */
+  @media print{
+    body{ background: #fff; color:#000; }
+    body::before, body::after{ display:none; }
+    .mapping .body{ display:block !important; }
+    .sources{ background:#fff; color:#000; border-color:#000; }
+    .sources *{ color:#000 !important; }
+    a{ color:#000; text-decoration: underline; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ============ TOP BAR ============ -->
+  <nav class="topbar">
+    <a class="back" href="../../index.html">Art of War</a>
+    <div class="crumbs">
+      <span class="prompt">
+        <span>~/art-of-war/lenses</span>
+        <span class="cursor"></span>
+      </span>
+    </div>
+  </nav>
+
+  <!-- ============ HERO ============ -->
+  <header class="hero">
+    <div class="seal" aria-hidden="true">
+      <span class="big">孫子</span>
+      <span>lens 07</span>
+      <span>cyber</span>
+    </div>
+    <div class="kicker">LENS · cyber &amp; hybrid warfare</div>
+    <h1 class="title">The General <span class="amp">&amp;</span> the Packet</h1>
+    <p class="sub">
+      Sun Tzŭ's doctrine of deception, foreknowledge, spies, and attack by fire,
+      mapped onto contemporary information warfare, cyber operations, and gray-zone
+      conflict — and traced back through the NATO, PLA, RAND, and Russian doctrine
+      documents that still quote him by name.
+    </p>
+    <div class="meta">
+      <span><b>Book</b> The Art of War</span>
+      <span><b>Author</b> Sun Tzŭ · tr. Lionel Giles (1910)</span>
+      <span><b>Lens</b> cyber-warfare</span>
+      <span><b>Depth</b> 4 levels</span>
+    </div>
+  </header>
+
+  <!-- ============ LEVEL 1: DOMAIN OVERVIEW ============ -->
+  <section id="overview">
+    <h2><span class="num">L1</span>Domain Overview</h2>
+    <p class="lede">
+      Six of Sun Tzŭ's core categories, re-mapped onto the operational vocabulary of
+      twenty-first-century conflict. Tap each mapping below to descend into doctrine,
+      cases, and verses.
+    </p>
+    <div class="overview">
+      <div class="tile">
+        <div class="glyph">詐</div>
+        <div class="st">Deception is the basis of all war.</div>
+        <div class="mod">Disinformation · influence ops · false-flag intrusions</div>
+        <div class="arrow">→ M01</div>
+      </div>
+      <div class="tile">
+        <div class="glyph">知</div>
+        <div class="st">Foreknowledge from other men.</div>
+        <div class="mod">All-source intelligence · OSINT · indications &amp; warning</div>
+        <div class="arrow">→ M02</div>
+      </div>
+      <div class="tile">
+        <div class="glyph">間</div>
+        <div class="st">The five classes of spies.</div>
+        <div class="mod">HUMINT, SIGINT, insider access, APT implants, double agents</div>
+        <div class="arrow">→ M03</div>
+      </div>
+      <div class="tile">
+        <div class="glyph">火</div>
+        <div class="st">Attack by fire.</div>
+        <div class="mod">Cyber sabotage of ICS / critical infrastructure</div>
+        <div class="arrow">→ M04</div>
+      </div>
+      <div class="tile">
+        <div class="glyph">全</div>
+        <div class="st">Subdue the enemy without fighting.</div>
+        <div class="mod">Gray-zone coercion · hybrid warfare · pre-war shaping</div>
+        <div class="arrow">→ M05</div>
+      </div>
+      <div class="tile">
+        <div class="glyph">謀</div>
+        <div class="st">Baulk the enemy's plans.</div>
+        <div class="mod">Pre-emption, supply-chain implants, cognitive denial</div>
+        <div class="arrow">→ M06</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ LEVELS 2-4: MAPPINGS ============ -->
+  <section id="mappings">
+    <h2><span class="num">L2–L4</span>Doctrine · Case · Verse</h2>
+    <p class="lede">
+      Each mapping opens into three nested layers: the modern <em>doctrine document</em>
+      that cites Sun Tzŭ, a real <em>case vignette</em> where the pattern played out,
+      and the specific <em>verses</em> from Giles's 1910 translation that most directly
+      anticipate the practice. Click a row to expand.
+    </p>
+
+    <!-- ================== M01: DECEPTION ================== -->
+    <article class="mapping" data-idx="01">
+      <header>
+        <span class="idx">M01</span>
+        <div class="label">
+          <span class="st">All warfare is deception</span>
+          <span class="bridge">↔</span>
+          <span class="mod">Disinformation &amp; false-flag cyber ops</span>
+        </div>
+        <span class="chev">▸</span>
+      </header>
+      <div class="body">
+
+        <div class="pair">
+          <div class="col ancient">
+            <span class="tag">Sun Tzŭ · ancient</span>
+            <div class="chap">Ch. I — Laying Plans, §§ 18–24</div>
+            <p class="verse">
+              All warfare is based on deception. Hence, when able to attack, we must
+              seem unable; when using our forces, we must seem inactive; when we are
+              near, we must make the enemy believe we are far away; when far away, we
+              must make him believe we are near… Attack him where he is unprepared,
+              appear where you are not expected.
+            </p>
+          </div>
+          <div class="bridge-vert" aria-hidden="true"><div class="node">↔</div></div>
+          <div class="col modern">
+            <span class="tag">// modern doctrine</span>
+            <p class="doctrine">
+              <strong>Qiao Liang &amp; Wang Xiangsui, <em>Unrestricted Warfare</em></strong>
+              (PLA Literature and Arts Publishing House, Beijing 1999) opens with Sun
+              Tzŭ and argues that the battlefield is "everywhere" — financial, legal,
+              network, media — and that the first principle is still <em>deception</em>,
+              now fought with news cycles and packets rather than banners.
+            </p>
+            <p class="doctrine">
+              <strong>Valery Gerasimov</strong>, "The Value of Science in Prediction,"
+              <em>Voyenno-Promyshlennyy Kuryer</em> (Military-Industrial Courier),
+              27 Feb 2013, argues that non-military means — including information
+              operations and economic pressure — have become decisive in modern
+              conflict, and that the lines between war and peace have blurred — a
+              claim routinely glossed by Western analysts as a Sun-Tzŭian inversion
+              of Clausewitz.
+            </p>
+            <div class="cite">
+              &gt; Qiao &amp; Wang 1999, ch. 2 · Gerasimov 2013 · tr. Charles K. Bartles,
+              <em>Military Review</em> Jan–Feb 2016
+            </div>
+          </div>
+        </div>
+
+        <div class="vignette">
+          <div class="tag">case vignette</div>
+          <h4>The "Guccifer 2.0" false-flag — DNC leak, 2016</h4>
+          <p class="when">June 2016 · attributed to GRU Units 26165 / 74455 (APT28 · "Fancy Bear")</p>
+          <p>
+            After Russian military intelligence exfiltrated the DNC's email archives,
+            the leaks were released through a persona ("Guccifer 2.0") posing as a
+            lone Romanian hacker, and through a front site ("DCLeaks"). The goal was
+            not merely to steal — it was to <em>seem</em> to be someone else while
+            striking. Sun Tzŭ's injunction to "seem unable" while able, and to appear
+            where one is not expected, is recognizable line-for-line.
+          </p>
+          <p class="refs">
+            Mueller, <em>Report on the Investigation into Russian Interference in the
+            2016 Presidential Election</em>, Vol. I, pp. 36–50 (DOJ, March 2019);
+            U.S. v. Netyksho et al., indictment, D.D.C., 13 July 2018.
+          </p>
+        </div>
+
+        <div class="verse-trace">
+          <span class="tag">verse trace — closest anticipations</span>
+          <blockquote>
+            All warfare is based on deception.
+            <span class="loc">Ch. I · §18</span>
+          </blockquote>
+          <blockquote>
+            Hold out baits to entice the enemy. Feign disorder, and crush him.
+            <span class="loc">Ch. I · §20</span>
+          </blockquote>
+          <blockquote>
+            Attack him where he is unprepared, appear where you are not expected.
+            <span class="loc">Ch. I · §24</span>
+          </blockquote>
+        </div>
+      </div>
+    </article>
+
+    <!-- ================== M02: FOREKNOWLEDGE ================== -->
+    <article class="mapping" data-idx="02">
+      <header>
+        <span class="idx">M02</span>
+        <div class="label">
+          <span class="st">Foreknowledge from other men</span>
+          <span class="bridge">↔</span>
+          <span class="mod">All-source intelligence &amp; I&amp;W</span>
+        </div>
+        <span class="chev">▸</span>
+      </header>
+      <div class="body">
+
+        <div class="pair">
+          <div class="col ancient">
+            <span class="tag">Sun Tzŭ · ancient</span>
+            <div class="chap">Ch. XIII — The Use of Spies, §§ 4–6</div>
+            <p class="verse">
+              What enables the wise sovereign and the good general to strike and
+              conquer, and achieve things beyond the reach of ordinary men, is
+              <em>foreknowledge</em>… this foreknowledge cannot be elicited from
+              spirits; it cannot be obtained inductively from experience, nor by any
+              deductive calculation. Knowledge of the enemy's dispositions can only be
+              obtained from other men.
+            </p>
+          </div>
+          <div class="bridge-vert" aria-hidden="true"><div class="node">↔</div></div>
+          <div class="col modern">
+            <span class="tag">// modern doctrine</span>
+            <p class="doctrine">
+              <strong>Michael Warner, CIA Historian</strong>, "Wanted: A Definition of
+              'Intelligence,'" <em>Studies in Intelligence</em> 46 no. 3 (2002), opens
+              by quoting Sun Tzŭ's "foreknowledge" paragraph as the oldest surviving
+              theory of intelligence as a distinct craft — and notes that the modern
+              all-source discipline is essentially the same problem re-stated.
+            </p>
+            <p class="doctrine">
+              <strong>U.S. Joint Chiefs of Staff, JP 2-0 <em>Joint Intelligence</em></strong>
+              (22 Oct 2013), §I-1, opens its historical framing with the same verse,
+              calling it "the enduring principle" underlying indications &amp; warning.
+              It is the most-quoted sentence of Sun Tzŭ in Western military doctrine.
+            </p>
+            <div class="cite">
+              &gt; Warner 2002, Studies in Intelligence 46(3) · JP 2-0 (2013) ch. I
+            </div>
+          </div>
+        </div>
+
+        <div class="vignette">
+          <div class="tag">case vignette</div>
+          <h4>SolarWinds — supply-chain foreknowledge, 2019–2020</h4>
+          <p class="when">discovered Dec 2020 · attributed to SVR (APT29 · "Cozy Bear")</p>
+          <p>
+            Russian operators trojanized updates to the Orion IT-management platform,
+            gaining silent, long-dwell visibility into ≈18,000 customer networks
+            including the U.S. Departments of Treasury, Commerce, State, Energy and
+            DHS. The campaign was pure foreknowledge: not destruction, but "knowledge
+            of the enemy's dispositions" on a continental scale — the ideal form of
+            Sun Tzŭ's <em>inward spy</em> expressed as a software update.
+          </p>
+          <p class="refs">
+            CISA Alert AA20-352A, "Advanced Persistent Threat Compromise of Government
+            Agencies, Critical Infrastructure, and Private Sector Organizations"
+            (17 Dec 2020); Microsoft MSRC, "Customer Guidance on Recent Nation-State
+            Cyber Attacks" (13 Dec 2020); ODNI joint statement (5 Jan 2021).
+          </p>
+        </div>
+
+        <div class="verse-trace">
+          <span class="tag">verse trace — closest anticipations</span>
+          <blockquote>
+            What enables the wise sovereign and the good general to strike and conquer,
+            and achieve things beyond the reach of ordinary men, is foreknowledge.
+            <span class="loc">Ch. XIII · §4</span>
+          </blockquote>
+          <blockquote>
+            Knowledge of the enemy's dispositions can only be obtained from other men.
+            <span class="loc">Ch. XIII · §6</span>
+          </blockquote>
+          <blockquote>
+            Now the general who wins a battle makes many calculations in his temple
+            ere the battle is fought.
+            <span class="loc">Ch. I · §26</span>
+          </blockquote>
+        </div>
+      </div>
+    </article>
+
+    <!-- ================== M03: SPIES ================== -->
+    <article class="mapping" data-idx="03">
+      <header>
+        <span class="idx">M03</span>
+        <div class="label">
+          <span class="st">The five classes of spies</span>
+          <span class="bridge">↔</span>
+          <span class="mod">HUMINT · SIGINT · APT implants · insiders</span>
+        </div>
+        <span class="chev">▸</span>
+      </header>
+      <div class="body">
+
+        <div class="pair">
+          <div class="col ancient">
+            <span class="tag">Sun Tzŭ · ancient</span>
+            <div class="chap">Ch. XIII — The Use of Spies, §§ 7–8</div>
+            <p class="verse">
+              Hence the use of spies, of whom there are five classes: (1) Local spies;
+              (2) inward spies; (3) converted spies; (4) doomed spies; (5) surviving
+              spies. When these five kinds of spy are all at work, none can discover
+              the secret system. This is called "divine manipulation of the threads."
+              It is the sovereign's most precious faculty.
+            </p>
+          </div>
+          <div class="bridge-vert" aria-hidden="true"><div class="node">↔</div></div>
+          <div class="col modern">
+            <span class="tag">// modern doctrine</span>
+            <p class="doctrine">
+              <strong>Mandiant, <em>APT1: Exposing One of China's Cyber Espionage
+              Units</em></strong> (Alexandria VA, 19 Feb 2013), documents PLA Unit
+              61398's seven-year campaign against 141 organizations across 20 sectors.
+              Industry analysts have long read Unit 61398's tradecraft —
+              long-dwell implants, credential theft, quiet exfiltration — as the
+              closest modern equivalent of Sun Tzŭ's <em>inward</em> and <em>local</em>
+              spies, rendered in malware.
+            </p>
+            <p class="doctrine">
+              <strong>Ralph D. Sawyer, <em>The Tao of Spycraft</em></strong>
+              (Westview Press 1998) is the standard Western scholarly treatment of
+              Chinese covert-action literature and devotes its opening chapters to
+              Sun Tzŭ's five-spy taxonomy as the source-text of the entire Chinese
+              tradition of secret warfare.
+            </p>
+            <div class="cite">
+              &gt; Mandiant/FireEye 2013 · Sawyer 1998 · DoD, <em>Annual Report to
+              Congress: Military &amp; Security Developments Involving the PRC</em>
+            </div>
+          </div>
+        </div>
+
+        <div class="vignette">
+          <div class="tag">case vignette</div>
+          <h4>APT1 / PLA Unit 61398 — Shanghai, 2006–2013</h4>
+          <p class="when">Mandiant report released 19 February 2013</p>
+          <p>
+            Mandiant's 74-page report traced 141 confirmed intrusions, an average
+            dwell time of 356 days, and a single building in Shanghai's Pudong
+            district as the physical home of the operators. The tradecraft reads as a
+            literal implementation of Sun Tzŭ's chapter XIII: <em>inward spies</em>
+            (stolen credentials inside target firms), <em>local spies</em> (compromised
+            domestic infrastructure used as hop-points), and <em>surviving spies</em>
+            (long-lived implants reporting back).
+          </p>
+          <p class="refs">
+            Mandiant, <em>APT1</em> (2013); DOJ indictment <em>U.S. v. Wang Dong et
+            al.</em>, W.D. Pa., 19 May 2014 (first U.S. charges against uniformed PLA
+            officers for cyber espionage).
+          </p>
+        </div>
+
+        <div class="verse-trace">
+          <span class="tag">verse trace — closest anticipations</span>
+          <blockquote>
+            Having <em>local spies</em> means employing the services of the inhabitants
+            of a district. Having <em>inward spies</em>, making use of officials of
+            the enemy. Having <em>converted spies</em>, getting hold of the enemy's
+            spies and using them for our own purposes.
+            <span class="loc">Ch. XIII · §§ 9–11</span>
+          </blockquote>
+          <blockquote>
+            Be subtle! be subtle! and use your spies for every kind of business.
+            <span class="loc">Ch. XIII · §18</span>
+          </blockquote>
+        </div>
+      </div>
+    </article>
+
+    <!-- ================== M04: ATTACK BY FIRE ================== -->
+    <article class="mapping" data-idx="04">
+      <header>
+        <span class="idx">M04</span>
+        <div class="label">
+          <span class="st">Attack by fire</span>
+          <span class="bridge">↔</span>
+          <span class="mod">Cyber sabotage of ICS / critical infrastructure</span>
+        </div>
+        <span class="chev">▸</span>
+      </header>
+      <div class="body">
+
+        <div class="pair">
+          <div class="col ancient">
+            <span class="tag">Sun Tzŭ · ancient</span>
+            <div class="chap">Ch. XII — The Attack by Fire, §§ 1–3, 13</div>
+            <p class="verse">
+              There are five ways of attacking with fire. The first is to burn soldiers
+              in their camp; the second is to burn stores; the third is to burn
+              baggage-trains; the fourth is to burn arsenals and magazines; the fifth
+              is to hurl dropping fire amongst the enemy… There is a proper season
+              for making attacks with fire, and special days for starting a
+              conflagration… Hence those who use fire as an aid to the attack show
+              intelligence.
+            </p>
+          </div>
+          <div class="bridge-vert" aria-hidden="true"><div class="node">↔</div></div>
+          <div class="col modern">
+            <span class="tag">// modern doctrine</span>
+            <p class="doctrine">
+              <strong>RAND, <em>Cyber Warfare: How Conflicts in Cyberspace Are
+              Challenging America and Changing the World</em></strong> (Paul Cornish
+              et al., Chatham House / RAND commentary 2010–2013) frames cyber attacks
+              on industrial control systems as the logical modern heir of
+              attack-by-fire: a means of destroying the enemy's physical stores and
+              baggage-trains without armies ever meeting.
+            </p>
+            <p class="doctrine">
+              <strong>Martin C. Libicki (RAND), <em>Conquest in Cyberspace: National
+              Security and Information Warfare</em></strong> (Cambridge UP / RAND
+              2007), argues that cyber operations against infrastructure are a
+              "weapon of mass disruption" and repeatedly invokes Sun Tzŭ on the
+              seasonality and preparation of fire as analogous to the need for
+              pre-positioned access.
+            </p>
+            <div class="cite">
+              &gt; Libicki 2007 (RAND) · Cornish et al. 2010 · U.S. DoD
+              <em>Cyber Strategy</em> 2018
+            </div>
+          </div>
+        </div>
+
+        <div class="vignette">
+          <div class="tag">case vignette</div>
+          <h4>Stuxnet — Natanz centrifuge hall, 2007–2010</h4>
+          <p class="when">Discovered June 2010 · "Operation Olympic Games"</p>
+          <p>
+            A worm of unprecedented sophistication crossed an air gap via USB, targeted
+            Siemens S7-300 PLCs driving IR-1 uranium centrifuges at Natanz, and
+            silently drove them to destruction while reporting normal telemetry.
+            Roughly a thousand centrifuges were physically wrecked. This is Sun Tzŭ's
+            fourth category — to <em>burn arsenals and magazines</em> — fulfilled by
+            a few kilobytes of code.  The "proper season" and "means available"
+            became years of stolen digital certificates, stolen SCADA documentation,
+            and four zero-days.
+          </p>
+          <p class="refs">
+            Ralph Langner, "To Kill a Centrifuge" (Langner Communications, Nov 2013);
+            Symantec, <em>W32.Stuxnet Dossier</em> v1.4 (Feb 2011); David E. Sanger,
+            <em>Confront and Conceal</em> (Crown 2012) ch. 8, "Olympic Games."
+          </p>
+        </div>
+
+        <div class="vignette">
+          <div class="tag">case vignette</div>
+          <h4>NotPetya — Ukraine &amp; global spillover, 2017</h4>
+          <p class="when">27 June 2017 · attributed to GRU Unit 74455 (Sandworm)</p>
+          <p>
+            A destructive wiper masquerading as ransomware, pushed through the
+            M.E.Doc Ukrainian tax-software update channel, crippled Maersk, Merck,
+            FedEx/TNT, Mondelēz, and Ukrainian ministries, banks, and the Chernobyl
+            radiation-monitoring system. Damages exceeded US$10 billion — the most
+            destructive cyber-attack in history. An almost perfect modern instance of
+            "hurl[ing] dropping fire amongst the enemy" with a supply-chain torch.
+          </p>
+          <p class="refs">
+            Andy Greenberg, <em>Sandworm</em> (Doubleday 2019); White House statement,
+            15 Feb 2018; UK NCSC attribution statement, 15 Feb 2018.
+          </p>
+        </div>
+
+        <div class="verse-trace">
+          <span class="tag">verse trace — closest anticipations</span>
+          <blockquote>
+            The first is to burn soldiers in their camp; the second is to burn stores;
+            the third is to burn baggage-trains; the fourth is to burn arsenals and
+            magazines; the fifth is to hurl dropping fire amongst the enemy.
+            <span class="loc">Ch. XII · §1</span>
+          </blockquote>
+          <blockquote>
+            In order to carry out an attack, we must have means available. The
+            material for raising fire should always be kept in readiness.
+            <span class="loc">Ch. XII · §2</span>
+          </blockquote>
+          <blockquote>
+            There is a proper season for making attacks with fire, and special days
+            for starting a conflagration.
+            <span class="loc">Ch. XII · §3</span>
+          </blockquote>
+        </div>
+      </div>
+    </article>
+
+    <!-- ================== M05: SUBDUE WITHOUT FIGHTING ================== -->
+    <article class="mapping" data-idx="05">
+      <header>
+        <span class="idx">M05</span>
+        <div class="label">
+          <span class="st">Subdue the enemy without fighting</span>
+          <span class="bridge">↔</span>
+          <span class="mod">Gray-zone coercion &amp; hybrid warfare</span>
+        </div>
+        <span class="chev">▸</span>
+      </header>
+      <div class="body">
+
+        <div class="pair">
+          <div class="col ancient">
+            <span class="tag">Sun Tzŭ · ancient</span>
+            <div class="chap">Ch. III — Attack by Stratagem, §§ 2, 6</div>
+            <p class="verse">
+              Hence to fight and conquer in all your battles is not supreme excellence;
+              supreme excellence consists in breaking the enemy's resistance without
+              fighting… Therefore the skilful leader subdues the enemy's troops
+              without any fighting; he captures their cities without laying siege to
+              them; he overthrows their kingdom without lengthy operations in the
+              field.
+            </p>
+          </div>
+          <div class="bridge-vert" aria-hidden="true"><div class="node">↔</div></div>
+          <div class="col modern">
+            <span class="tag">// modern doctrine</span>
+            <p class="doctrine">
+              <strong>NATO, <em>Strategic Concept 2022</em></strong> (adopted Madrid,
+              29 June 2022), para. 27, formally recognises "hybrid operations against
+              Allies" as a potential Article 5 trigger, framing an adversary space
+              below the threshold of open war. Alliance analysts routinely trace the
+              conceptual ancestry of this gray-zone framing to Sun Tzŭ's "supreme
+              excellence" passage.
+            </p>
+            <p class="doctrine">
+              <strong>Frank Hoffman, <em>Conflict in the 21st Century: The Rise of
+              Hybrid Wars</em></strong> (Potomac Institute, Dec 2007), the
+              field-defining monograph on "hybrid warfare," cites Sun Tzŭ explicitly
+              for the principle of achieving strategic ends through non-kinetic means.
+            </p>
+            <p class="doctrine">
+              <strong>RAND, <em>Russian Social Media Influence</em></strong>
+              (Helmus, Bodine-Baron, et al., RR-2237-OSD, 2018), describes Russian
+              information operations as a "whole-of-society" effort to shape target
+              populations before any conflict — an explicit Sun-Tzŭian framing of
+              winning before the war begins.
+            </p>
+            <div class="cite">
+              &gt; NATO Strategic Concept 2022 · Hoffman 2007 · RAND RR-2237 (2018)
+            </div>
+          </div>
+        </div>
+
+        <div class="vignette">
+          <div class="tag">case vignette</div>
+          <h4>Russian interference in the 2016 U.S. election</h4>
+          <p class="when">2014–2017 · Internet Research Agency (St. Petersburg) + GRU</p>
+          <p>
+            A combined covert influence operation — paid trolls, fabricated
+            Facebook/Instagram personas, stolen and weaponised email archives — aimed
+            not at seizing territory but at sowing discord, degrading institutional
+            legitimacy, and shaping a voting population's perceptions without firing
+            a shot. The purest modern demonstration of "breaking the enemy's
+            resistance without fighting."
+          </p>
+          <p class="refs">
+            U.S. Senate Select Committee on Intelligence, <em>Report on Russian Active
+            Measures Campaigns and Interference in the 2016 U.S. Election</em>,
+            Vols. I–V (2019–2020); ODNI ICA 2017-01D (6 Jan 2017); indictments in
+            <em>U.S. v. Internet Research Agency</em>, D.D.C., 16 Feb 2018.
+          </p>
+        </div>
+
+        <div class="verse-trace">
+          <span class="tag">verse trace — closest anticipations</span>
+          <blockquote>
+            Supreme excellence consists in breaking the enemy's resistance without
+            fighting.
+            <span class="loc">Ch. III · §2</span>
+          </blockquote>
+          <blockquote>
+            The skilful leader subdues the enemy's troops without any fighting; he
+            captures their cities without laying siege to them; he overthrows their
+            kingdom without lengthy operations in the field.
+            <span class="loc">Ch. III · §6</span>
+          </blockquote>
+        </div>
+      </div>
+    </article>
+
+    <!-- ================== M06: BAULK THE ENEMY'S PLANS ================== -->
+    <article class="mapping" data-idx="06">
+      <header>
+        <span class="idx">M06</span>
+        <div class="label">
+          <span class="st">Baulk the enemy's plans</span>
+          <span class="bridge">↔</span>
+          <span class="mod">Pre-emption, supply-chain implants, cognitive denial</span>
+        </div>
+        <span class="chev">▸</span>
+      </header>
+      <div class="body">
+
+        <div class="pair">
+          <div class="col ancient">
+            <span class="tag">Sun Tzŭ · ancient</span>
+            <div class="chap">Ch. III — Attack by Stratagem, §3</div>
+            <p class="verse">
+              Thus the highest form of generalship is to baulk the enemy's plans; the
+              next best is to prevent the junction of the enemy's forces; the next in
+              order is to attack the enemy's army in the field; and the worst policy
+              of all is to besiege walled cities.
+            </p>
+          </div>
+          <div class="bridge-vert" aria-hidden="true"><div class="node">↔</div></div>
+          <div class="col modern">
+            <span class="tag">// modern doctrine</span>
+            <p class="doctrine">
+              <strong>U.S. Cyber Command, <em>Achieve and Maintain Cyberspace
+              Superiority: Command Vision for US Cyber Command</em></strong>
+              (April 2018), codifies the "defend forward" and "persistent engagement"
+              doctrine — continuous disruption of adversary operations short of war
+              — which analysts such as Michael Sulmeyer (Belfer Center 2018) have
+              read as the "baulk-the-plans" doctrine translated into a cyber idiom.
+            </p>
+            <p class="doctrine">
+              <strong>PLA Academy of Military Science, <em>The Science of Military
+              Strategy</em></strong> (战略学, 2013 edition, English excerpts in Joe
+              McReynolds ed., <em>China's Evolving Military Strategy</em>, Jamestown
+              2017) devotes substantial space to "informationized" pre-war operations
+              and to Sun Tzŭ's dictum on baulking the plans of the enemy as the
+              highest form of war.
+            </p>
+            <div class="cite">
+              &gt; USCYBERCOM Command Vision 2018 · SMS 2013 · McReynolds ed. 2017
+            </div>
+          </div>
+        </div>
+
+        <div class="vignette">
+          <div class="tag">case vignette</div>
+          <h4>Supply-chain pre-positioning — Volt Typhoon, 2023</h4>
+          <p class="when">First public report 24 May 2023 · PRC state-linked</p>
+          <p>
+            Microsoft and the Five Eyes cybersecurity agencies disclosed a PRC-linked
+            actor ("Volt Typhoon") that had quietly pre-positioned itself in U.S.
+            critical-infrastructure networks — communications, manufacturing, water,
+            transportation — using "living-off-the-land" techniques designed to
+            enable disruption <em>in the event of a future crisis</em>. It is pure
+            Sun-Tzŭian plan-baulking: the point of access is not the exfiltration
+            but the option value it gives during the next confrontation.
+          </p>
+          <p class="refs">
+            Microsoft Threat Intelligence, "Volt Typhoon targets US critical
+            infrastructure with living-off-the-land techniques" (24 May 2023);
+            CISA joint advisory AA23-144A (24 May 2023); follow-up AA24-038A
+            (7 Feb 2024).
+          </p>
+        </div>
+
+        <div class="verse-trace">
+          <span class="tag">verse trace — closest anticipations</span>
+          <blockquote>
+            Thus the highest form of generalship is to baulk the enemy's plans.
+            <span class="loc">Ch. III · §3</span>
+          </blockquote>
+          <blockquote>
+            These military devices, leading to victory, must not be divulged
+            beforehand.
+            <span class="loc">Ch. I · §25</span>
+          </blockquote>
+          <blockquote>
+            The enlightened ruler lays his plans well ahead; the good general
+            cultivates his resources.
+            <span class="loc">Ch. XII · §16</span>
+          </blockquote>
+        </div>
+      </div>
+    </article>
+
+  </section>
+
+  <!-- ============ SOURCES ============ -->
+  <section id="sources" class="sources">
+    <span class="dots"><span></span><span></span><span></span></span>
+    <span class="path">~/lenses/cyber-warfare/sources.log</span>
+    <h2>cat sources.log</h2>
+    <ol>
+      <li>
+        <span class="author">Sun Tzŭ.</span>
+        <em class="pub">The Art of War</em>, translated by Lionel Giles
+        <span class="year">(London: Luzac &amp; Co., 1910)</span>. Base text used for
+        every verse in this lens. Public domain; Project Gutenberg EText-No. 132.
+      </li>
+      <li>
+        <span class="author">Qiao Liang &amp; Wang Xiangsui.</span>
+        <em class="pub">Unrestricted Warfare</em>
+        <span class="year">(Beijing: PLA Literature and Arts Publishing House, 1999)</span>.
+        Foundational PLA essay arguing that war has escaped the battlefield into
+        economic, legal, and network domains. Opens with Sun Tzŭ.
+      </li>
+      <li>
+        <span class="author">Valery Gerasimov.</span>
+        "The Value of Science in Prediction"
+        <span class="year">(Military-Industrial Courier, 27 Feb 2013)</span>;
+        English trans. by Charles K. Bartles in <em class="pub">Military Review</em>,
+        Jan–Feb 2016. The essay later labelled the "Gerasimov doctrine" in Western
+        commentary.
+      </li>
+      <li>
+        <span class="author">Mandiant (now Google/Mandiant).</span>
+        <em class="pub">APT1: Exposing One of China's Cyber Espionage Units</em>
+        <span class="year">(Alexandria, VA, 19 Feb 2013)</span>. 74 pp. The
+        foundational public attribution of PLA Unit 61398.
+      </li>
+      <li>
+        <span class="author">Ralph Langner.</span>
+        "To Kill a Centrifuge: A Technical Analysis of What Stuxnet's Creators Tried
+        to Achieve" <span class="year">(Langner Communications, Nov 2013)</span>.
+        36 pp. Definitive technical reconstruction of the Natanz operation.
+      </li>
+      <li>
+        <span class="author">Symantec Security Response.</span>
+        <em class="pub">W32.Stuxnet Dossier</em>, v1.4
+        <span class="year">(Feb 2011)</span>. Reverse-engineering of the worm,
+        including the S7-300 PLC payload.
+      </li>
+      <li>
+        <span class="author">David E. Sanger.</span>
+        <em class="pub">Confront and Conceal: Obama's Secret Wars and Surprising Use
+        of American Power</em>
+        <span class="year">(New York: Crown, 2012)</span>, esp. ch. 8 "Olympic Games"
+        — the original public reporting of U.S.–Israeli authorship of Stuxnet.
+      </li>
+      <li>
+        <span class="author">Andy Greenberg.</span>
+        <em class="pub">Sandworm: A New Era of Cyberwar and the Hunt for the Kremlin's
+        Most Dangerous Hackers</em>
+        <span class="year">(New York: Doubleday, 2019)</span>. The NotPetya narrative,
+        including GRU Unit 74455 attribution and the ≈US$10 bn damages figure.
+      </li>
+      <li>
+        <span class="author">Robert S. Mueller III.</span>
+        <em class="pub">Report on the Investigation into Russian Interference in the
+        2016 Presidential Election</em>, Vols. I &amp; II
+        <span class="year">(U.S. Department of Justice, March 2019)</span>.
+      </li>
+      <li>
+        <span class="author">U.S. Senate Select Committee on Intelligence.</span>
+        <em class="pub">Report on Russian Active Measures Campaigns and Interference
+        in the 2016 U.S. Election</em>, Vols. I–V
+        <span class="year">(2019–2020)</span>.
+      </li>
+      <li>
+        <span class="author">CISA.</span> Alert AA20-352A, "Advanced Persistent Threat
+        Compromise of Government Agencies, Critical Infrastructure, and Private
+        Sector Organizations" <span class="year">(17 Dec 2020)</span> — SolarWinds.
+      </li>
+      <li>
+        <span class="author">Microsoft Threat Intelligence.</span>
+        "Volt Typhoon targets US critical infrastructure with living-off-the-land
+        techniques" <span class="year">(24 May 2023)</span>; CISA joint advisory
+        AA23-144A (24 May 2023); follow-up AA24-038A (7 Feb 2024).
+      </li>
+      <li>
+        <span class="author">NATO.</span>
+        <em class="pub">NATO 2022 Strategic Concept</em>, adopted Madrid
+        <span class="year">(29 June 2022)</span>. See esp. paras. 25–27 on hybrid
+        operations and the cyber domain.
+      </li>
+      <li>
+        <span class="author">Frank G. Hoffman.</span>
+        <em class="pub">Conflict in the 21st Century: The Rise of Hybrid Wars</em>
+        <span class="year">(Arlington, VA: Potomac Institute for Policy Studies,
+        Dec 2007)</span>. The monograph that put "hybrid warfare" into Western
+        strategic vocabulary.
+      </li>
+      <li>
+        <span class="author">Todd C. Helmus, Elizabeth Bodine-Baron, et al.</span>
+        <em class="pub">Russian Social Media Influence: Understanding Russian
+        Propaganda in Eastern Europe</em>, RR-2237-OSD
+        <span class="year">(Santa Monica, CA: RAND, 2018)</span>.
+      </li>
+      <li>
+        <span class="author">Martin C. Libicki.</span>
+        <em class="pub">Conquest in Cyberspace: National Security and Information
+        Warfare</em>
+        <span class="year">(Cambridge: Cambridge UP / RAND, 2007)</span>.
+      </li>
+      <li>
+        <span class="author">Michael Warner.</span>
+        "Wanted: A Definition of 'Intelligence,'"
+        <em class="pub">Studies in Intelligence</em> 46 no. 3
+        <span class="year">(CIA Center for the Study of Intelligence, 2002)</span>.
+      </li>
+      <li>
+        <span class="author">U.S. Joint Chiefs of Staff.</span>
+        JP 2-0 <em class="pub">Joint Intelligence</em>
+        <span class="year">(22 Oct 2013)</span>. Chapter I opens by quoting Sun Tzŭ
+        on foreknowledge.
+      </li>
+      <li>
+        <span class="author">U.S. Cyber Command.</span>
+        <em class="pub">Achieve and Maintain Cyberspace Superiority: Command Vision
+        for US Cyber Command</em>
+        <span class="year">(April 2018)</span>. "Persistent engagement" /
+        "defend forward" doctrine.
+      </li>
+      <li>
+        <span class="author">Joe McReynolds (ed.).</span>
+        <em class="pub">China's Evolving Military Strategy</em>
+        <span class="year">(Washington: Jamestown Foundation, 2017)</span>. English
+        excerpts and analysis of the PLA Academy of Military Science, <em>Science of
+        Military Strategy</em> (战略学), 2013 edition.
+      </li>
+      <li>
+        <span class="author">Ralph D. Sawyer.</span>
+        <em class="pub">The Tao of Spycraft: Intelligence Theory and Practice in
+        Traditional China</em>
+        <span class="year">(Boulder, CO: Westview Press, 1998)</span>.
+      </li>
+    </ol>
+  </section>
+
+  <footer>
+    <span>Lens · cyber-warfare · built on Giles 1910</span>
+    <span>孫子兵法 · the general &amp; the packet</span>
+  </footer>
+</div>
+
+<script>
+  // semantic-zoom: expand/collapse mapping rows
+  (function(){
+    var mappings = document.querySelectorAll('.mapping');
+    mappings.forEach(function(m, i){
+      var hdr = m.querySelector('header');
+      if (!hdr) return;
+      // expand the first mapping by default so the page doesn't feel empty
+      if (i === 0) m.classList.add('expanded');
+      hdr.setAttribute('role','button');
+      hdr.setAttribute('tabindex','0');
+      hdr.setAttribute('aria-expanded', String(m.classList.contains('expanded')));
+      hdr.addEventListener('click', function(){
+        m.classList.toggle('expanded');
+        hdr.setAttribute('aria-expanded', String(m.classList.contains('expanded')));
+      });
+      hdr.addEventListener('keydown', function(ev){
+        if (ev.key === 'Enter' || ev.key === ' ') {
+          ev.preventDefault();
+          m.classList.toggle('expanded');
+          hdr.setAttribute('aria-expanded', String(m.classList.contains('expanded')));
+        }
+      });
+    });
+
+    // overview tiles: scroll to matching mapping
+    document.querySelectorAll('.overview .tile').forEach(function(t, i){
+      t.style.cursor = 'pointer';
+      t.setAttribute('role', 'button');
+      t.setAttribute('tabindex', '0');
+      t.setAttribute('aria-label', 'Open mapping M0' + (i + 1));
+      function activateTile(){
+        var target = document.querySelectorAll('.mapping')[i];
+        if (target) {
+          target.classList.add('expanded');
+          var targetHdr = target.querySelector('header');
+          if (targetHdr) targetHdr.setAttribute('aria-expanded', 'true');
+          target.scrollIntoView({ behavior:'smooth', block:'start' });
+        }
+      }
+      t.addEventListener('click', activateTile);
+      t.addEventListener('keydown', function(ev){
+        if (ev.key === 'Enter' || ev.key === ' ') {
+          ev.preventDefault();
+          activateTile();
+        }
+      });
+    });
+  })();
+</script>
+</body>
+</html>

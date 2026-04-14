@@ -1,0 +1,1702 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Anecdote Atlas &middot; The Art of War</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<style>
+  :root {
+    --parchment: #f1e7cf;
+    --parchment-light: #f7efdc;
+    --parchment-dark: #e4d5b0;
+    --ink: #2c2014;
+    --ink-soft: #4a3826;
+    --ink-faded: #6b5638;
+    --accent: #8b2d1c;
+    --accent-soft: #b35a3a;
+    --gold: #a17626;
+    --rule: #c9b38a;
+    --shadow: 0 10px 30px rgba(58, 38, 14, 0.18);
+    --ui-font: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --serif: 'Cormorant Garamond', 'EB Garamond', Georgia, serif;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--parchment); color: var(--ink); }
+  body {
+    font-family: var(--serif);
+    font-size: 18px;
+    line-height: 1.55;
+    background-color: var(--parchment);
+    background-image:
+      radial-gradient(ellipse at 20% 10%, rgba(255,255,255,0.5), transparent 55%),
+      radial-gradient(ellipse at 80% 90%, rgba(139,45,28,0.05), transparent 60%),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='320'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='7'/><feColorMatrix type='matrix' values='0 0 0 0 0.25  0 0 0 0 0.15  0 0 0 0 0.08  0 0 0 0.07 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    background-attachment: fixed;
+    min-height: 100vh;
+  }
+
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  header.page {
+    padding: 28px 32px 8px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  .backlink {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--ui-font);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-faded);
+    padding: 10px 14px;
+    border: 1px solid var(--rule);
+    background: rgba(247, 239, 220, 0.6);
+    border-radius: 2px;
+    min-height: 44px;
+  }
+  .backlink:hover { background: var(--parchment-light); text-decoration: none; color: var(--ink); }
+
+  .title-block {
+    max-width: 1400px;
+    margin: 18px auto 10px;
+    padding: 0 32px;
+    text-align: center;
+  }
+  .title-block .eyebrow {
+    font-family: var(--ui-font);
+    text-transform: uppercase;
+    letter-spacing: 0.28em;
+    font-size: 11px;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .title-block h1 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: clamp(40px, 7vw, 68px);
+    line-height: 1.02;
+    margin: 0 0 6px;
+    color: var(--ink);
+    letter-spacing: 0.005em;
+  }
+  .title-block h1 em { font-style: italic; color: var(--accent); font-weight: 500; }
+  .title-block .subtitle {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(16px, 2vw, 21px);
+    color: var(--ink-soft);
+    max-width: 760px;
+    margin: 6px auto 0;
+  }
+  .title-block .book-cite {
+    font-family: var(--ui-font);
+    font-size: 12px;
+    color: var(--ink-faded);
+    margin-top: 10px;
+    letter-spacing: 0.08em;
+  }
+
+  .ornament {
+    display: block;
+    margin: 14px auto 10px;
+    color: var(--gold);
+    width: 120px;
+    height: 14px;
+    opacity: 0.85;
+  }
+
+  main {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 32px 40px;
+  }
+
+  .filter-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
+    padding: 18px 20px;
+    background: rgba(247, 239, 220, 0.78);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    margin-bottom: 18px;
+    box-shadow: var(--shadow);
+  }
+  .filter-group { display: flex; flex-direction: column; gap: 6px; }
+  .filter-group label {
+    font-family: var(--ui-font);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faded);
+    font-weight: 600;
+  }
+  .filter-group select {
+    font-family: var(--ui-font);
+    font-size: 14px;
+    padding: 10px 12px;
+    border: 1px solid var(--rule);
+    background: var(--parchment-light);
+    color: var(--ink);
+    border-radius: 2px;
+    min-height: 44px;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' fill='none' stroke='%236b5638' stroke-width='1.5'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 32px;
+  }
+  .filter-group select:focus { outline: 2px solid var(--accent-soft); }
+  .filter-count {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 18px;
+    color: var(--ink-soft);
+  }
+  .filter-count strong {
+    font-family: var(--serif);
+    font-size: 30px;
+    font-weight: 600;
+    font-style: normal;
+    color: var(--accent);
+    margin-right: 8px;
+    line-height: 1;
+  }
+  .filter-reset {
+    font-family: var(--ui-font);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border: 1px solid var(--rule);
+    background: transparent;
+    color: var(--ink-faded);
+    padding: 10px 14px;
+    cursor: pointer;
+    border-radius: 2px;
+    min-height: 44px;
+  }
+  .filter-reset:hover { background: var(--parchment-dark); color: var(--ink); }
+
+  .map-wrap {
+    position: relative;
+    background: rgba(247, 239, 220, 0.85);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 12px;
+    box-shadow: var(--shadow);
+    margin-bottom: 18px;
+  }
+  #map {
+    height: 520px;
+    border-radius: 3px;
+    background: #d9cba5;
+  }
+  .leaflet-container { font-family: var(--ui-font); background: #d9cba5; }
+  .leaflet-popup-content-wrapper {
+    background: var(--parchment-light);
+    color: var(--ink);
+    border-radius: 3px;
+    border: 1px solid var(--rule);
+    box-shadow: 0 6px 20px rgba(58,38,14,0.25);
+    font-family: var(--serif);
+  }
+  .leaflet-popup-tip { background: var(--parchment-light); }
+  .leaflet-popup-content { font-size: 15px; line-height: 1.4; margin: 10px 12px; }
+  .leaflet-popup-content .pop-year {
+    display: block;
+    font-family: var(--ui-font);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 2px;
+  }
+  .leaflet-popup-content .pop-title { font-weight: 600; font-size: 17px; display: block; }
+  .leaflet-popup-content button {
+    margin-top: 6px;
+    font-family: var(--ui-font);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border: 1px solid var(--accent);
+    background: transparent;
+    color: var(--accent);
+    padding: 10px 14px;
+    cursor: pointer;
+    border-radius: 2px;
+    min-height: 44px;
+  }
+  .leaflet-popup-content button:hover { background: var(--accent); color: var(--parchment-light); }
+
+  .pin-wrap {
+    /* Expand the invisible hit-area to 44px while keeping the visual pin at 22px */
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    background: transparent !important;
+    border: none !important;
+  }
+  .anecdote-pin {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid var(--parchment-light);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.35), 0 0 0 2px rgba(139,45,28,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--parchment-light);
+    font-family: var(--ui-font);
+    font-size: 10px;
+    font-weight: 700;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .anecdote-pin.pin-active {
+    transform: scale(1.5);
+    box-shadow: 0 0 0 4px rgba(139,45,28,0.4), 0 4px 12px rgba(0,0,0,0.5);
+    z-index: 900 !important;
+  }
+
+  /* Era legend on the map */
+  .map-legend {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    background: rgba(247, 239, 220, 0.92);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 10px 14px;
+    z-index: 800;
+    font-family: var(--ui-font);
+    font-size: 11px;
+    box-shadow: 0 2px 8px rgba(58,38,14,0.15);
+    max-height: 240px;
+    overflow-y: auto;
+  }
+  .map-legend h4 {
+    margin: 0 0 6px;
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-faded);
+    font-weight: 600;
+  }
+  .map-legend .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 2px 0;
+    color: var(--ink-soft);
+    line-height: 1.3;
+  }
+  .map-legend .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    border: 1px solid rgba(255,255,255,0.6);
+  }
+
+  .timeline-wrap {
+    background: rgba(247, 239, 220, 0.85);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 20px 22px 18px;
+    box-shadow: var(--shadow);
+    margin-bottom: 22px;
+  }
+  .timeline-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .timeline-heading h2 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 22px;
+    margin: 0;
+    color: var(--ink);
+  }
+  .timeline-heading .hint {
+    font-family: var(--ui-font);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faded);
+  }
+  .timeline-scroll { overflow-x: auto; padding-bottom: 6px; }
+  .timeline {
+    position: relative;
+    height: 120px;
+    min-width: 900px;
+    margin: 0 6px;
+  }
+  .timeline .axis {
+    position: absolute;
+    left: 0; right: 0; top: 60px;
+    height: 2px;
+    background: linear-gradient(to right, transparent, var(--ink-faded) 6%, var(--ink-faded) 94%, transparent);
+    opacity: 0.55;
+  }
+  .timeline .tick {
+    position: absolute;
+    top: 56px;
+    width: 1px;
+    height: 10px;
+    background: var(--ink-faded);
+    opacity: 0.65;
+  }
+  .timeline .tick-label {
+    position: absolute;
+    top: 72px;
+    transform: translateX(-50%);
+    font-family: var(--ui-font);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--ink-faded);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .timeline-dot {
+    position: absolute;
+    top: 54px;
+    width: 14px;
+    height: 14px;
+    margin-left: -7px;
+    border-radius: 50%;
+    border: 2px solid var(--parchment-light);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+    cursor: pointer;
+    transition: transform 0.15s ease;
+  }
+  /* Invisible 44px touch target around each timeline dot */
+  .timeline-dot::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 44px;
+    height: 44px;
+    transform: translate(-50%, -50%);
+  }
+  .timeline-dot:hover,
+  .timeline-dot.active {
+    transform: scale(1.35);
+    z-index: 3;
+  }
+  .timeline-dot.dim { opacity: 0.22; }
+  .timeline-dot .dot-tooltip {
+    position: absolute;
+    bottom: 22px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--parchment-light);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 6px 10px;
+    white-space: nowrap;
+    font-family: var(--serif);
+    font-size: 13px;
+    color: var(--ink);
+    box-shadow: 0 4px 12px rgba(58,38,14,0.2);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    z-index: 10;
+  }
+  .timeline-dot .dot-tooltip .dot-tip-year {
+    font-family: var(--ui-font);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 1px;
+  }
+  .timeline-dot:hover .dot-tooltip { opacity: 1; }
+
+  /* Protagonist grid */
+  .protagonist-strip {
+    background: rgba(247, 239, 220, 0.7);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 14px 16px;
+    margin-bottom: 22px;
+    box-shadow: var(--shadow);
+  }
+  .protagonist-strip h3 {
+    font-family: var(--ui-font);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-faded);
+    margin: 0 0 10px;
+    font-weight: 600;
+  }
+  .protagonist-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .protagonist-chip {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 16px;
+    border: 1px solid var(--rule);
+    background: var(--parchment-light);
+    color: var(--ink-soft);
+    padding: 8px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    min-height: 44px;
+    transition: all 0.15s ease;
+  }
+  .protagonist-chip:hover { background: var(--parchment-dark); color: var(--ink); }
+  .protagonist-chip.active {
+    background: var(--accent);
+    color: var(--parchment-light);
+    border-color: var(--accent);
+  }
+
+  /* Side panel (L3) */
+  .panel-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(44, 32, 20, 0.55);
+    backdrop-filter: blur(3px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+    z-index: 1000;
+  }
+  .panel-backdrop.open { opacity: 1; pointer-events: auto; }
+
+  .story-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: min(520px, 100vw);
+    max-width: 100vw;
+    background: var(--parchment-light);
+    background-image:
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' seed='3'/><feColorMatrix type='matrix' values='0 0 0 0 0.25  0 0 0 0 0.15  0 0 0 0 0.08  0 0 0 0.04 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    border-left: 1px solid var(--rule);
+    box-shadow: -20px 0 40px rgba(58,38,14,0.3);
+    transform: translateX(105%);
+    transition: transform 0.32s cubic-bezier(0.2, 0.8, 0.2, 1);
+    z-index: 1001;
+    overflow-y: auto;
+    padding: 26px 32px 60px;
+  }
+  .story-panel.open { transform: translateX(0); }
+  .panel-close {
+    position: absolute;
+    top: 20px; right: 22px;
+    width: 44px; height: 44px;
+    background: transparent;
+    border: 1px solid var(--rule);
+    color: var(--ink-soft);
+    font-size: 22px;
+    cursor: pointer;
+    border-radius: 50%;
+    line-height: 1;
+  }
+  .panel-close:hover { background: var(--parchment-dark); color: var(--ink); }
+  .panel-eyebrow {
+    font-family: var(--ui-font);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .panel-title {
+    font-family: var(--serif);
+    font-size: 34px;
+    font-weight: 600;
+    line-height: 1.06;
+    margin: 2px 0 8px;
+    color: var(--ink);
+    padding-right: 50px;
+  }
+  .panel-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    font-family: var(--ui-font);
+    font-size: 12px;
+    color: var(--ink-faded);
+    letter-spacing: 0.04em;
+    padding-bottom: 16px;
+    border-bottom: 1px dashed var(--rule);
+    margin-bottom: 16px;
+  }
+  .panel-meta span strong { color: var(--ink); font-weight: 600; margin-right: 4px; }
+
+  .panel-section { margin-bottom: 22px; }
+  .panel-section h4 {
+    font-family: var(--ui-font);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 8px;
+    font-weight: 600;
+  }
+  .panel-section p {
+    font-family: var(--serif);
+    font-size: 19px;
+    line-height: 1.5;
+    margin: 0 0 10px;
+    color: var(--ink);
+  }
+  .verse-block {
+    background: var(--parchment-dark);
+    border-left: 4px solid var(--accent);
+    padding: 14px 18px;
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--ink-soft);
+    border-radius: 0 3px 3px 0;
+    font-size: 17px;
+    line-height: 1.5;
+  }
+  .verse-block .verse-ref {
+    display: block;
+    font-style: normal;
+    font-family: var(--ui-font);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .source-trace {
+    background: transparent;
+    border: 1px solid var(--rule);
+    padding: 14px 16px;
+    border-radius: 3px;
+  }
+  .source-trace h4 { color: var(--gold); }
+  .source-trace .src-line {
+    display: flex;
+    gap: 10px;
+    padding: 6px 0;
+    border-bottom: 1px dotted var(--rule);
+    font-family: var(--serif);
+    font-size: 16px;
+    color: var(--ink-soft);
+  }
+  .source-trace .src-line:last-child { border-bottom: none; }
+  .source-trace .src-line .label {
+    flex: 0 0 85px;
+    font-family: var(--ui-font);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faded);
+    padding-top: 4px;
+  }
+  .source-trace .src-line .value { font-style: italic; flex: 1; }
+
+  .panel-nav {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px dashed var(--rule);
+  }
+  .panel-nav button {
+    flex: 1;
+    font-family: var(--ui-font);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    background: transparent;
+    border: 1px solid var(--rule);
+    color: var(--ink-soft);
+    padding: 12px 14px;
+    cursor: pointer;
+    border-radius: 2px;
+    min-height: 44px;
+  }
+  .panel-nav button:hover { background: var(--parchment-dark); color: var(--ink); }
+
+  footer.colophon {
+    max-width: 1400px;
+    margin: 12px auto 0;
+    padding: 24px 32px 40px;
+    text-align: center;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--ink-faded);
+    border-top: 1px solid var(--rule);
+  }
+  footer.colophon strong { font-style: normal; color: var(--ink-soft); }
+
+  @media (max-width: 820px) {
+    body { font-size: 17px; }
+    header.page { padding: 18px 18px 6px; }
+    .title-block { padding: 0 18px; }
+    main { padding: 0 16px 32px; }
+    #map { height: 380px; }
+    .panel-title { font-size: 28px; }
+    .story-panel { padding: 22px 22px 60px; width: 100vw; }
+    .filter-bar { padding: 14px; gap: 10px; }
+    .filter-count { justify-content: flex-start; padding-top: 6px; }
+    .map-legend { font-size: 10px; padding: 8px 10px; }
+    .map-legend .legend-dot { width: 8px; height: 8px; }
+  }
+  @media (max-width: 480px) {
+    #map { height: 320px; }
+    .title-block h1 { font-size: 38px; }
+    .panel-title { font-size: 26px; }
+    .timeline { min-width: 720px; }
+    .map-legend { display: none; }
+  }
+
+  .sr-only {
+    position: absolute; width: 1px; height: 1px;
+    padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0);
+    white-space: nowrap; border: 0;
+  }
+</style>
+</head>
+<body>
+
+<header class="page">
+  <a class="backlink" href="../../index.html" aria-label="Back to The Art of War index">&larr; Back to The Art of War</a>
+</header>
+
+<section class="title-block">
+  <div class="eyebrow">Lens &middot; Anecdote Atlas</div>
+  <h1>The <em>Anecdote</em> Atlas</h1>
+  <svg class="ornament" viewBox="0 0 120 14" fill="none" stroke="currentColor" stroke-width="1">
+    <line x1="0" y1="7" x2="46" y2="7"/>
+    <circle cx="60" cy="7" r="3.2"/>
+    <circle cx="50" cy="7" r="1.2" fill="currentColor" stroke="none"/>
+    <circle cx="70" cy="7" r="1.2" fill="currentColor" stroke="none"/>
+    <line x1="74" y1="7" x2="120" y2="7"/>
+  </svg>
+  <p class="subtitle">Trace the battles, generals, and stratagems that Giles and the Chinese commentators marshal to illustrate Sun Tzŭ's maxims &mdash; spanning 2,500 years and three continents.</p>
+  <div class="book-cite">THE ART OF WAR &middot; SUN TZ&#364; &middot; TRANSLATED BY LIONEL GILES, 1910</div>
+</section>
+
+<main>
+
+  <div class="filter-bar" aria-label="Filters">
+    <div class="filter-group">
+      <label for="f-region">Region</label>
+      <select id="f-region"><option value="">All regions</option></select>
+    </div>
+    <div class="filter-group">
+      <label for="f-era">Era</label>
+      <select id="f-era"><option value="">All eras</option></select>
+    </div>
+    <div class="filter-group">
+      <label for="f-chapter">Sun Tzŭ chapter</label>
+      <select id="f-chapter"><option value="">All chapters</option></select>
+    </div>
+    <div class="filter-group">
+      <label for="f-protagonist">Protagonist</label>
+      <select id="f-protagonist"><option value="">All protagonists</option></select>
+    </div>
+    <div class="filter-group">
+      <label>&nbsp;</label>
+      <button class="filter-reset" id="filter-reset" type="button">Reset filters</button>
+    </div>
+    <div class="filter-count" id="count-display"><strong id="count-num">33</strong>&nbsp;anecdotes shown</div>
+  </div>
+
+  <div class="protagonist-strip" aria-label="Featured protagonists">
+    <h3>Recurring Protagonists</h3>
+    <div class="protagonist-list" id="chip-list"></div>
+  </div>
+
+  <div class="map-wrap">
+    <div id="map" role="region" aria-label="World map of anecdotes"></div>
+    <div class="map-legend" id="map-legend">
+      <h4>Eras</h4>
+    </div>
+  </div>
+
+  <div class="timeline-wrap">
+    <div class="timeline-heading">
+      <h2>Timeline &mdash; 684&nbsp;BC to 1904&nbsp;AD</h2>
+      <div class="hint">Click any dot to open the story</div>
+    </div>
+    <div class="timeline-scroll">
+      <div class="timeline" id="timeline">
+        <div class="axis"></div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer class="colophon">
+  Every anecdote below is drawn from Lionel Giles' 1910 translation of <strong>The Art of War</strong>, from his footnotes, or from the Chinese commentators he quotes &mdash; Ts'ao Kung, Tu Mu, Chang Yu, Li Ch'uan, Mei Yao-ch'en, Ho Shih and the rest.
+</footer>
+
+<div class="panel-backdrop" id="backdrop"></div>
+<aside class="story-panel" id="panel" role="dialog" aria-modal="true" aria-labelledby="panel-title">
+  <button class="panel-close" id="panel-close" aria-label="Close">&times;</button>
+  <div class="panel-eyebrow" id="panel-eyebrow">Anecdote</div>
+  <h2 class="panel-title" id="panel-title">&mdash;</h2>
+  <div class="panel-meta" id="panel-meta"></div>
+
+  <div class="panel-section">
+    <h4>The Story</h4>
+    <div id="panel-story"></div>
+  </div>
+
+  <div class="panel-section">
+    <h4>Sun Tzŭ's Maxim Illustrated</h4>
+    <div class="verse-block">
+      <span class="verse-ref" id="panel-verse-ref"></span>
+      <span id="panel-verse-text"></span>
+    </div>
+  </div>
+
+  <div class="panel-section source-trace">
+    <h4>Source Trace</h4>
+    <div class="src-line"><div class="label">Commentator</div><div class="value" id="panel-commentator"></div></div>
+    <div class="src-line"><div class="label">Cited work</div><div class="value" id="panel-work"></div></div>
+    <div class="src-line"><div class="label">Giles note</div><div class="value" id="panel-giles"></div></div>
+  </div>
+
+  <div class="panel-nav">
+    <button id="prev-anecdote">&larr; Previous</button>
+    <button id="next-anecdote">Next &rarr;</button>
+  </div>
+</aside>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script>
+/* =====================================================================
+   ANECDOTE DATASET
+   Every entry is drawn from Giles (1910) Art of War — his translation,
+   footnotes, or the Chinese commentators he cites. Coordinates are
+   approximate historical locations.
+===================================================================== */
+const ANECDOTES = [
+  {
+    id: "tsao-mo-huan",
+    title: "Ts'ao Kuei Seizes Duke Huan on the Altar",
+    year: -681,
+    yearLabel: "681 BC",
+    lat: 36.68, lng: 117.02,
+    region: "East Asia",
+    era: "Spring & Autumn",
+    protagonist: "Ts'ao Kuei",
+    chapter: "XI",
+    verse: "XI. 28",
+    verseText: "Let them once be brought to bay, and they will display the courage of a Chu or a Kuei.",
+    story: "After Lu had been thrice defeated by Ch'i and stood on the brink of surrendering territory, Ts'ao Kuei (Ts'ao Mo) sprang up the altar steps, pressed a dagger to Duke Huan's chest, and demanded restitution. None of the duke's retainers dared move. Having won back by one desperate gesture what three lost battles had squandered, Ts'ao Kuei calmly flung away the dagger and resumed his place.",
+    commentator: "Giles (main text), drawing on classical annals",
+    work: "Cited as Spring & Autumn annal tradition",
+    gilesNote: "Giles names this exploit while glossing XI. §28, alongside Chuan Chu the assassin of Wang Liao, as the paragon of desperate courage."
+  },
+  {
+    id: "ts-ao-kuei-drums",
+    title: "Ts'ao Kuei and the Three Drum-Rolls at Ch'ang-cho",
+    year: -684,
+    yearLabel: "684 BC",
+    lat: 36.25, lng: 116.98,
+    region: "East Asia",
+    era: "Spring & Autumn",
+    protagonist: "Ts'ao Kuei",
+    chapter: "VII",
+    verse: "VII. 27",
+    verseText: "A whole army may be robbed of its spirit.",
+    story: "When Ch'i invaded Lu, Duke Chuang rushed to engage after the enemy's first drum-roll. Ts'ao Kuei restrained him. Only after the third drum did he release the attack, and Ch'i was routed. \"The first roll creates the spirit,\" he explained afterward, \"but with the second it wanes, and after the third it is gone altogether. I struck when their spirit was gone and ours was at its height.\"",
+    commentator: "Li Ch'uan and others",
+    work: "Tso Chuan, year 10, §1",
+    gilesNote: "Giles notes this anecdote at VII. §27 as the locus classicus for studying the moods of an army."
+  },
+  {
+    id: "sun-pin-ma-ling",
+    title: "Sun Pin Lures P'ang Chuan into the Ma-ling Ambush",
+    year: -341,
+    yearLabel: "341 BC",
+    lat: 35.73, lng: 115.42,
+    region: "East Asia",
+    era: "Warring States",
+    protagonist: "Sun Pin",
+    chapter: "V",
+    verse: "V. 19",
+    verseText: "One who is skilful at keeping the enemy on the move maintains deceitful appearances, according to which the enemy will act.",
+    story: "Sun Pin, a descendant of Sun Tzŭ, exploited Ch'i's reputation for cowardice. On successive nights he lit 100,000, then 50,000, then only 20,000 cook-fires. Convinced his enemy was melting away, P'ang Chuan pursued hotly into a narrow defile where Sun Pin had stripped a tree bare and inscribed: \"Under this tree shall P'ang Chuan die.\" When P'ang struck a light to read it, a volley of arrows found him.",
+    commentator: "Tu Mu",
+    work: "Shih Chi",
+    gilesNote: "Giles gives this at V. §19; he notes the Shih Chi version has P'ang Chuan cut his own throat after the rout."
+  },
+  {
+    id: "chao-she-oyu",
+    title: "Chao She's Forced March to O-yu",
+    year: -270,
+    yearLabel: "270 BC",
+    lat: 36.10, lng: 113.10,
+    region: "East Asia",
+    era: "Warring States",
+    protagonist: "Chao She",
+    chapter: "VII",
+    verse: "VII. 4",
+    verseText: "To take a long and circuitous route, after enticing the enemy out of the way, and though starting after him, to contrive to reach the goal before him, shows knowledge of the artifice of deviation.",
+    story: "Sent to relieve O-yu from a Ch'in siege, Chao She marched thirty li and then spent 28 days noisily building entrenchments, letting Ch'in spies report his timidity. The moment the spies left, he vanished into a forced march of a day and a night, and seized the commanding North Hill above O-yu before Ch'in knew he had stirred. \"Like two rats fighting in a hole,\" he had said, \"the pluckier will win.\"",
+    commentator: "Tu Mu",
+    work: "Shih Chi biographies",
+    gilesNote: "Giles cites this at VII. §4 as the model case for the artifice of deviation."
+  },
+  {
+    id: "tien-tan-fire-oxen",
+    title: "T'ien Tan's Fire-Oxen Break the Siege of Chi-mo",
+    year: -279,
+    yearLabel: "279 BC",
+    lat: 36.39, lng: 120.45,
+    region: "East Asia",
+    era: "Warring States",
+    protagonist: "T'ien Tan",
+    chapter: "IX",
+    verse: "IX. 24",
+    verseText: "Humble words and increased preparations are signs that the enemy is about to advance.",
+    story: "Pressed by Yen in his last city, T'ien Tan spread rumours to provoke Yen atrocities and inflame his citizens, then feigned surrender with bribes. By night he collected a thousand oxen, painted them like dragons, lashed blades to their horns and greased reeds to their tails. The burning cattle stampeded through holes in the walls, followed by 5,000 picked warriors. The Yen army broke; seventy cities were regained.",
+    commentator: "Chang Yu",
+    work: "Shih Chi, ch. 82",
+    gilesNote: "Giles quotes the full Shih Chi account at IX. §24 \u2014 and refers to it again when explaining Hannibal's trick in XI."
+  },
+  {
+    id: "wang-chien-chu",
+    title: "Wang Chien's Patient Conquest of Ch'u",
+    year: -224,
+    yearLabel: "224 BC",
+    lat: 31.02, lng: 114.30,
+    region: "East Asia",
+    era: "Warring States",
+    protagonist: "Wang Chien",
+    chapter: "XI",
+    verse: "XI. 22",
+    verseText: "Carefully study the well-being of your men, and do not overtax them. Concentrate your energy and hoard your strength.",
+    story: "Invading Ch'u, Wang Chien refused every challenge to battle. Day after day he stayed inside his walls, sharing his meals with his men and providing baths, until scouts reported the soldiers amusing themselves by putting the weight and long-jumping. Knowing his army was strung to the right pitch, he finally struck the disheartened Ch'u host, routed it, and swept the kingdom clean for the First Emperor.",
+    commentator: "Ch'en Hao (as Ch'en)",
+    work: "Shih Chi",
+    gilesNote: "Giles gives this at XI. §22 as the model of \"hoarding strength.\""
+  },
+  {
+    id: "han-hsin-jingxing",
+    title: "Han Hsin Fights with his Back to the River",
+    year: -204,
+    yearLabel: "204 BC",
+    lat: 37.99, lng: 114.13,
+    region: "East Asia",
+    era: "Han",
+    protagonist: "Han Hsin",
+    chapter: "XI",
+    verse: "XI. 58",
+    verseText: "Place your army in deadly peril, and it will survive; plunge it into desperate straits, and it will come off in safety.",
+    story: "Marching against Chao at the Ching-hsing pass, Han Hsin sent 2,000 light cavalry with red flags to hide near the Chao camp. He then drew up his main force with their backs to the river Ti &mdash; at which the whole Chao army broke into loud laughter. When Chao pursued his feigned flight, the hidden riders galloped in, tore down Chao standards and raised the red banners of Han. Convinced their city had fallen, Chao's army dissolved in panic.",
+    commentator: "Han Hsin himself, citing Sun Tzŭ",
+    work: "Ch'ien Han Shu, ch. 34",
+    gilesNote: "Giles narrates the entire battle at XI. §58; Han Hsin quoted this very maxim back to his astonished officers."
+  },
+  {
+    id: "han-hsin-wei",
+    title: "Han Hsin Dams the Wei to Drown Lung Chu",
+    year: -203,
+    yearLabel: "203 BC",
+    lat: 36.70, lng: 119.10,
+    region: "East Asia",
+    era: "Han",
+    protagonist: "Han Hsin",
+    chapter: "IX",
+    verse: "IX. 4",
+    verseText: "When an invading force crosses a river, let half the army get across, and then deliver your attack.",
+    story: "Facing Lung Chu across the Wei, Han Hsin secretly had ten thousand sandbags dam the river upstream. He then led half his men across, feigned a panicked retreat, and drew Lung Chu into the stream after him. At the signal the sandbags were slit; the river burst down and cut Lung Chu's army in two. Han Hsin wheeled on the trapped portion, annihilated it, and killed Lung Chu himself.",
+    commentator: "Li Ch'uan",
+    work: "Ch'ien Han Shu, ch. 34",
+    gilesNote: "Giles quotes the full account at IX. §4."
+  },
+  {
+    id: "kao-tsu-poteng",
+    title: "The Hsiung-nu Lure Kao Tsu into Po-teng",
+    year: -200,
+    yearLabel: "200 BC",
+    lat: 40.10, lng: 113.30,
+    region: "East Asia",
+    era: "Han",
+    protagonist: "Kao Tsu (Han)",
+    chapter: "V",
+    verse: "V. 18",
+    verseText: "Masking strength with weakness is to be effected by tactical dispositions.",
+    story: "Forewarned, the Hsiung-nu hid their able-bodied warriors and stout horses, showing Han scouts only broken-down men and emaciated cattle. All the spies urged attack; only Lou Ching warned that two countries at war will flaunt their strength, and that this display of decrepitude must be a ruse. Kao Tsu ignored him, advanced, and was surrounded at Po-teng for seven desperate days.",
+    commentator: "Chang Yu",
+    work: "Shih Chi / Han Shu",
+    gilesNote: "Giles gives the anecdote at V. §18 as the classic case of feigning weakness to bait a strong enemy."
+  },
+  {
+    id: "tsao-tsao-hair",
+    title: "Ts'ao Ts'ao Condemns Himself \u2014 and Keeps his Head",
+    year: 200,
+    yearLabel: "c. 200 AD",
+    lat: 34.75, lng: 113.62,
+    region: "East Asia",
+    era: "Three Kingdoms",
+    protagonist: "Ts'ao Ts'ao",
+    chapter: "I",
+    verse: "I. 13",
+    verseText: "On which side is discipline most rigorously enforced?",
+    story: "Ts'ao Ts'ao had decreed death for any soldier whose horse strayed into standing crops. When his own horse shied into a field of corn, he drew his sword to carry out the sentence on himself. Persuaded by his officers to commute, he satisfied the law by cutting off his hair &mdash; symbolic capital punishment, and a lesson his army never forgot.",
+    commentator: "Tu Mu",
+    work: "San Kuo Chi tradition",
+    gilesNote: "Giles recounts this at I. §13 to illustrate what Sun Tzŭ means by rigorous discipline."
+  },
+  {
+    id: "tsao-tsao-yuan-shao",
+    title: "Ts'ao Ts'ao Burns Yuan Shao's Wagons at Wu-ch'ao",
+    year: 200,
+    yearLabel: "200 AD",
+    lat: 35.08, lng: 114.50,
+    region: "East Asia",
+    era: "Three Kingdoms",
+    protagonist: "Ts'ao Ts'ao",
+    chapter: "XII",
+    verse: "XII. 1",
+    verseText: "The third is to burn baggage-trains.",
+    story: "Outnumbered at Kuan-tu by Yuan Shao, Ts'ao Ts'ao led a small, silent strike force by night against the rival's great supply-depot at Wu-ch'ao. When the grain-wagons went up in flame, Yuan Shao's army &mdash; suddenly without bread &mdash; collapsed. This single raid decided the mastery of north China.",
+    commentator: "Tu Mu",
+    work: "San Kuo Chi",
+    gilesNote: "Giles cites it at XII. §1 as Sun Tzŭ's third mode of attack by fire \u2014 \"to burn baggage-trains.\""
+  },
+  {
+    id: "tsao-tsao-jang",
+    title: "Ts'ao Ts'ao's Tunnel Ambush at Jang",
+    year: 198,
+    yearLabel: "198 AD",
+    lat: 32.98, lng: 112.53,
+    region: "East Asia",
+    era: "Three Kingdoms",
+    protagonist: "Ts'ao Ts'ao",
+    chapter: "VII",
+    verse: "VII. 35",
+    verseText: "Do not interfere with an army that is returning home.",
+    story: "Besieging Chang Hsiu at Jang, Ts'ao Ts'ao found himself hemmed between two enemies at a narrow pass. At nightfall he bored a tunnel into the mountainside and hid troops in it. As soon as the main body had marched through, the ambush fell on his pursuers' rear while Ts'ao himself wheeled on their front. The trapped enemies were annihilated. \"The brigands brought me to battle in a desperate position,\" he said, \"hence I knew how to overcome them.\"",
+    commentator: "Chang Yu",
+    work: "San Kuo Chi, ch. 1",
+    gilesNote: "Giles tells it at VII. §35 while explaining the maxim on returning enemies."
+  },
+  {
+    id: "chu-ko-liang-yangping",
+    title: "Chu-ko Liang's Empty Fort at Yang-p'ing",
+    year: 228,
+    yearLabel: "c. 228 AD",
+    lat: 33.07, lng: 105.97,
+    region: "East Asia",
+    era: "Three Kingdoms",
+    protagonist: "Chu-ko Liang",
+    chapter: "VI",
+    verse: "VI. 12",
+    verseText: "We puzzle him by strange and unusual dispositions \u2014 the timely use of bluff.",
+    story: "Ssu-ma I was bearing down upon Yang-p'ing when Chu-ko Liang, too weak to resist, simply struck his colours, silenced the drums, flung open the city gates, and had a few servants calmly sweep the road. Ssu-ma I, sure it must be an ambush, drew off his army and retreated. The entire defence rested on a single theatrical stroke.",
+    commentator: "Tu Mu",
+    work: "San Kuo Chi tradition",
+    gilesNote: "Giles tells it at VI. §12 as the textbook case of \"the timely use of bluff.\""
+  },
+  {
+    id: "chu-ko-liang-headdress",
+    title: "Chu-ko Liang Sends a Woman's Head-Dress to Ssu-ma I",
+    year: 234,
+    yearLabel: "234 AD",
+    lat: 34.35, lng: 108.37,
+    region: "East Asia",
+    era: "Three Kingdoms",
+    protagonist: "Chu-ko Liang",
+    chapter: "VI",
+    verse: "VI. 23",
+    verseText: "Rouse him, and learn the principle of his activity or inactivity.",
+    story: "Ssu-ma I, adopting strict Fabian tactics, refused to come out and give battle. Chu-ko Liang replied by sending him the scornful gift of a woman's head-dress &mdash; a taunt calculated to shame him into the field. Ssu-ma I's self-control held; but the gesture itself became the paradigm of \"rousing\" a reluctant adversary.",
+    commentator: "Chang Yu",
+    work: "San Kuo Chi tradition",
+    gilesNote: "Giles cites this at VI. §23 as the definitive example of provoking to read an enemy."
+  },
+  {
+    id: "fu-chien-fei",
+    title: "Fu Chien's Million Shattered at the Fei River",
+    year: 383,
+    yearLabel: "383 AD",
+    lat: 32.63, lng: 116.98,
+    region: "East Asia",
+    era: "Six Dynasties",
+    protagonist: "Fu Chien",
+    chapter: "III",
+    verse: "III. 18",
+    verseText: "If you know yourself but not the enemy, for every victory gained you will also suffer a defeat.",
+    story: "Fu Chien, prince of Ch'in, scorned his rival's generals Hsieh An and Huan Ch'ung. \"I have the population of eight provinces at my back,\" he boasted, \"a million men; they could dam the Yangtze by throwing their whips into it.\" His vast host, strung along the Fei River, was routed almost without a battle, and Fu Chien barely escaped with his life.",
+    commentator: "Li Ch'uan",
+    work: "Chin Shu",
+    gilesNote: "Giles quotes Fu Chien's boast directly at III. §18."
+  },
+  {
+    id: "liu-yu-chenghung",
+    title: "Liu Yu Burns Huan Hsuan's Escape Boat",
+    year: 404,
+    yearLabel: "404 AD",
+    lat: 30.48, lng: 114.30,
+    region: "East Asia",
+    era: "Six Dynasties",
+    protagonist: "Liu Yu",
+    chapter: "VIII",
+    verse: "VIII. 12",
+    verseText: "Cowardice leads to capture.",
+    story: "Pursuing the rebel Huan Hsuan up the Yangtze, Liu Yu found the usurper's war-junk tethered to a light escape-boat &mdash; ready for flight at a moment's notice. Huan Hsuan's soldiers, reading the signal, lost the will to fight. When the loyalists came down the wind with fireships, every man struggling to be first in the fray, Huan Hsuan's force was routed and fled two days without stopping.",
+    commentator: "Ts'ao Kung / Chang Yu",
+    work: "Chin Shu",
+    gilesNote: "Giles gives the episode at VIII. §12 as the proof that cowardice \u2014 even a whispered hint of it in a general \u2014 leads to capture."
+  },
+  {
+    id: "pan-chao-shanshan",
+    title: "Pan Ch'ao's Night Fire Raid at Shan-shan",
+    year: 73,
+    yearLabel: "73 AD",
+    lat: 39.05, lng: 88.13,
+    region: "Central Asia",
+    era: "Han",
+    protagonist: "Pan Ch'ao",
+    chapter: "XII",
+    verse: "XII. 1",
+    verseText: "The first way of attack by fire is to burn soldiers in their camp.",
+    story: "Stranded with a tiny embassy at Shan-shan just as a Hsiung-nu envoy arrived, Pan Ch'ao cried: \"Unless we enter the tiger's lair we cannot get the cubs!\" With thirty-six men, at night, under a howling wind, he set the barbarian camp ablaze and posted drummers behind it. He killed the envoy with his own hand; more than a hundred Hsiung-nu perished in the flames. The whole kingdom came over at once.",
+    commentator: "Giles main text",
+    work: "Hou Han Shu, ch. 47",
+    gilesNote: "Giles opens the discussion of attack by fire at XII. §1 with the full Hou Han Shu account."
+  },
+  {
+    id: "pan-chao-yarkand",
+    title: "Pan Ch'ao Divides his Host to Crush Yarkand",
+    year: 88,
+    yearLabel: "88 AD",
+    lat: 38.42, lng: 77.25,
+    region: "Central Asia",
+    era: "Han",
+    protagonist: "Pan Ch'ao",
+    chapter: "XI",
+    verse: "XI. 36",
+    verseText: "He must be able to mystify his officers and men by false reports and appearances.",
+    story: "Outnumbered two to one at Yarkand, Pan Ch'ao secretly released his prisoners so they would carry false plans to the enemy: that the Khotanese would retreat east, he himself west. The moment the two enemy columns galloped off to intercept them, Pan Ch'ao reassembled his army in silence and, at cockcrow, fell on the Yarkand camp. Over five thousand heads were taken.",
+    commentator: "Giles main text",
+    work: "Hou Han Shu, ch. 47",
+    gilesNote: "Giles quotes the passage at XI. §36 as the paradigm of mystifying even one's own officers."
+  },
+  {
+    id: "ma-yuan-chiang",
+    title: "Ma Yuan Starves the Bandit Wu-tu Ch'iang",
+    year: 35,
+    yearLabel: "c. 35 AD",
+    lat: 33.50, lng: 106.00,
+    region: "East Asia",
+    era: "Han",
+    protagonist: "Ma Yuan",
+    chapter: "IX",
+    verse: "IX. 1",
+    verseText: "Pass quickly over mountains, and keep in the neighbourhood of valleys.",
+    story: "When the robber-captain Wu-tu Ch'iang took refuge in the hills, Ma Yuan refused to force a battle. Instead he quietly seized every position commanding water and forage in the surrounding valleys. Cut off from supply, Ch'iang's gang was soon reduced to unconditional surrender &mdash; without a sword drawn. \"He did not know,\" notes Chang Yu, \"the advantage of keeping in the neighbourhood of valleys.\"",
+    commentator: "Chang Yu",
+    work: "Hou Han Shu",
+    gilesNote: "Giles places this at IX. §1 as the opening illustration of mountain warfare."
+  },
+  {
+    id: "huangfu-sung",
+    title: "Huang-fu Sung Fires the Yellow Turban Grass at Ch'ang-she",
+    year: 184,
+    yearLabel: "184 AD",
+    lat: 34.10, lng: 113.80,
+    region: "East Asia",
+    era: "Han",
+    protagonist: "Huang-fu Sung",
+    chapter: "XII",
+    verse: "XII. 9",
+    verseText: "If it is possible to make an assault with fire from without, deliver your attack at a favourable moment.",
+    story: "Besieged by the vast Yellow Turban host of Po-ts'ai at Ch'ang-she, Huang-fu Sung noticed that the rebels had camped in deep, dry grass. That evening, as a strong breeze rose, he had daring men slip through the lines with torches while his own soldiers mounted the walls with reeds ablaze. Fire leapt from every direction; the rebels broke and fled into disaster.",
+    commentator: "Tu Mu",
+    work: "Hou Han Shu, ch. 71",
+    gilesNote: "Giles tells the whole story at XII. §9, comparing it explicitly to T'ien Tan's fire-oxen."
+  },
+  {
+    id: "ssu-ma-i-mengta",
+    title: "Ssu-ma I's Eight-Day March on Meng Ta",
+    year: 227,
+    yearLabel: "227 AD",
+    lat: 32.08, lng: 110.78,
+    region: "East Asia",
+    era: "Three Kingdoms",
+    protagonist: "Ssu-ma I",
+    chapter: "XI",
+    verse: "XI. 19",
+    verseText: "Rapidity is the essence of war: take advantage of the enemy's unreadiness, make your way by unexpected routes.",
+    story: "The governor Meng Ta was plotting defection and counted on a full month before any imperial response could reach him. Ssu-ma I, 1,200 li distant, set out at once without awaiting orders, covered the ground by forced marches in eight days and appeared beneath Hsin-ch'eng's walls. \"What miraculous rapidity is this!\" Meng Ta wrote in despair. Two weeks later his head was off.",
+    commentator: "Ho Shih",
+    work: "Chin Shu, ch. 1",
+    gilesNote: "Giles gives the exchange of letters at XI. §19 as the definitive illustration of speed in war."
+  },
+  {
+    id: "li-ching-gorges",
+    title: "Li Ching Rides the Yangtze Flood to Surprise Hsiao Hsien",
+    year: 621,
+    yearLabel: "621 AD",
+    lat: 30.33, lng: 112.23,
+    region: "East Asia",
+    era: "T'ang",
+    protagonist: "Li Ching",
+    chapter: "XI",
+    verse: "XI. 19",
+    verseText: "Rapidity is the essence of war \u2014 appear before the enemy with startling suddenness.",
+    story: "Autumn had flooded the Yangtze into a roaring torrent; Hsiao Hsien never dreamed an army would chance the gorges. Li Ching embarked in spite of every officer's protest. \"Now is the time,\" he said, \"before he knows we have a force together &mdash; like thunder heard before one can stop the ears.\" He dropped down-river with appalling speed and forced Hsiao Hsien's surrender.",
+    commentator: "Ho Shih",
+    work: "Chiu T'ang Shu",
+    gilesNote: "Giles pairs this story with Ssu-ma I's at XI. §19."
+  },
+  {
+    id: "li-shih-min-wulao",
+    title: "Li Shih-min Seizes the Heights of Wu-lao",
+    year: 621,
+    yearLabel: "621 AD",
+    lat: 34.87, lng: 113.10,
+    region: "East Asia",
+    era: "T'ang",
+    protagonist: "Li Shih-min",
+    chapter: "X",
+    verse: "X. 11",
+    verseText: "If the enemy has occupied the heights before you, do not follow him, but retreat and try to entice him away.",
+    story: "Besieging Wang Shih-ch'ung in Lo-yang, the future Emperor T'ai Tsung learned that Tou Chien-te was marching to the relief. He detached a picked force and seized the commanding heights of Wu-lao. Despite the obvious peril, Tou persisted. Li Shih-min defeated and captured him, and Lo-yang fell at once &mdash; a double victory decided by a single hilltop.",
+    commentator: "Chang Yu",
+    work: "Chiu T'ang Shu, ch. 54",
+    gilesNote: "Giles cites this as the turning-point illustration of X. §11."
+  },
+  {
+    id: "pei-hsingchien",
+    title: "P'ei Hsing-chien Moves his Camp Before the Storm",
+    year: 680,
+    yearLabel: "c. 680 AD",
+    lat: 41.75, lng: 104.00,
+    region: "Central Asia",
+    era: "T'ang",
+    protagonist: "P'ei Hsing-chien",
+    chapter: "X",
+    verse: "X. 10",
+    verseText: "On precipitous heights, occupy the raised and sunny spots.",
+    story: "Campaigning against the Turks, P'ei Hsing-chien had his camp fully fortified when he suddenly ordered it moved to a hill nearby &mdash; to the fury of exhausted officers. That night a terrific storm flooded the old site to the depth of twelve feet. When the officers asked how he had known, he replied: \"From this time forward be content to obey orders without asking unnecessary questions.\"",
+    commentator: "Chang Yu",
+    work: "Chiu T'ang Shu",
+    gilesNote: "Giles recounts this at X. §10 to show why sunny high ground matters."
+  },
+  {
+    id: "fu-yenching-sandstorm",
+    title: "Fu Yen-ch'ing's Sandstorm Charge Against the Khitans",
+    year: 945,
+    yearLabel: "945 AD",
+    lat: 39.92, lng: 116.40,
+    region: "East Asia",
+    era: "Five Dynasties",
+    protagonist: "Fu Yen-ch'ing",
+    chapter: "VII",
+    verse: "VII. 36",
+    verseText: "Do not press a desperate foe too hard.",
+    story: "Surrounded in a waterless waste by a vast Khitan host, his men reduced to squeezing mud for moisture, Fu Yen-ch'ing cried: \"Better to die for our country than go into captivity in fetters!\" A north-east gale was raising blinding walls of sand. Where his colleague counselled delay, Li Shou-cheng urged that the storm was their ally. Fu Yen-ch'ing charged with his cavalry under cover of the dust and broke clean through.",
+    commentator: "Ho Shih",
+    work: "Chiu Wu Tai Shih tradition",
+    gilesNote: "Giles gives the full passage at VII. §36 on the danger of pressing a desperate foe."
+  },
+  {
+    id: "fabius-hannibal",
+    title: "Fabius Cunctator Outwaits Hannibal",
+    year: -217,
+    yearLabel: "217 BC",
+    lat: 41.89, lng: 12.48,
+    region: "Mediterranean",
+    era: "Classical Antiquity",
+    protagonist: "Hannibal",
+    chapter: "II",
+    verse: "II. 5",
+    verseText: "Though we have heard of stupid haste in war, cleverness has never been seen associated with long delays.",
+    story: "After Hannibal's invasion of Italy, Fabius deliberately measured Rome's endurance against the Carthaginian's isolated army, judging that an invader would suffer more from a long campaign in a hostile country. His \"delaying\" cost him popularity but saved the state. Giles notes that the reversal of Fabian tactics is precisely what led to the disaster at Cannae &mdash; leaving only a negative presumption in their favour.",
+    commentator: "Giles main text",
+    work: "Livy, Polybius",
+    gilesNote: "Giles brings Fabius and Hannibal into his commentary at II. §5 to test Sun Tzŭ's warning against delay."
+  },
+  {
+    id: "hannibal-casilinum",
+    title: "Hannibal's Ox-Torch Escape from Casilinum",
+    year: -217,
+    yearLabel: "217 BC",
+    lat: 41.23, lng: 14.30,
+    region: "Mediterranean",
+    era: "Classical Antiquity",
+    protagonist: "Hannibal",
+    chapter: "XI",
+    verse: "XI. 14",
+    verseText: "On hemmed-in ground, resort to stratagem.",
+    story: "Fabius had Hannibal penned among the mountains near Casilinum, every pass watched. By night the Carthaginian tied bundles of lit twigs to the horns of two thousand oxen and drove them at speed along the ridges. The strange moving fires so unnerved the Romans that they abandoned their positions, and Hannibal's army slipped through the defile unharmed.",
+    commentator: "Giles main text",
+    work: "Polybius III. 93; Livy XXII. 16",
+    gilesNote: "Giles pairs the trick explicitly with T'ien Tan's oxen 62 years earlier."
+  },
+  {
+    id: "nelson-trafalgar",
+    title: "Nelson's Silent Approach at Trafalgar",
+    year: 1805,
+    yearLabel: "1805 AD",
+    lat: 36.18, lng: -6.28,
+    region: "Europe",
+    era: "Napoleonic",
+    protagonist: "Nelson",
+    chapter: "V",
+    verse: "V. 13",
+    verseText: "The quality of decision is like the well-timed swoop of a falcon which enables it to strike and destroy its victim.",
+    story: "Drifting into action at hardly more than a walking pace, the Victory was for many minutes exposed to a storm of French and Spanish shot without answering with a single gun. Nelson waited, silent, until he was within close range; then the broadside he brought to bear worked fearful havoc on the enemy's nearest ships.",
+    commentator: "Giles main text",
+    work: "Contemporary naval histories",
+    gilesNote: "Giles offers this at V. §13 to gloss Sun Tzŭ on the \"psychological moment\" of decision."
+  },
+  {
+    id: "wellington-waterloo",
+    title: "Wellington Keeps his Plans from Uxbridge",
+    year: 1815,
+    yearLabel: "1815 AD",
+    lat: 50.68, lng: 4.41,
+    region: "Europe",
+    era: "Napoleonic",
+    protagonist: "Wellington",
+    chapter: "I",
+    verse: "I. 17",
+    verseText: "According as circumstances are favourable, one should modify one's plans.",
+    story: "On the eve of Waterloo, Lord Uxbridge sought out Wellington to learn his plans &mdash; since, as commander of cavalry, he might suddenly inherit the whole army. The Duke listened quietly. \"Who will attack first tomorrow &mdash; I or Bonaparte?\" \"Bonaparte.\" \"Well, Bonaparte has not given me any idea of his projects; and as my plans will depend upon his, how can you expect me to tell you what mine are?\"",
+    commentator: "Giles main text",
+    work: "Sir W. Fraser, \"Words on Wellington\"",
+    gilesNote: "Giles places this at I. §17 to illustrate modifying plans to circumstance."
+  },
+  {
+    id: "blucher-waterloo",
+    title: "Blücher's Junction at Waterloo",
+    year: 1815,
+    yearLabel: "1815 AD",
+    lat: 50.68, lng: 4.45,
+    region: "Europe",
+    era: "Napoleonic",
+    protagonist: "Blücher",
+    chapter: "VI",
+    verse: "VI. 19",
+    verseText: "Knowing the place and the time of the coming battle, we may concentrate from the greatest distances in order to fight.",
+    story: "Sun Tzŭ praises the general who can divide his army for a long, rapid march and then effect a junction at precisely the right spot and the right hour. Giles writes that among all such successful junctions which military history records, one of the most dramatic and decisive was the appearance of Blücher just at the critical moment on the field of Waterloo.",
+    commentator: "Giles main text",
+    work: "19th-c. European histories",
+    gilesNote: "Giles invokes Blücher at VI. §19 as the most dramatic modern example of timed concentration."
+  },
+  {
+    id: "roberts-peiwar",
+    title: "Lord Roberts' Night March Round the Peiwar Kotal",
+    year: 1878,
+    yearLabel: "1878 AD",
+    lat: 33.95, lng: 69.55,
+    region: "Central Asia",
+    era: "Modern",
+    protagonist: "Lord Roberts",
+    chapter: "V",
+    verse: "V. 5",
+    verseText: "The direct method may be used for joining battle, but indirect methods will be needed in order to secure victory.",
+    story: "Confronted by entrenched Afghan positions on the Peiwar Kotal in the Second Afghan War, Roberts left a small demonstration facing the pass and led his main force through a freezing night march around the shoulder of the mountain. At dawn he fell on the Afghan flank from an unexpected quarter and unhinged their entire defence.",
+    commentator: "Giles main text",
+    work: "Roberts, \"Forty-One Years in India\"",
+    gilesNote: "Giles cites this at V. §5 as \"a brilliant example of indirect tactics.\""
+  },
+  {
+    id: "moltke-sedan",
+    title: "Moltke's Bloodless Cage at Sedan",
+    year: 1870,
+    yearLabel: "1870 AD",
+    lat: 49.70, lng: 4.94,
+    region: "Europe",
+    era: "Modern",
+    protagonist: "Moltke",
+    chapter: "III",
+    verse: "III. 2",
+    verseText: "Supreme excellence consists in breaking the enemy's resistance without fighting.",
+    story: "Moltke's greatest triumph, Giles writes, was the capitulation of the huge French army at Sedan &mdash; \"won practically without bloodshed.\" By superior marches and perfect coordination he enclosed Napoleon III's army in a ring from which surrender was the only escape. Sun Tzŭ's doctrine of victory without fighting had its nineteenth-century vindication.",
+    commentator: "Giles main text",
+    work: "19th-c. European histories",
+    gilesNote: "Giles adduces Sedan at III. §2 in direct support of Sun Tzŭ's maxim."
+  },
+  {
+    id: "port-arthur",
+    title: "The Japanese Bleed Before Port Arthur",
+    year: 1904,
+    yearLabel: "1904 AD",
+    lat: 38.82, lng: 121.22,
+    region: "East Asia",
+    era: "Modern",
+    protagonist: "Japanese Imperial Army",
+    chapter: "III",
+    verse: "III. 5",
+    verseText: "Such are the disastrous effects of a siege.",
+    story: "Sun Tzŭ warned that a general who launches his men in swarms against the walls loses a third of them while the town still stands. Giles, writing in 1910, needs only one contemporary example: \"We are reminded of the terrible losses of the Japanese before Port Arthur, in the most recent siege which history has to record.\"",
+    commentator: "Giles main text",
+    work: "Russo-Japanese War accounts",
+    gilesNote: "Giles notes the parallel at III. §5 as immediate confirmation of Sun Tzŭ's warning."
+  }
+];
+
+/* =====================================================================
+   STATE + ELEMENTS
+===================================================================== */
+const state = {
+  region: "",
+  era: "",
+  chapter: "",
+  protagonist: "",
+  currentId: null
+};
+
+const map = L.map('map', {
+  worldCopyJump: true,
+  zoomControl: true,
+  scrollWheelZoom: true,
+  attributionControl: true
+}).setView([30, 50], 2);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 10,
+  minZoom: 2,
+  attribution: '&copy; OpenStreetMap contributors',
+  className: 'tile-parchment'
+}).addTo(map);
+
+// Sepia filter the tiles
+const styleTag = document.createElement('style');
+styleTag.textContent = `
+  .leaflet-tile-pane { filter: sepia(0.55) saturate(0.6) hue-rotate(-10deg) brightness(0.95) contrast(0.95); }
+`;
+document.head.appendChild(styleTag);
+
+const markersById = {};
+const eraColor = (era) => {
+  const palette = {
+    "Spring & Autumn": "#5a6b1e",
+    "Warring States":  "#7d8a2b",
+    "Han":             "#a17626",
+    "Three Kingdoms":  "#8b2d1c",
+    "Six Dynasties":   "#663a14",
+    "T'ang":           "#b35a3a",
+    "Five Dynasties":  "#6b3a55",
+    "Classical Antiquity": "#2c5566",
+    "Napoleonic":      "#1e4d3b",
+    "Modern":          "#2c2014"
+  };
+  return palette[era] || "#8b2d1c";
+};
+
+function makeIcon(anec) {
+  const color = eraColor(anec.era);
+  return L.divIcon({
+    className: 'pin-wrap',
+    html: `<div class="anecdote-pin" style="background:${color}" title="${anec.title}"></div>`,
+    iconSize: [44, 44],
+    iconAnchor: [22, 22]
+  });
+}
+
+ANECDOTES.forEach(anec => {
+  const marker = L.marker([anec.lat, anec.lng], { icon: makeIcon(anec) });
+  marker.bindPopup(
+    `<span class="pop-year">${anec.yearLabel} &middot; ${anec.region}</span>
+     <span class="pop-title">${anec.title}</span>
+     <button onclick="openAnecdote('${anec.id}')">Read story &rarr;</button>`
+  );
+  marker.on('click', () => marker.openPopup());
+  markersById[anec.id] = marker;
+  marker.addTo(map);
+});
+
+/* =====================================================================
+   FILTER UI
+===================================================================== */
+function uniq(arr) { return Array.from(new Set(arr)); }
+
+function populateSelects() {
+  const regions = uniq(ANECDOTES.map(a => a.region)).sort();
+  const eras = [
+    "Spring & Autumn","Warring States","Han","Three Kingdoms","Six Dynasties",
+    "T'ang","Five Dynasties","Classical Antiquity","Napoleonic","Modern"
+  ].filter(e => ANECDOTES.some(a => a.era === e));
+  const chapters = uniq(ANECDOTES.map(a => a.chapter)).sort((a,b) => {
+    const roman = ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII"];
+    return roman.indexOf(a) - roman.indexOf(b);
+  });
+  const protagonists = uniq(ANECDOTES.map(a => a.protagonist)).sort();
+
+  const fill = (id, arr) => {
+    const sel = document.getElementById(id);
+    arr.forEach(v => {
+      const opt = document.createElement('option');
+      opt.value = v;
+      opt.textContent = v;
+      sel.appendChild(opt);
+    });
+  };
+  fill('f-region', regions);
+  fill('f-era', eras);
+  fill('f-chapter', chapters.map(c => `Chapter ${c}`));
+  fill('f-protagonist', protagonists);
+
+  // fix chapter values to raw
+  const chapSel = document.getElementById('f-chapter');
+  Array.from(chapSel.options).forEach(opt => {
+    if (opt.value.startsWith('Chapter ')) opt.value = opt.value.replace('Chapter ','');
+  });
+}
+populateSelects();
+
+function buildChips() {
+  // Pick 10 most recurring / featured protagonists
+  const featured = [
+    "Sun Pin","Han Hsin","Ts'ao Ts'ao","Pan Ch'ao","Chu-ko Liang",
+    "T'ien Tan","Hannibal","Wellington","Nelson","Ssu-ma I"
+  ];
+  const list = document.getElementById('chip-list');
+  featured.forEach(name => {
+    if (!ANECDOTES.some(a => a.protagonist === name)) return;
+    const chip = document.createElement('button');
+    chip.className = 'protagonist-chip';
+    chip.textContent = name;
+    chip.dataset.name = name;
+    chip.addEventListener('click', () => {
+      state.protagonist = state.protagonist === name ? "" : name;
+      document.getElementById('f-protagonist').value = state.protagonist;
+      renderChipsActive();
+      applyFilters();
+    });
+    list.appendChild(chip);
+  });
+}
+function renderChipsActive() {
+  document.querySelectorAll('.protagonist-chip').forEach(ch => {
+    ch.classList.toggle('active', ch.dataset.name === state.protagonist);
+  });
+}
+buildChips();
+
+function matches(anec) {
+  if (state.region && anec.region !== state.region) return false;
+  if (state.era && anec.era !== state.era) return false;
+  if (state.chapter && anec.chapter !== state.chapter) return false;
+  if (state.protagonist && anec.protagonist !== state.protagonist) return false;
+  return true;
+}
+
+function applyFilters() {
+  let count = 0;
+  ANECDOTES.forEach(a => {
+    const show = matches(a);
+    if (show) count++;
+    const m = markersById[a.id];
+    if (show) {
+      if (!map.hasLayer(m)) m.addTo(map);
+    } else {
+      if (map.hasLayer(m)) map.removeLayer(m);
+    }
+    const dot = document.querySelector(`.timeline-dot[data-id="${a.id}"]`);
+    if (dot) dot.classList.toggle('dim', !show);
+  });
+  document.getElementById('count-num').textContent = count;
+}
+
+document.getElementById('f-region').addEventListener('change', e => { state.region = e.target.value; applyFilters(); });
+document.getElementById('f-era').addEventListener('change', e => { state.era = e.target.value; applyFilters(); });
+document.getElementById('f-chapter').addEventListener('change', e => { state.chapter = e.target.value; applyFilters(); });
+document.getElementById('f-protagonist').addEventListener('change', e => {
+  state.protagonist = e.target.value;
+  renderChipsActive();
+  applyFilters();
+});
+document.getElementById('filter-reset').addEventListener('click', () => {
+  state.region = state.era = state.chapter = state.protagonist = "";
+  document.getElementById('f-region').value = "";
+  document.getElementById('f-era').value = "";
+  document.getElementById('f-chapter').value = "";
+  document.getElementById('f-protagonist').value = "";
+  renderChipsActive();
+  applyFilters();
+});
+
+/* =====================================================================
+   TIMELINE
+===================================================================== */
+function buildTimeline() {
+  const tl = document.getElementById('timeline');
+  const years = ANECDOTES.map(a => a.year);
+  const minY = Math.min(...years) - 60;
+  const maxY = Math.max(...years) + 60;
+  const span = maxY - minY;
+
+  // Axis ticks every ~400 years
+  const tickYears = [-700,-500,-300,-100,100,300,500,700,900,1100,1300,1500,1700,1900];
+  tickYears.forEach(y => {
+    if (y < minY || y > maxY) return;
+    const x = ((y - minY) / span) * 100;
+    const tick = document.createElement('div');
+    tick.className = 'tick';
+    tick.style.left = x + '%';
+    tl.appendChild(tick);
+
+    const label = document.createElement('div');
+    label.className = 'tick-label';
+    label.style.left = x + '%';
+    label.textContent = y < 0 ? (Math.abs(y) + ' BC') : (y + ' AD');
+    tl.appendChild(label);
+  });
+
+  // Dots
+  ANECDOTES.forEach(a => {
+    const x = ((a.year - minY) / span) * 100;
+    const dot = document.createElement('div');
+    dot.className = 'timeline-dot';
+    dot.dataset.id = a.id;
+    dot.style.left = x + '%';
+    dot.style.background = eraColor(a.era);
+    dot.setAttribute('role', 'button');
+    dot.setAttribute('tabindex', '0');
+    dot.setAttribute('aria-label', `${a.yearLabel}: ${a.title}`);
+    dot.innerHTML = `<span class="dot-tooltip"><span class="dot-tip-year">${a.yearLabel}</span>${a.title}</span>`;
+    dot.addEventListener('click', () => openAnecdote(a.id));
+    dot.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openAnecdote(a.id); } });
+    tl.appendChild(dot);
+  });
+}
+buildTimeline();
+
+/* =====================================================================
+   MAP LEGEND
+===================================================================== */
+function buildLegend() {
+  const legendEl = document.getElementById('map-legend');
+  const eras = [
+    "Spring & Autumn","Warring States","Han","Three Kingdoms","Six Dynasties",
+    "T'ang","Five Dynasties","Classical Antiquity","Napoleonic","Modern"
+  ].filter(e => ANECDOTES.some(a => a.era === e));
+  eras.forEach(era => {
+    const item = document.createElement('div');
+    item.className = 'legend-item';
+    const dot = document.createElement('span');
+    dot.className = 'legend-dot';
+    dot.style.background = eraColor(era);
+    const label = document.createElement('span');
+    label.textContent = era;
+    item.appendChild(dot);
+    item.appendChild(label);
+    legendEl.appendChild(item);
+  });
+}
+buildLegend();
+
+/* =====================================================================
+   STORY PANEL
+===================================================================== */
+const panel = document.getElementById('panel');
+const backdrop = document.getElementById('backdrop');
+
+function openAnecdote(id) {
+  const a = ANECDOTES.find(x => x.id === id);
+  if (!a) return;
+  state.currentId = id;
+
+  document.getElementById('panel-eyebrow').textContent = `${a.yearLabel} · ${a.region}`;
+  document.getElementById('panel-title').textContent = a.title;
+  document.getElementById('panel-meta').innerHTML = `
+    <span><strong>Era:</strong> ${a.era}</span>
+    <span><strong>Protagonist:</strong> ${a.protagonist}</span>
+    <span><strong>Chapter:</strong> ${a.chapter}</span>
+  `;
+  document.getElementById('panel-story').innerHTML = `<p>${a.story}</p>`;
+  document.getElementById('panel-verse-ref').textContent = `Sun Tzŭ, Art of War — ${a.verse}`;
+  document.getElementById('panel-verse-text').textContent = `"${a.verseText}"`;
+  document.getElementById('panel-commentator').textContent = a.commentator;
+  document.getElementById('panel-work').textContent = a.work;
+  document.getElementById('panel-giles').textContent = a.gilesNote;
+
+  panel.classList.add('open');
+  backdrop.classList.add('open');
+
+  // Highlight on map + timeline
+  document.querySelectorAll('.timeline-dot').forEach(d => d.classList.remove('active'));
+  const dot = document.querySelector(`.timeline-dot[data-id="${id}"]`);
+  if (dot) {
+    dot.classList.add('active');
+    dot.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+  }
+
+  // Highlight the map pin
+  document.querySelectorAll('.anecdote-pin').forEach(p => p.classList.remove('pin-active'));
+  const marker = markersById[id];
+  if (marker) {
+    const el = marker.getElement();
+    if (el) {
+      const pin = el.querySelector('.anecdote-pin');
+      if (pin) pin.classList.add('pin-active');
+    }
+  }
+
+  // Pan map to the anecdote
+  map.flyTo([a.lat, a.lng], Math.max(map.getZoom(), 4), { duration: 0.6 });
+
+  // Focus the close button for accessibility
+  requestAnimationFrame(() => document.getElementById('panel-close').focus());
+}
+window.openAnecdote = openAnecdote;
+
+function closePanel() {
+  panel.classList.remove('open');
+  backdrop.classList.remove('open');
+  document.querySelectorAll('.timeline-dot').forEach(d => d.classList.remove('active'));
+  document.querySelectorAll('.anecdote-pin').forEach(p => p.classList.remove('pin-active'));
+  state.currentId = null;
+}
+document.getElementById('panel-close').addEventListener('click', closePanel);
+backdrop.addEventListener('click', closePanel);
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closePanel();
+  if (!state.currentId) return;
+  if (e.key === 'ArrowRight') nextAnecdote(1);
+  if (e.key === 'ArrowLeft') nextAnecdote(-1);
+});
+
+function nextAnecdote(dir) {
+  const visible = ANECDOTES.filter(matches);
+  if (visible.length === 0) return;
+  const idx = visible.findIndex(a => a.id === state.currentId);
+  const next = visible[(idx + dir + visible.length) % visible.length];
+  openAnecdote(next.id);
+}
+document.getElementById('next-anecdote').addEventListener('click', () => nextAnecdote(1));
+document.getElementById('prev-anecdote').addEventListener('click', () => nextAnecdote(-1));
+
+/* Initial count */
+applyFilters();
+</script>
+
+</body>
+</html>

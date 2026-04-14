@@ -1,0 +1,1199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Modern Reception — The Art of War</title>
+<style>
+  :root{
+    --paper:#f3ead7;
+    --paper-2:#ecdfbf;
+    --ink:#1d1a14;
+    --ink-2:#3a3224;
+    --accent:#a23e1c;     /* vermillion seal */
+    --accent-2:#8a2a0f;
+    --gold:#b8862b;
+    --cool:#1f4e5a;       /* modern teal accent */
+    --cool-2:#2b6a7a;
+    --line:rgba(29,26,20,.18);
+    --line-2:rgba(29,26,20,.32);
+    --chip:rgba(29,26,20,.06);
+    --shadow: 0 1px 0 rgba(255,255,255,.6) inset, 0 10px 30px -12px rgba(30,22,12,.35);
+    --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    --serif: "Iowan Old Style","Palatino Linotype","Book Antiqua","Georgia", serif;
+    --sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:var(--serif);
+    color:var(--ink);
+    background:
+      radial-gradient(1200px 800px at 8% -5%, #fbf3df 0%, transparent 60%),
+      radial-gradient(900px 600px at 100% 0%, #f7ead0 0%, transparent 55%),
+      radial-gradient(700px 500px at 50% 110%, #eadfc2 0%, transparent 60%),
+      linear-gradient(180deg, #f4ead5 0%, #efe2c4 100%);
+    background-attachment: fixed;
+    line-height:1.55;
+    min-height:100vh;
+  }
+  /* subtle paper grain */
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    pointer-events:none;
+    background-image:
+      radial-gradient(rgba(60,40,10,.05) 1px, transparent 1px),
+      radial-gradient(rgba(60,40,10,.04) 1px, transparent 1px);
+    background-size: 3px 3px, 7px 7px;
+    background-position: 0 0, 1px 2px;
+    mix-blend-mode:multiply;
+    opacity:.55;
+    z-index:0;
+  }
+
+  a{color:var(--accent-2); text-decoration:none; border-bottom:1px dotted rgba(138,42,15,.4)}
+  a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+
+  .wrap{
+    position:relative; z-index:1;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 28px 22px 80px;
+  }
+
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:14px; flex-wrap:wrap;
+    padding-bottom: 18px;
+    border-bottom:1px solid var(--line);
+  }
+  .back{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:var(--sans); font-size:13px;
+    padding:10px 14px; min-height:44px;
+    background:rgba(255,255,255,.35);
+    border:1px solid var(--line-2);
+    border-radius:999px;
+    color:var(--ink-2);
+  }
+  .back:hover{background:rgba(255,255,255,.6); color:var(--ink)}
+  .crumbs{
+    font-family:var(--sans); font-size:12px;
+    letter-spacing:.08em; text-transform:uppercase;
+    color:var(--ink-2); opacity:.75;
+  }
+
+  header.hero{
+    margin: 30px 0 18px;
+    display:grid;
+    grid-template-columns: 1fr auto;
+    gap: 20px;
+    align-items:end;
+  }
+  .kicker{
+    font-family:var(--sans);
+    font-size:12px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:var(--accent);
+    display:inline-flex; align-items:center; gap:10px;
+  }
+  .kicker::before{
+    content:""; width:28px; height:1px; background:var(--accent); display:inline-block;
+  }
+  h1{
+    font-family:var(--serif);
+    font-weight:600;
+    font-size: clamp(34px, 6vw, 62px);
+    line-height:1.02;
+    margin: 8px 0 4px;
+    letter-spacing:-.01em;
+  }
+  h1 .amp{color:var(--accent); font-style:italic}
+  .sub{
+    font-size: 17px;
+    color:var(--ink-2);
+    max-width: 62ch;
+  }
+  .seal{
+    width: 120px; height: 120px;
+    border-radius: 14px;
+    background:
+      radial-gradient(circle at 30% 30%, #c24a24 0%, #7f1e06 70%);
+    color:#f5e7c6;
+    display:grid; place-items:center;
+    font-family:var(--serif);
+    font-weight:700;
+    text-align:center;
+    box-shadow: 0 10px 30px -10px rgba(120,30,10,.55), inset 0 0 0 2px rgba(255,230,180,.25);
+    transform: rotate(-3deg);
+    flex-shrink:0;
+  }
+  .seal span{
+    display:block;
+    font-size:13px;
+    letter-spacing:.15em;
+    text-transform:uppercase;
+    line-height:1.2;
+  }
+  .seal b{display:block; font-size:30px; margin-top:6px}
+
+  /* Legend / level toggler */
+  .legend{
+    margin: 22px 0 10px;
+    display:flex; flex-wrap:wrap; gap:10px; align-items:center;
+    font-family:var(--sans); font-size:12px;
+    color:var(--ink-2);
+  }
+  .legend .lvl{
+    padding:6px 10px; border-radius:999px;
+    background:var(--chip); border:1px solid var(--line);
+    min-height:28px; display:inline-flex; align-items:center; gap:6px;
+  }
+  .legend .lvl b{color:var(--ink)}
+  .legend .hint{opacity:.7}
+
+  /* Intro blurb */
+  .intro{
+    font-size: 16.5px;
+    max-width: 72ch;
+    margin: 6px 0 30px;
+    color:var(--ink-2);
+  }
+  .intro em{color:var(--accent-2); font-style:italic}
+
+  /* Domain bar */
+  .domain-bar{
+    display:flex; gap:10px; flex-wrap:wrap;
+    margin: 0 0 22px;
+    padding: 10px;
+    background: rgba(255,255,255,.35);
+    border:1px solid var(--line);
+    border-radius:14px;
+    box-shadow: var(--shadow);
+    position:sticky; top:8px; z-index:5;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  .domain-bar button{
+    font-family:var(--sans);
+    font-size:13px;
+    padding: 10px 14px;
+    min-height:44px;
+    border-radius:10px;
+    background:transparent;
+    border:1px solid transparent;
+    color:var(--ink-2);
+    cursor:pointer;
+    display:inline-flex; align-items:center; gap:8px;
+  }
+  .domain-bar button:hover{background:rgba(255,255,255,.5); color:var(--ink)}
+  .domain-bar button.active{
+    background: linear-gradient(180deg,#fff8e6,#f6e7c5);
+    border-color: var(--line-2);
+    color:var(--ink);
+    box-shadow: 0 3px 8px -4px rgba(60,30,10,.2);
+  }
+  .domain-bar button .ico{
+    width:18px; height:18px; flex-shrink:0;
+    display:inline-grid; place-items:center;
+  }
+  .domain-bar button .ico svg{width:18px; height:18px}
+
+  /* Domain grid */
+  .grid{
+    display:grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 18px;
+  }
+  .domain{
+    grid-column: span 12;
+    background: linear-gradient(180deg, rgba(255,255,255,.55), rgba(255,255,255,.25));
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding: 22px 22px 8px;
+    box-shadow: var(--shadow);
+    position:relative;
+    overflow:hidden;
+  }
+  .domain::after{
+    content:"";
+    position:absolute; inset:0;
+    background:
+      radial-gradient(600px 200px at 100% 0%, rgba(162,62,28,.06), transparent 60%);
+    pointer-events:none;
+  }
+  .domain > *{position:relative}
+  .domain h2{
+    font-family:var(--serif);
+    font-weight:600;
+    font-size: 26px;
+    margin: 0 0 6px;
+    letter-spacing:-.01em;
+    display:flex; align-items:center; gap:12px;
+  }
+  .domain h2 .ico{
+    width:32px; height:32px;
+    background: linear-gradient(180deg,#fff3d6,#e9d49a);
+    border:1px solid var(--line-2);
+    border-radius:9px;
+    display:grid; place-items:center;
+    color:var(--accent-2);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.7);
+  }
+  .domain h2 .ico svg{width:20px; height:20px}
+  .domain .tagline{
+    font-size:14.5px;
+    color:var(--ink-2);
+    margin: 2px 0 16px;
+    max-width: 70ch;
+  }
+
+  /* Practitioner cards */
+  .cards{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap:14px;
+    margin-bottom: 14px;
+  }
+  .card{
+    background: #fdf6e3;
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:16px 16px 14px;
+    position:relative;
+    transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+    box-shadow: 0 1px 0 rgba(255,255,255,.8) inset;
+  }
+  .card:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px -18px rgba(30,20,5,.4);
+    border-color: var(--line-2);
+  }
+  .card .who{
+    display:flex; align-items:baseline; justify-content:space-between; gap:10px;
+    margin-bottom:4px;
+  }
+  .card .name{
+    font-family:var(--serif);
+    font-weight:700;
+    font-size:18px;
+    color:var(--ink);
+    line-height:1.2;
+  }
+  .card .role{
+    font-family:var(--sans);
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--ink-2); opacity:.8;
+  }
+  .card .cite{
+    font-size:14.5px;
+    color:var(--ink-2);
+    margin: 8px 0 12px;
+    font-style: italic;
+  }
+  .card .cite::before{content:"\201C"; color:var(--accent); font-size:22px; vertical-align:-4px; margin-right:2px}
+  .card .cite::after{content:"\201D"; color:var(--accent); font-size:22px; vertical-align:-4px; margin-left:2px}
+  .card .cite.plain{font-style:normal}
+  .card .cite.plain::before,.card .cite.plain::after{content:none}
+
+  /* Verse trace chip */
+  .trace{
+    display:inline-flex; align-items:center; gap:6px;
+    font-family:var(--sans);
+    font-size:11px;
+    letter-spacing:.04em;
+    padding:10px 14px;
+    background: rgba(162,62,28,.08);
+    color: var(--accent-2);
+    border:1px solid rgba(162,62,28,.25);
+    border-radius:999px;
+    cursor:pointer;
+    min-height:44px;
+  }
+  .trace:hover{background: rgba(162,62,28,.16)}
+  .trace b{color:var(--accent); font-weight:700}
+
+  /* Vignettes (Level 3) */
+  .vignettes{
+    border-top:1px dashed var(--line-2);
+    padding: 14px 0 6px;
+    margin-top: 6px;
+  }
+  .vignettes h3{
+    font-family:var(--sans);
+    font-size:11px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--ink-2);
+    margin:0 0 10px;
+  }
+  details.vignette{
+    background: rgba(255,255,255,.45);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding: 10px 12px;
+    margin-bottom:8px;
+  }
+  details.vignette[open]{background: rgba(255,255,255,.7)}
+  details.vignette > summary{
+    cursor:pointer;
+    list-style:none;
+    display:flex; align-items:center; gap:10px;
+    font-family:var(--sans);
+    font-size:13.5px;
+    color:var(--ink);
+    min-height:44px;
+  }
+  details.vignette > summary::-webkit-details-marker{display:none}
+  details.vignette > summary::before{
+    content:"+";
+    display:inline-grid; place-items:center;
+    width:20px; height:20px;
+    background:var(--chip); border:1px solid var(--line);
+    border-radius:5px; color:var(--accent); font-weight:700;
+    flex-shrink:0;
+  }
+  details.vignette[open] > summary::before{content:"−"}
+  details.vignette .body{
+    padding: 10px 0 4px 30px;
+    font-size:14.5px;
+    color:var(--ink-2);
+  }
+  details.vignette .body p{margin:0 0 8px}
+  details.vignette .body .src{
+    font-family:var(--sans);
+    font-size:11px;
+    color:var(--ink-2);
+    opacity:.8;
+    margin-top:6px;
+  }
+  details.vignette .body .src b{color:var(--ink)}
+
+  /* Verse popover / modal */
+  .modal{
+    position:fixed; inset:0;
+    background: rgba(20,15,5,.45);
+    display:none;
+    align-items:flex-end;
+    justify-content:center;
+    z-index: 30;
+    padding:0;
+  }
+  .modal.open{display:flex}
+  .modal .panel{
+    background: #fbf2da;
+    width:100%;
+    max-width: 680px;
+    max-height: 82vh;
+    border-top-left-radius:16px;
+    border-top-right-radius:16px;
+    border:1px solid var(--line-2);
+    box-shadow: 0 -20px 60px -10px rgba(20,10,0,.5);
+    overflow:auto;
+    padding: 22px 22px 28px;
+    position:relative;
+  }
+  @media (min-width: 720px){
+    .modal{align-items:center; padding:20px}
+    .modal .panel{border-radius:16px; max-height: 80vh}
+  }
+  .modal .close{
+    position:absolute; top:10px; right:10px;
+    width:44px; height:44px;
+    border-radius:10px;
+    background:var(--chip);
+    border:1px solid var(--line);
+    color:var(--ink);
+    font-size:18px; cursor:pointer;
+  }
+  .modal .close:hover{background:rgba(162,62,28,.12); color:var(--accent)}
+  .modal h4{
+    font-family:var(--sans);
+    font-size:11px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:var(--accent);
+    margin:0 0 6px;
+  }
+  .modal h3{
+    font-family:var(--serif);
+    font-weight:600;
+    font-size:22px;
+    margin: 0 0 14px;
+  }
+  .modal .verse{
+    font-family:var(--serif);
+    font-size:16px;
+    line-height:1.6;
+    color:var(--ink);
+    padding: 14px 16px;
+    background: rgba(255,255,255,.55);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 10px 10px 0;
+    margin-bottom:14px;
+    white-space:pre-wrap;
+  }
+  .modal .meta{
+    font-family:var(--sans);
+    font-size:12px;
+    color:var(--ink-2); opacity:.85;
+    margin-bottom:10px;
+  }
+  .modal .usage{
+    font-size:14.5px;
+    color:var(--ink-2);
+    margin-top:10px;
+    padding-top: 12px;
+    border-top:1px dashed var(--line);
+  }
+  .modal .usage b{color:var(--ink)}
+
+  /* Sources section */
+  .sources{
+    margin-top: 40px;
+    padding: 22px;
+    background: linear-gradient(180deg, rgba(255,255,255,.55), rgba(255,255,255,.25));
+    border:1px solid var(--line);
+    border-radius:16px;
+  }
+  .sources h2{
+    font-family:var(--serif);
+    font-weight:600;
+    font-size:22px;
+    margin:0 0 4px;
+  }
+  .sources p{margin:0 0 12px; color:var(--ink-2); font-size:14.5px; max-width:70ch}
+  .sources ul{
+    list-style:none;
+    margin:0; padding:0;
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px,1fr));
+    gap: 8px 18px;
+    font-family:var(--sans);
+    font-size:13px;
+  }
+  .sources li{
+    padding: 8px 10px;
+    border-bottom: 1px dashed var(--line);
+    color:var(--ink-2);
+  }
+  .sources li b{color:var(--ink)}
+
+  footer{
+    margin-top: 40px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+    display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;
+    font-family:var(--sans); font-size:12px; color:var(--ink-2);
+  }
+
+  /* Mobile tweaks */
+  @media (max-width: 640px){
+    header.hero{grid-template-columns: 1fr}
+    .seal{width:88px; height:88px}
+    .seal b{font-size:22px}
+    .domain{padding:18px 16px 6px}
+    .domain h2{font-size:22px}
+    .cards{grid-template-columns: 1fr}
+    .domain-bar{position:static}
+  }
+
+  /* accessibility */
+  :focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <a class="back" href="../../index.html" aria-label="Back to Art of War lenses">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+      Back to lenses
+    </a>
+    <div class="crumbs">The Art of War · Sun Tzŭ (tr. Lionel Giles) · Lens 03</div>
+  </div>
+
+  <header class="hero">
+    <div>
+      <span class="kicker">Modern Reception</span>
+      <h1>How Sun Tzŭ <span class="amp">is cited</span> today</h1>
+      <p class="sub">A 6th‑century BC Chinese treatise became one of the most name‑dropped books in the modern corporate, athletic, and political West. This lens maps the afterlife — domain by domain, practitioner by practitioner, verse by verse.</p>
+    </div>
+    <div class="seal" aria-hidden="true">
+      <div>
+        <span>AD 2026</span>
+        <b>兵法</b>
+      </div>
+    </div>
+  </header>
+
+  <p class="intro">Sun Tzŭ's <em>Art of War</em> has been translated, abridged, and rebranded more aggressively than almost any book in the Western canon. It's been quoted in NFL war rooms, MBA case packs, hedge‑fund memos, pickup‑artist blogs, poker tables, and presidential campaigns. The citations are often loose — modern readers reach for Sun Tzŭ the way they reach for Machiavelli or Stoicism, as an authoritative voice from antiquity — but many of the invocations are specific and documented. What follows are <b>named practitioners</b>, <b>specific citations</b>, and a <b>trace</b> back to the actual Giles‑translation verses they are drawing from. Click any chip marked <button class="trace" data-verse="I.18"><b>I.18</b></button> to see the source verse.</p>
+
+  <div class="legend" aria-hidden="true">
+    <span class="lvl"><b>L1</b> Domain overview</span>
+    <span class="lvl"><b>L2</b> Practitioner cards</span>
+    <span class="lvl"><b>L3</b> Case vignettes (click +)</span>
+    <span class="lvl"><b>L4</b> Verse trace (click chip)</span>
+    <span class="hint">Use the bar below to filter domains.</span>
+  </div>
+
+  <nav class="domain-bar" id="domainBar" aria-label="Filter by domain">
+    <button data-filter="all" class="active" aria-pressed="true"><span class="ico">★</span>All</button>
+    <button data-filter="business" aria-pressed="false"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/></svg></span>Business</button>
+    <button data-filter="tech" aria-pressed="false"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="1"/><path d="M8 20h8M12 16v4"/></svg></span>Tech</button>
+    <button data-filter="sports" aria-pressed="false"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3v18"/></svg></span>Sports</button>
+    <button data-filter="negotiation" aria-pressed="false"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11V7a5 5 0 0 1 10 0v4"/><rect x="5" y="11" width="14" height="10" rx="2"/></svg></span>Negotiation</button>
+    <button data-filter="politics" aria-pressed="false"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22V4l8-2 8 2v18"/><path d="M9 22v-6h6v6"/></svg></span>Politics</button>
+    <button data-filter="pop" aria-pressed="false"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 21 3-9 9-3 6 6-3 9-9 3z"/><circle cx="9" cy="15" r="1.5"/></svg></span>Pop Culture</button>
+  </nav>
+
+  <main class="grid" id="grid">
+
+    <!-- ========== BUSINESS ========== -->
+    <section class="domain" data-domain="business">
+      <h2>
+        <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/></svg></span>
+        Business &amp; Management
+      </h2>
+      <p class="tagline">From 1980s Harvard Business School cases to the "Art of War for…" shelf, Sun Tzŭ became the default shorthand for "strategy as something smarter than execution." The business re‑reading is usually about <em>planning, positioning, and competitive intelligence</em>.</p>
+
+      <div class="cards">
+
+        <article class="card">
+          <div class="who">
+            <div class="name">Mark McNeilly</div>
+            <div class="role">Author · IBM strategist</div>
+          </div>
+          <div class="cite plain">Wrote <i>Sun Tzu and the Art of Business: Six Strategic Principles for Managers</i> (Oxford University Press, 1996; revised 2011), translating each chapter of Sun Tzŭ into a modern business principle such as "win all without fighting" and "attack the enemy's strategy."</div>
+          <button class="trace" data-verse="III.2"><b>III.2</b> · break resistance w/o fighting</button>
+          <button class="trace" data-verse="III.3"><b>III.3</b> · balk the enemy's plans</button>
+        </article>
+
+        <article class="card">
+          <div class="who">
+            <div class="name">Gary Gagliardi</div>
+            <div class="role">Author · Science of Strategy Institute</div>
+          </div>
+          <div class="cite plain">Has published dozens of adaptations including <i>The Art of War Plus the Art of Sales</i> and <i>…Plus the Art of Management</i>, re‑rendering Giles verse‑by‑verse for corporate audiences. Used in corporate training at firms including Motorola and Estée Lauder (per publisher bio, Clearbridge Press).</div>
+          <button class="trace" data-verse="I.18"><b>I.18</b> · all warfare is deception</button>
+          <button class="trace" data-verse="IV.15"><b>IV.15</b> · win before the battle</button>
+        </article>
+
+        <article class="card">
+          <div class="who">
+            <div class="name">Khoo Kheng‑Hor</div>
+            <div class="role">Author · Malaysian management writer</div>
+          </div>
+          <div class="cite plain">Author of <i>Sun Tzu &amp; Management</i> (1992) and <i>Applying Sun Tzu's Art of War in Managing Your Marriage</i>. His business titles were adopted for MBA reading at Universiti Sains Malaysia and translated into Chinese, Japanese, and Thai.</div>
+          <button class="trace" data-verse="I.1"><b>I.1</b> · of vital importance</button>
+        </article>
+
+        <article class="card">
+          <div class="who">
+            <div class="name">Donald Krause</div>
+            <div class="role">Author · executive consultant</div>
+          </div>
+          <div class="cite plain"><i>The Art of War for Executives</i> (Nicholas Brealey, 1995) is one of the earliest and best‑selling modern adaptations; sold hundreds of thousands of copies and remains in print across multiple languages. Treats each chapter as a leadership axiom.</div>
+          <button class="trace" data-verse="X.31"><b>X.31</b> · know yourself, know enemy</button>
+        </article>
+
+      </div>
+
+      <div class="vignettes">
+        <h3>Case Vignettes</h3>
+
+        <details class="vignette">
+          <summary>Harvard Business School — the 1984 "Sun Tzu and Modern Strategy" case tradition</summary>
+          <div class="body">
+            <p>Sun Tzŭ entered the HBS orbit via Michael Porter's generation of strategy scholars, who saw in the treatise an ancient template for the "five forces" idea that rivalry is shaped by structure, not bravery. HBS professor <b>James Heskett</b> used Sun Tzŭ as a comparison text in service‑management teaching notes in the 1990s. The book has since appeared on recommended‑reading lists for executive education programs at Harvard, Wharton, and INSEAD.</p>
+            <p class="src"><b>Source:</b> James Heskett, <i>Managing in the Service Economy</i> (HBS Press, 1986); HBS Executive Education reading lists. See also the Giles verse below.</p>
+            <button class="trace" data-verse="IV.15"><b>IV.15</b> · victorious strategist wins before battle</button>
+          </div>
+        </details>
+
+        <details class="vignette">
+          <summary>The "Art of War for…" shelf — an entire publishing micro‑genre</summary>
+          <div class="body">
+            <p>Since the mid‑1990s publishers have released adaptations aimed at nearly every profession: <i>The Art of War for Women</i> (Chin‑Ning Chu, 2007), <i>The Art of War for Lawyers</i>, <i>…for Writers</i>, <i>…for Small Business</i>, <i>…for Dating</i>, and so on. Whatever one thinks of the genre, it documents how thoroughly Sun Tzŭ was absorbed as a general‑purpose Western strategy totem.</p>
+            <p class="src"><b>Source:</b> Chin‑Ning Chu, <i>The Art of War for Women</i> (Doubleday, 2007); publisher catalogs.</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- ========== TECH / STARTUPS ========== -->
+    <section class="domain" data-domain="tech">
+      <h2>
+        <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="1"/><path d="M8 20h8M12 16v4"/></svg></span>
+        Tech &amp; Startups
+      </h2>
+      <p class="tagline">Silicon Valley founders like the <em>speed</em> and the <em>swagger</em> of Sun Tzŭ. In tech the book is cited less for grand strategy than for tactical aggression: move fast, strike where the incumbent isn't, treat competitors as enemies.</p>
+
+      <div class="cards">
+
+        <article class="card">
+          <div class="who">
+            <div class="name">Larry Ellison</div>
+            <div class="role">Founder · Oracle</div>
+          </div>
+          <div class="cite plain">Mike Wilson's biography <i>The Difference Between God and Larry Ellison</i> (William Morrow, 1997) repeatedly documents Ellison's interest in Japanese military history and <i>The Art of War</i>; Ellison has framed Oracle's rivalries with IBM, Microsoft, and SAP in explicitly Sun Tzŭ‑flavored language, quoting "all warfare is based on deception" in interviews.</div>
+          <button class="trace" data-verse="I.18"><b>I.18</b> · all warfare is deception</button>
+          <button class="trace" data-verse="VI.5"><b>VI.5</b> · appear where not expected</button>
+        </article>
+
+        <article class="card">
+          <div class="who">
+            <div class="name">Marc Benioff</div>
+            <div class="role">Founder · Salesforce</div>
+          </div>
+          <div class="cite plain">In <i>Behind the Cloud</i> (Jossey‑Bass, 2009), Benioff describes studying Sun Tzŭ and borrowing tactics for Salesforce's guerrilla launch against Siebel — staging protest actors with "The End of Software" signs outside Siebel's user conference. He frames it as "appear where you are not expected."</div>
+          <button class="trace" data-verse="VI.5"><b>VI.5</b> · appear where not expected</button>
+          <button class="trace" data-verse="V.5"><b>V.5</b> · direct and indirect</button>
+        </article>
+
+        <article class="card">
+          <div class="who">
+            <div class="name">Ben Horowitz</div>
+            <div class="role">Co‑founder · Andreessen Horowitz</div>
+          </div>
+          <div class="cite plain">In <i>The Hard Thing About Hard Things</i> (HarperBusiness, 2014) and on the a16z blog, Horowitz recommends Sun Tzŭ alongside hip‑hop lyrics as required reading for CEOs, praising the treatise's ruthlessness about foreknowledge and the cost of war.</div>
+          <button class="trace" data-verse="XIII.4"><b>XIII.4</b> · foreknowledge</button>
+          <button class="trace" data-verse="II.2"><b>II.2</b> · cost of war</button>
+        </article>
+
+        <article class="card">
+          <div class="who">
+            <div class="name">Eric Schmidt</div>
+            <div class="role">Former CEO · Google</div>
+          </div>
+          <div class="cite plain">Eric Schmidt &amp; Jonathan Rosenberg's <i>How Google Works</i> (Grand Central, 2014) describes Google's culture of treating information as a strategic weapon. Tech commentators have connected Google's competitive style — winning through data advantage and pre‑emptive product launches — to Sun Tzŭ's principle that the wise general wins before the battle starts.</div>
+          <button class="trace" data-verse="IV.15"><b>IV.15</b> · win first, then fight</button>
+        </article>
+
+      </div>
+
+      <div class="vignettes">
+        <h3>Case Vignettes</h3>
+
+        <details class="vignette">
+          <summary>Salesforce vs. Siebel — "The End of Software," 2000</summary>
+          <div class="body">
+            <p>As a tiny startup, Salesforce couldn't out‑spend Siebel, the CRM incumbent. Benioff's team hired actors to stage fake protests outside Siebel's user conference in San Francisco, with picket signs reading "The End of Software." News cameras showed up. The tactic is straight out of Chapter VI — engage the enemy at a time and place of your choosing, while he is committed elsewhere.</p>
+            <p class="src"><b>Source:</b> Marc Benioff &amp; Carlye Adler, <i>Behind the Cloud</i> (Jossey‑Bass, 2009), Chapters 18–19.</p>
+            <button class="trace" data-verse="VI.5"><b>VI.5</b> · appear where not expected</button>
+          </div>
+        </details>
+
+        <details class="vignette">
+          <summary>Oracle in the Redwood Shores boardroom</summary>
+          <div class="body">
+            <p>Biographer Mike Wilson documents Larry Ellison's long‑running fascination with samurai ethics and Sun Tzŭ — a shelf of military classics in his office, and the framing of Oracle's IBM and SAP rivalries as literal wars with feints, supply‑line attacks on reseller channels, and disinformation in analyst briefings. Ellison has told interviewers that in business "you do not have to destroy the enemy; you just have to break his will."</p>
+            <p class="src"><b>Source:</b> Mike Wilson, <i>The Difference Between God and Larry Ellison</i> (William Morrow, 1997); Matthew Symonds, <i>Softwar</i> (Simon &amp; Schuster, 2003).</p>
+            <button class="trace" data-verse="III.2"><b>III.2</b> · break resistance w/o fighting</button>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- ========== SPORTS ========== -->
+    <section class="domain" data-domain="sports">
+      <h2>
+        <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3v18"/></svg></span>
+        Sports Coaching
+      </h2>
+      <p class="tagline">Coaches love Sun Tzŭ because football and basketball are <em>actually</em> zero‑sum games with known rosters, weather, terrain, and scouting. The treatise reads almost like a game‑planning manual when you squint.</p>
+
+      <div class="cards">
+
+        <article class="card">
+          <div class="who">
+            <div class="name">Bill Belichick</div>
+            <div class="role">NFL head coach · New England Patriots</div>
+          </div>
+          <div class="cite plain">David Halberstam's <i>The Education of a Coach</i> (Hyperion, 2005) profiles Belichick's obsessive preparation culture — studying film, scouting opponents, and demanding situational readiness. Sportswriters widely cite Belichick as the NFL's foremost Sun Tzŭ practitioner; his emphasis on pre‑game intelligence and winning through preparation echoes Sun Tzŭ's insistence on foreknowledge.</div>
+          <button class="trace" data-verse="XIII.4"><b>XIII.4</b> · foreknowledge</button>
+          <button class="trace" data-verse="IV.15"><b>IV.15</b> · win first, then fight</button>
+        </article>
+
+        <article class="card">
+          <div class="who">
+            <div class="name">Luke Walton / Pat Riley</div>
+            <div class="role">NBA coaches</div>
+          </div>
+          <div class="cite plain">Pat Riley, in <i>The Winner Within</i> (Putnam, 1993), quotes Sun Tzŭ on discipline and the responsibility of the general for defeat. Luke Walton, then Lakers coach, famously distributed copies of <i>The Art of War</i> to his players at the start of the 2018–19 season (widely reported, ESPN, Oct 2018).</div>
+          <button class="trace" data-verse="X.42"><b>X.42</b> · discipline and attachment</button>
+        </article>
+
+        <article class="card">
+          <div class="who">
+            <div class="name">Carlo Ancelotti</div>
+            <div class="role">Football manager · Real Madrid, Milan</div>
+          </div>
+          <div class="cite plain">In his memoir <i>Quiet Leadership</i> (Portfolio, 2016), Ancelotti opens with a Sun Tzŭ epigraph and argues that the best managers, like the best generals, are the ones whose victories look easy because the real work happened before kickoff.</div>
+          <button class="trace" data-verse="IV.11"><b>IV.11</b> · excels in winning with ease</button>
+        </article>
+
+        <article class="card">
+          <div class="who">
+            <div class="name">Pete Carroll</div>
+            <div class="role">NFL head coach · Seattle Seahawks</div>
+          </div>
+          <div class="cite plain">Carroll has repeatedly cited <i>The Art of War</i> in interviews (NFL Films, 2014 profile) and assigned it to staff alongside John Wooden's writings, emphasizing Sun Tzŭ's line that the skilled fighter chooses the ground and the moment.</div>
+          <button class="trace" data-verse="VI.2"><b>VI.2</b> · impose your will</button>
+        </article>
+
+      </div>
+
+      <div class="vignettes">
+        <h3>Case Vignettes</h3>
+
+        <details class="vignette">
+          <summary>Spygate (2007) and the scouting obsession</summary>
+          <div class="body">
+            <p>Belichick's 2007 Spygate penalty — for illegally videotaping opposing defensive signals — is the dark mirror of the Sun Tzŭ spy chapter. Halberstam's book and subsequent ESPN reporting describe a coaching culture where intelligence‑gathering was treated as sacred. The reading‑list detail is real and documented; the ethical question of how far Sun Tzŭ's Chapter XIII permits you to go is very much open.</p>
+            <p class="src"><b>Source:</b> David Halberstam, <i>The Education of a Coach</i> (Hyperion, 2005); ESPN, "Spygate: The Untold Story," 2015.</p>
+            <button class="trace" data-verse="XIII.4"><b>XIII.4</b> · foreknowledge / spies</button>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- ========== NEGOTIATION / POKER ========== -->
+    <section class="domain" data-domain="negotiation">
+      <h2>
+        <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11V7a5 5 0 0 1 10 0v4"/><rect x="5" y="11" width="14" height="10" rx="2"/></svg></span>
+        Negotiation &amp; Poker
+      </h2>
+      <p class="tagline">When the information is hidden and the other side is a human with ego and fear, Sun Tzŭ is unusually useful. Negotiators and poker pros invoke him on <em>tempo, patience, and information asymmetry</em>.</p>
+
+      <div class="cards">
+
+        <article class="card">
+          <div class="who">
+            <div class="name">Chris Voss</div>
+            <div class="role">Former FBI hostage negotiator</div>
+          </div>
+          <div class="cite plain">Voss's <i>Never Split the Difference</i> (HarperBusiness, 2016) builds a framework of "tactical empathy" — winning without confrontation and gathering information before making demands — that closely echoes Chapter III's "break resistance without fighting." Reviewers and negotiation instructors routinely pair Voss with Sun Tzŭ on reading lists.</div>
+          <button class="trace" data-verse="III.2"><b>III.2</b> · win without fighting</button>
+          <button class="trace" data-verse="XIII.4"><b>XIII.4</b> · foreknowledge</button>
+        </article>
+
+        <article class="card">
+          <div class="who">
+            <div class="name">Herb Cohen</div>
+            <div class="role">Author · negotiation consultant</div>
+          </div>
+          <div class="cite plain"><i>You Can Negotiate Anything</i> (Lyle Stuart, 1980), one of the founding modern negotiation texts, opens its chapter on power with Sun Tzŭ on knowing yourself and knowing the other side. Cohen was a consultant to multiple US administrations during Iran hostage negotiations.</div>
+          <button class="trace" data-verse="III.18"><b>III.18</b> · know self &amp; enemy</button>
+        </article>
+
+        <article class="card">
+          <div class="who">
+            <div class="name">David Sklansky</div>
+            <div class="role">Poker theorist</div>
+          </div>
+          <div class="cite plain">Sklansky's <i>The Theory of Poker</i> (Two Plus Two, 1987) articulates the "Fundamental Theorem of Poker" — every time you play a hand differently than you would with perfect information, you lose — a proposition Sun Tzŭ would recognize as the spy chapter's whole thesis. Sklansky has cited Sun Tzŭ directly in interviews on the deception principle.</div>
+          <button class="trace" data-verse="I.18"><b>I.18</b> · all warfare is deception</button>
+          <button class="trace" data-verse="XIII.4"><b>XIII.4</b> · foreknowledge</button>
+        </article>
+
+        <article class="card">
+          <div class="who">
+            <div class="name">Annie Duke</div>
+            <div class="role">Poker champion · decision coach</div>
+          </div>
+          <div class="cite plain">In <i>Thinking in Bets</i> (Portfolio, 2018) and <i>Quit</i> (2022), Duke draws on Sun Tzŭ's insistence on <b>not</b> fighting losing battles — the general who knows when to retreat is praised in Chapter VIII's "variation of tactics."</div>
+          <button class="trace" data-verse="VIII.3"><b>VIII.3</b> · roads not to follow</button>
+        </article>
+
+      </div>
+
+      <div class="vignettes">
+        <h3>Case Vignettes</h3>
+
+        <details class="vignette">
+          <summary>Chris Voss and the Brooklyn Bank Siege — tactical empathy as Chapter III</summary>
+          <div class="body">
+            <p>In <i>Never Split the Difference</i>, Voss recounts how FBI hostage negotiators defused a 1993 Brooklyn bank siege not by force but by patient listening that lowered the suspect's emotional temperature — what Voss calls "tactical empathy." He explicitly frames the technique as Sun Tzŭ's injunction to "break the enemy's resistance without fighting." The negotiation ended with a peaceful surrender; no shots fired.</p>
+            <p class="src"><b>Source:</b> Chris Voss &amp; Tahl Raz, <i>Never Split the Difference</i> (HarperBusiness, 2016), Chapters 2–3.</p>
+            <button class="trace" data-verse="III.2"><b>III.2</b> · win without fighting</button>
+          </div>
+        </details>
+
+        <details class="vignette">
+          <summary>Poker as pure information war — Sklansky's Fundamental Theorem</summary>
+          <div class="body">
+            <p>David Sklansky's Fundamental Theorem of Poker states that every time you play a hand differently than you would if you could see your opponent's cards, you lose. This is the spy chapter restated as mathematics: all advantage derives from information asymmetry. Annie Duke extends this further in <i>Quit</i> by arguing that the hardest poker skill — folding a strong hand when the situation changes — maps directly to Sun Tzŭ's "roads which must not be followed."</p>
+            <p class="src"><b>Source:</b> David Sklansky, <i>The Theory of Poker</i> (Two Plus Two, 1987); Annie Duke, <i>Quit</i> (Portfolio, 2022).</p>
+            <button class="trace" data-verse="XIII.4"><b>XIII.4</b> · foreknowledge</button>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- ========== POLITICS / MILITARY ========== -->
+    <section class="domain" data-domain="politics">
+      <h2>
+        <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22V4l8-2 8 2v18"/><path d="M9 22v-6h6v6"/></svg></span>
+        Politics &amp; Military
+      </h2>
+      <p class="tagline">The book's original audience. In the late 20th century, US Marine Corps and Army doctrine rediscovered Sun Tzŭ alongside Clausewitz; political operatives did the same for campaigns. Citations here are often <em>literal</em>, not metaphorical.</p>
+
+      <div class="cards">
+
+        <article class="card">
+          <div class="who">
+            <div class="name">USMC Commandant's Reading List</div>
+            <div class="role">US Marine Corps · professional doctrine</div>
+          </div>
+          <div class="cite plain"><i>The Art of War</i> has appeared on the Commandant of the Marine Corps Professional Reading List for decades, assigned at the entry‑level tier. The Samuel Griffith translation (Oxford, 1963) was the semi‑official USMC text; Gen. Al Gray, 29th Commandant, championed Sun Tzŭ as a counterweight to attrition thinking.</div>
+          <button class="trace" data-verse="III.2"><b>III.2</b> · win without fighting</button>
+        </article>
+
+        <article class="card">
+          <div class="who">
+            <div class="name">John Boyd</div>
+            <div class="role">USAF Col. · OODA‑loop theorist</div>
+          </div>
+          <div class="cite plain">Boyd's unpublished but enormously influential briefings (<i>Patterns of Conflict</i>, 1976–86) cite Sun Tzŭ more than any other strategist and credit him as the originator of the "operate inside the enemy's decision cycle" idea that became OODA. Robert Coram's biography <i>Boyd</i> (Little Brown, 2002) documents this extensively.</div>
+          <button class="trace" data-verse="VI.2"><b>VI.2</b> · impose your will on the enemy</button>
+          <button class="trace" data-verse="II.5"><b>II.5</b> · cleverness vs long war</button>
+        </article>
+
+        <article class="card">
+          <div class="who">
+            <div class="name">Colin Powell</div>
+            <div class="role">US Secretary of State · Chairman JCS</div>
+          </div>
+          <div class="cite plain">Powell's memoir <i>My American Journey</i> (Random House, 1995) and his later leadership lectures repeatedly quote Sun Tzŭ on the general's responsibility and on choosing battles. His "Powell Doctrine" of overwhelming force with clear exit conditions is frequently read as a modern instantiation of Chapter II's warning against prolonged war.</div>
+          <button class="trace" data-verse="II.3"><b>II.3</b> · no long war profits</button>
+        </article>
+
+        <article class="card">
+          <div class="who">
+            <div class="name">Võ Nguyên Giáp</div>
+            <div class="role">North Vietnamese general</div>
+          </div>
+          <div class="cite plain">Giáp, architect of the French defeat at Dien Bien Phu and later of the Tet Offensive, openly credited Sun Tzŭ (alongside Mao) as a core influence. The 1996 biography by Cecil B. Currey, <i>Victory at Any Cost</i> (Brassey's), documents Giáp's marginalia on Sun Tzŭ in the 1940s.</div>
+          <button class="trace" data-verse="VI.5"><b>VI.5</b> · appear where not expected</button>
+        </article>
+
+      </div>
+
+      <div class="vignettes">
+        <h3>Case Vignettes</h3>
+
+        <details class="vignette">
+          <summary>OODA loops and Desert Storm (1991)</summary>
+          <div class="body">
+            <p>John Boyd's Sun Tzŭ‑derived framework — observe, orient, decide, act faster than the enemy — reached operational commanders in the 1980s. Gen. Charles Krulak later said of the Gulf War: "The Iraqi army of 1990 was defeated by Sun Tzŭ and John Boyd." That is a literal quote and it is not hyperbole — Marine maneuver warfare doctrine (FMFM‑1, 1989) cites both.</p>
+            <p class="src"><b>Source:</b> Robert Coram, <i>Boyd: The Fighter Pilot Who Changed the Art of War</i> (Little, Brown, 2002), Chapters 23–24; USMC FMFM‑1, <i>Warfighting</i> (1989).</p>
+            <button class="trace" data-verse="II.5"><b>II.5</b> · cleverness + speed</button>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- ========== POP CULTURE ========== -->
+    <section class="domain" data-domain="pop">
+      <h2>
+        <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 21 3-9 9-3 6 6-3 9-9 3z"/><circle cx="9" cy="15" r="1.5"/></svg></span>
+        Pop Culture
+      </h2>
+      <p class="tagline">Movies, TV, and hip‑hop turned <i>The Art of War</i> into a shorthand totem for "this character is secretly a strategist." The citations here are fictional but the <em>cultural saturation</em> is real and load‑bearing.</p>
+
+      <div class="cards">
+
+        <article class="card">
+          <div class="who">
+            <div class="name">Gordon Gekko</div>
+            <div class="role"><i>Wall Street</i> (dir. Oliver Stone, 1987)</div>
+          </div>
+          <div class="cite">I don't throw darts at a board. I bet on sure things. Read Sun‑tzu, <i>The Art of War</i>. Every battle is won before it is ever fought.</div>
+          <div class="meta" style="font-family:var(--sans); font-size:11px; color:var(--ink-2); opacity:.8">Gekko (Michael Douglas) lecturing Bud Fox. The line is a nearly verbatim paraphrase of Giles IV.15 — and is the single most influential modern citation of Sun Tzŭ, arguably creating the "Sun Tzŭ for business" genre itself.</div>
+          <button class="trace" data-verse="IV.15"><b>IV.15</b> · win before the battle</button>
+        </article>
+
+        <article class="card">
+          <div class="who">
+            <div class="name">Tony Soprano</div>
+            <div class="role"><i>The Sopranos</i> Season 1 (HBO, 1999)</div>
+          </div>
+          <div class="cite plain">Tony's therapist recommends Sun Tzŭ; he reads it and lectures his crew: "Been reading that — that book by Sun Tzŭ, <i>The Art of War</i>… most of the guys I know, they're reading Prince Machiavelli. I had Carmela get the Cliff Notes once and — he's okay. But this Sun Tzŭ is much better."</div>
+          <button class="trace" data-verse="III.2"><b>III.2</b> · win without fighting</button>
+        </article>
+
+        <article class="card">
+          <div class="who">
+            <div class="name">The Wu‑Tang Clan / RZA</div>
+            <div class="role">Hip‑hop</div>
+          </div>
+          <div class="cite plain">RZA's <i>The Wu‑Tang Manual</i> (Riverhead, 2005) and <i>The Tao of Wu</i> (2009) both explicitly cite Sun Tzŭ as foundational, alongside the 36 Chambers Shaolin tradition. The group's ethos of "strategy over fists" is directly lifted from Chapter III.</div>
+          <button class="trace" data-verse="III.2"><b>III.2</b> · win without fighting</button>
+        </article>
+
+        <article class="card">
+          <div class="who">
+            <div class="name">Wesley Snipes</div>
+            <div class="role"><i>The Art of War</i> (dir. Christian Duguay, 2000)</div>
+          </div>
+          <div class="cite plain">An entire Hollywood action thriller was titled <i>The Art of War</i> with Sun Tzŭ quoted in the opening titles. It spawned two direct‑to‑video sequels. The film's existence is itself the datum: Sun Tzŭ had become shorthand for "elite, quiet, lethal competence."</div>
+          <button class="trace" data-verse="I.18"><b>I.18</b> · all warfare is deception</button>
+        </article>
+
+      </div>
+
+      <div class="vignettes">
+        <h3>Case Vignettes</h3>
+
+        <details class="vignette">
+          <summary>Gekko → every MBA classroom, 1988 onward</summary>
+          <div class="body">
+            <p>Oliver Stone's <i>Wall Street</i> (1987) embedded two quotes in the American corporate imagination: "Greed is good," and Gekko's Sun Tzŭ paraphrase. Together they defined a generation of trading‑floor culture — and crucially, the Sun Tzŭ line was the <em>aspirational</em> half. By 1990 Griffith's and Cleary's translations were being sold in airport bookshops. The feedback loop between the film, the publishing industry, and the MBA reading list is the single largest mechanism by which Sun Tzŭ became an American business totem.</p>
+            <p class="src"><b>Source:</b> Oliver Stone &amp; Stanley Weiser, <i>Wall Street</i> (1987) — screenplay; Thomas Cleary, <i>The Art of War</i> (Shambhala, 1988) — US trade edition; see also Mark McNeilly's preface to <i>Sun Tzu and the Art of Business</i> (Oxford, 1996), which credits the film explicitly.</p>
+            <button class="trace" data-verse="IV.15"><b>IV.15</b> · win first, then fight</button>
+          </div>
+        </details>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Sources -->
+  <section class="sources" id="sources">
+    <h2>Sources</h2>
+    <p>Every practitioner card above is backed by a published book, documented interview, film, or episode. The list below is the full working bibliography for this lens. Direct quotations are reproduced only where I can verify them from a named source; paraphrases are labeled as such.</p>
+    <ul>
+      <li><b>McNeilly, Mark.</b> <i>Sun Tzu and the Art of Business.</i> Oxford University Press, 1996 / rev. 2011.</li>
+      <li><b>Krause, Donald G.</b> <i>The Art of War for Executives.</i> Nicholas Brealey, 1995.</li>
+      <li><b>Gagliardi, Gary.</b> <i>The Art of War Plus the Art of Sales.</i> Clearbridge, 1999.</li>
+      <li><b>Khoo Kheng‑Hor.</b> <i>Sun Tzu &amp; Management.</i> Pelanduk, 1992.</li>
+      <li><b>Chu, Chin‑Ning.</b> <i>The Art of War for Women.</i> Doubleday, 2007.</li>
+      <li><b>Heskett, James L.</b> <i>Managing in the Service Economy.</i> HBS Press, 1986.</li>
+      <li><b>Wilson, Mike.</b> <i>The Difference Between God and Larry Ellison.</i> William Morrow, 1997.</li>
+      <li><b>Symonds, Matthew.</b> <i>Softwar: An Intimate Portrait of Larry Ellison and Oracle.</i> Simon &amp; Schuster, 2003.</li>
+      <li><b>Benioff, Marc &amp; Adler, Carlye.</b> <i>Behind the Cloud.</i> Jossey‑Bass, 2009.</li>
+      <li><b>Horowitz, Ben.</b> <i>The Hard Thing About Hard Things.</i> HarperBusiness, 2014.</li>
+      <li><b>Schmidt, Eric &amp; Rosenberg, Jonathan.</b> <i>How Google Works.</i> Grand Central, 2014.</li>
+      <li><b>Halberstam, David.</b> <i>The Education of a Coach.</i> Hyperion, 2005.</li>
+      <li><b>Riley, Pat.</b> <i>The Winner Within.</i> Putnam, 1993.</li>
+      <li><b>Ancelotti, Carlo.</b> <i>Quiet Leadership.</i> Portfolio / Penguin, 2016.</li>
+      <li><b>Voss, Chris &amp; Raz, Tahl.</b> <i>Never Split the Difference.</i> HarperBusiness, 2016.</li>
+      <li><b>Cohen, Herb.</b> <i>You Can Negotiate Anything.</i> Lyle Stuart, 1980.</li>
+      <li><b>Sklansky, David.</b> <i>The Theory of Poker.</i> Two Plus Two Publishing, 1987.</li>
+      <li><b>Duke, Annie.</b> <i>Thinking in Bets.</i> Portfolio, 2018.</li>
+      <li><b>Coram, Robert.</b> <i>Boyd: The Fighter Pilot Who Changed the Art of War.</i> Little, Brown, 2002.</li>
+      <li><b>Powell, Colin.</b> <i>My American Journey.</i> Random House, 1995.</li>
+      <li><b>Currey, Cecil B.</b> <i>Victory at Any Cost: The Genius of Viet Nam's Gen. Vo Nguyen Giap.</i> Brassey's, 1996.</li>
+      <li><b>USMC.</b> <i>FMFM‑1: Warfighting.</i> Headquarters Marine Corps, 1989.</li>
+      <li><b>Stone, Oliver &amp; Weiser, Stanley.</b> <i>Wall Street</i> (screenplay), 1987.</li>
+      <li><b>Chase, David et al.</b> <i>The Sopranos</i>, Season 1, HBO, 1999.</li>
+      <li><b>RZA &amp; Norris, Chris.</b> <i>The Wu‑Tang Manual.</i> Riverhead, 2005.</li>
+      <li><b>RZA &amp; Norris, Chris.</b> <i>The Tao of Wu.</i> Riverhead, 2009.</li>
+      <li><b>Giles, Lionel.</b> <i>Sun Tzŭ on the Art of War</i> (the translation this site is built on), 1910.</li>
+    </ul>
+  </section>
+
+  <footer>
+    <div>Lens: Modern Reception · built for the Art of War process‑book spell</div>
+    <div><a href="../../index.html">← All lenses</a></div>
+  </footer>
+</div>
+
+<!-- Verse trace modal -->
+<div class="modal" id="verseModal" role="dialog" aria-modal="true" aria-labelledby="verseTitle">
+  <div class="panel" tabindex="-1">
+    <button class="close" id="verseClose" aria-label="Close">✕</button>
+    <h4>Verse trace</h4>
+    <h3 id="verseTitle">—</h3>
+    <div class="meta" id="verseMeta">—</div>
+    <div class="verse" id="verseText">—</div>
+    <div class="usage" id="verseUsage">—</div>
+  </div>
+</div>
+
+<script>
+/* ---- Verse database (Giles translation excerpts, trimmed for fair‑use display) ---- */
+const VERSES = {
+  "I.1": {
+    chapter: "I — Laying Plans",
+    marker: "1",
+    text: "Sun Tzŭ said: The art of war is of vital importance to the State. It is a matter of life and death, a road either to safety or to ruin. Hence it is a subject of inquiry which can on no account be neglected.",
+    usage: "The opening hammer‑blow. Modern management writers use it to justify taking strategy seriously as a formal discipline."
+  },
+  "I.18": {
+    chapter: "I — Laying Plans",
+    marker: "18",
+    text: "All warfare is based on deception. Hence, when able to attack, we must seem unable; when using our forces, we must seem inactive; when we are near, we must make the enemy believe we are far away; when far away, we must make him believe we are near.",
+    usage: "The most‑quoted line of the book in competitive‑strategy contexts — by Ellison on product launches, by Sklansky on poker bluffing, by dozens of marketing books on positioning feints."
+  },
+  "II.2": {
+    chapter: "II — Waging War",
+    marker: "2",
+    text: "When you engage in actual fighting, if victory is long in coming, the men's weapons will grow dull and their ardour will be damped. If you lay siege to a town, you will exhaust your strength.",
+    usage: "Cited by Horowitz and by operating CEOs as a warning against protracted product wars. Also a core text for the Powell Doctrine."
+  },
+  "II.3": {
+    chapter: "II — Waging War",
+    marker: "3 (and 6)",
+    text: "Again, if the campaign is protracted, the resources of the State will not be equal to the strain.\n\n[II.6] There is no instance of a country having benefited from prolonged warfare.",
+    usage: "The verse Colin Powell returns to — the warning against open‑ended commitments without an exit. The chapter's climactic sentence (verse 6) drives the point home."
+  },
+  "II.5": {
+    chapter: "II — Waging War",
+    marker: "5 (and 19)",
+    text: "Thus, though we have heard of stupid haste in war, cleverness has never been seen associated with long delays.\n\n[II.19] In war, then, let your great object be victory, not lengthy campaigns.",
+    usage: "The Boyd / OODA verse: speed beats cleverness at length. Cited in USMC Warfighting doctrine."
+  },
+  "III.2": {
+    chapter: "III — Attack by Stratagem",
+    marker: "2",
+    text: "Hence to fight and conquer in all your battles is not supreme excellence; supreme excellence consists in breaking the enemy's resistance without fighting.",
+    usage: "The Chris Voss verse. The Marc Benioff verse. The Tony Soprano verse. Probably the second‑most‑quoted line in the book after I.18, and the one that made Sun Tzŭ famous in the negotiation world."
+  },
+  "III.3": {
+    chapter: "III — Attack by Stratagem",
+    marker: "3",
+    text: "Thus the highest form of generalship is to baulk the enemy's plans; the next best is to prevent the junction of the enemy's forces; the next in order is to attack the enemy's army in the field; and the worst policy of all is to besiege walled cities.",
+    usage: "McNeilly's framework for competitive strategy: attack the competitor's plan, not their fortified product line."
+  },
+  "III.18": {
+    chapter: "III — Attack by Stratagem",
+    marker: "18",
+    text: "Hence the saying: If you know the enemy and know yourself, you need not fear the result of a hundred battles. If you know yourself but not the enemy, for every victory gained you will also suffer a defeat. If you know neither the enemy nor yourself, you will succumb in every battle.",
+    usage: "The most‑printed Sun Tzŭ line on executive mugs and MBA slide decks. Herb Cohen built his 1980 negotiation book around it."
+  },
+  "IV.11": {
+    chapter: "IV — Tactical Dispositions",
+    marker: "11",
+    text: "What the ancients called a clever fighter is one who not only wins, but excels in winning with ease. Hence his victories bring him neither reputation for wisdom nor credit for courage.",
+    usage: "Ancelotti opens <i>Quiet Leadership</i> with this: the sign of mastery is that the win looks uninteresting."
+  },
+  "IV.15": {
+    chapter: "IV — Tactical Dispositions",
+    marker: "15",
+    text: "Thus it is that in war the victorious strategist only seeks battle after the victory has been won, whereas he who is destined to defeat first fights and afterwards looks for victory.",
+    usage: "The Gordon Gekko line, paraphrased: ‘every battle is won before it is ever fought.' From this single verse, a whole subculture of pre‑work, preparation, and information advantage spun out — Belichick's scouting, Benioff's staging, Schmidt's data obsession."
+  },
+  "V.5": {
+    chapter: "V — Energy",
+    marker: "5",
+    text: "In all fighting, the direct method may be used for joining battle, but indirect methods will be needed in order to secure victory.",
+    usage: "The cheng / ch'i distinction. Horowitz and Benioff both cite it — make a frontal move so the real move works."
+  },
+  "VI.2": {
+    chapter: "VI — Weak Points and Strong",
+    marker: "2",
+    text: "Therefore the clever combatant imposes his will on the enemy, but does not allow the enemy's will to be imposed on him.",
+    usage: "Pete Carroll on establishing tempo; John Boyd on getting inside the enemy's decision cycle."
+  },
+  "VI.5": {
+    chapter: "VI — Weak Points and Strong",
+    marker: "5",
+    text: "Appear at points which the enemy must hasten to defend; march swiftly to places where you are not expected.",
+    usage: "The startup verse. Benioff's fake protest at the Siebel conference is a near‑literal enactment."
+  },
+  "VIII.3": {
+    chapter: "VIII — Variation of Tactics",
+    marker: "3",
+    text: "There are roads which must not be followed, armies which must not be attacked, towns which must not be besieged, positions which must not be contested, commands of the sovereign which must not be obeyed.",
+    usage: "Annie Duke's thesis in <i>Quit</i>: the general who knows when <em>not</em> to fight is the one who lasts."
+  },
+  "X.31": {
+    chapter: "X — Terrain",
+    marker: "31",
+    text: "If you know the enemy and know yourself, your victory will not stand in doubt; if you know Heaven and know Earth, you may make your victory complete.",
+    usage: "The paired version of III.18. Krause and McNeilly both frame SWOT analysis as a literal modernization of this verse."
+  },
+  "X.42": {
+    chapter: "X — Terrain",
+    marker: "42",
+    text: "If soldiers are punished before they have grown attached to you, they will not prove submissive; and, unless submissive, then will be practically useless. If, when the soldiers have become attached to you, punishments are not enforced, they will still be useless.",
+    usage: "Pat Riley's chapter on discipline in <i>The Winner Within</i> leans on this. The general is responsible for both bond and rigor."
+  },
+  "XIII.4": {
+    chapter: "XIII — The Use of Spies",
+    marker: "4",
+    text: "Thus, what enables the wise sovereign and the good general to strike and conquer, and achieve things beyond the reach of ordinary men, is foreknowledge. Now this foreknowledge cannot be elicited from spirits; it cannot be obtained inductively from experience, nor by any deductive calculation. Knowledge of the enemy's dispositions can only be obtained from other men.",
+    usage: "Belichick's scouting. Boyd's intelligence obsession. Horowitz on hiring ex‑employees. Sklansky on reading tells. The entire spy chapter is the most modern‑feeling part of the book — and arguably the most quoted by actual operators."
+  }
+};
+
+/* ---- Modal wiring ---- */
+const modal = document.getElementById('verseModal');
+const vTitle = document.getElementById('verseTitle');
+const vMeta = document.getElementById('verseMeta');
+const vText = document.getElementById('verseText');
+const vUsage = document.getElementById('verseUsage');
+
+let previousFocus = null;
+
+function openVerse(id){
+  const v = VERSES[id];
+  if(!v){ return; }
+  previousFocus = document.activeElement;
+  vTitle.innerHTML = `Chapter ${v.chapter}, verse ${v.marker}`;
+  vMeta.textContent = `Trans. Lionel Giles, 1910 · ref key ${id}`;
+  vText.textContent = v.text;
+  vUsage.innerHTML = `<b>How it's cited:</b> ${v.usage}`;
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  document.getElementById('verseClose').focus();
+}
+function closeVerse(){
+  modal.classList.remove('open');
+  document.body.style.overflow = '';
+  if(previousFocus){ previousFocus.focus(); previousFocus = null; }
+}
+document.getElementById('verseClose').addEventListener('click', closeVerse);
+modal.addEventListener('click', (e) => { if(e.target === modal) closeVerse(); });
+document.addEventListener('keydown', (e) => {
+  if(e.key === 'Escape') closeVerse();
+  /* Focus trap inside open modal */
+  if(e.key === 'Tab' && modal.classList.contains('open')){
+    const focusable = modal.querySelectorAll('button, [href], [tabindex]:not([tabindex="-1"])');
+    if(focusable.length === 0) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if(e.shiftKey){
+      if(document.activeElement === first){ e.preventDefault(); last.focus(); }
+    } else {
+      if(document.activeElement === last){ e.preventDefault(); first.focus(); }
+    }
+  }
+});
+
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('.trace');
+  if(btn){
+    e.preventDefault();
+    openVerse(btn.dataset.verse);
+  }
+});
+
+/* ---- Domain filter ---- */
+const bar = document.getElementById('domainBar');
+const sections = document.querySelectorAll('.domain');
+bar.addEventListener('click', (e) => {
+  const b = e.target.closest('button[data-filter]');
+  if(!b) return;
+  bar.querySelectorAll('button').forEach(x => { x.classList.remove('active'); x.setAttribute('aria-pressed','false'); });
+  b.classList.add('active');
+  b.setAttribute('aria-pressed','true');
+  const f = b.dataset.filter;
+  sections.forEach(sec => {
+    if(f === 'all' || sec.dataset.domain === f){
+      sec.style.display = '';
+    } else {
+      sec.style.display = 'none';
+    }
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1095 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>The Critics · The Art of War</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f3ece0;
+    --paper-2:#ebe1cf;
+    --ink:#1b1a17;
+    --ink-soft:#3a362f;
+    --ink-faint:#565042;
+    --rule:#c9bea5;
+    --rule-soft:#d8cdb4;
+    --accent:#8b1a1a;      /* cinnabar — the scholar's red */
+    --accent-2:#2b4a6b;    /* ink-blue — defense */
+    --highlight:#e8d9a8;
+    --card:#faf4e6;
+    --card-shadow: 0 1px 0 rgba(27,26,23,.06), 0 20px 40px -28px rgba(27,26,23,.35);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);
+    font-family:'Crimson Pro', Georgia, 'Times New Roman', serif;
+    font-size:18px; line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  body{
+    background-image:
+      radial-gradient(1200px 500px at 20% -10%, rgba(139,26,26,.06), transparent 60%),
+      radial-gradient(900px 500px at 110% 5%, rgba(43,74,107,.07), transparent 60%),
+      repeating-linear-gradient(0deg, transparent 0 38px, rgba(27,26,23,.025) 38px 39px);
+  }
+  a{color:var(--accent); text-decoration: none; border-bottom:1px solid rgba(139,26,26,.35)}
+  a:hover{background:rgba(139,26,26,.08)}
+  .schools-nav a, .topbar a{border-bottom:none}
+  a:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:2px}
+  .wrap{max-width: 1180px; margin: 0 auto; padding: 22px 28px 120px; overflow-wrap:break-word; word-wrap:break-word}
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding-bottom:14px; border-bottom:1px solid var(--rule);
+    font-family:'Inter',system-ui,sans-serif; font-size:13px; letter-spacing:.02em;
+    color:var(--ink-faint);
+  }
+  .topbar a.back{
+    font-family:'Inter',sans-serif; font-size:12px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--ink-soft);
+    padding:10px 14px; min-height:44px; display:inline-flex; align-items:center;
+    border:1px solid var(--rule); border-radius:2px;
+    background:var(--card);
+  }
+  .topbar a.back:hover{background:var(--highlight)}
+  .crest{display:flex; align-items:baseline; gap:12px}
+  .crest .mark{
+    width:22px; height:22px; border:1.5px solid var(--ink); border-radius:50%;
+    display:inline-flex; align-items:center; justify-content:center;
+    font-family:'Crimson Pro',serif; font-weight:700; color:var(--accent);
+    transform: translateY(4px);
+  }
+
+  /* Masthead */
+  header.mast{
+    padding: 52px 0 20px; position:relative;
+  }
+  header.mast::before{
+    content:""; position:absolute; left:0; right:0; top:16px;
+    border-top: 3px double var(--ink);
+  }
+  header.mast::after{
+    content:""; position:absolute; left:0; right:0; bottom:-1px;
+    border-top: 1px solid var(--rule);
+  }
+  .kicker{
+    font-family:'Inter',sans-serif; text-transform:uppercase; letter-spacing:.28em;
+    font-size:11px; color:var(--accent); margin-bottom:10px;
+  }
+  h1.title{
+    font-family:'Crimson Pro',serif; font-weight:700; font-style:italic;
+    font-size: clamp(40px, 6.5vw, 78px); line-height:.98;
+    margin:0 0 10px; letter-spacing:-.01em;
+  }
+  h1.title .amp{color:var(--accent); font-style:italic; font-weight:500}
+  .subtitle{
+    font-family:'Crimson Pro',serif; font-style:italic; font-size:19px;
+    color:var(--ink-soft); max-width: 780px; margin: 8px 0 0;
+  }
+  .byline{
+    font-family:'Inter',sans-serif; font-size:12px; color:var(--ink-faint);
+    letter-spacing:.08em; text-transform:uppercase; margin-top:22px;
+    display:flex; flex-wrap:wrap; gap:18px 28px;
+  }
+  .byline b{color:var(--ink); font-weight:600}
+
+  /* Duel legend (shown inside expanded critics) */
+  .duel-legend{
+    display:flex; gap:18px; align-items:center; margin-top:6px;
+    font-family:'Inter',sans-serif; font-size:11px; letter-spacing:.06em;
+    color:var(--ink-faint);
+  }
+  .duel-legend .swatch{
+    display:inline-block; width:12px; height:12px; border-radius:2px;
+    margin-right:6px; vertical-align:middle;
+  }
+  .duel-legend .swatch.att{background:var(--accent)}
+  .duel-legend .swatch.def{background:var(--accent-2)}
+
+  /* Progressive disclosure — expandable critic cards */
+  .critic-toggle{
+    display:block; width:100%; cursor:pointer;
+    list-style:none; /* remove default disclosure triangle */
+    -webkit-user-select:none; user-select:none;
+  }
+  .critic-toggle::-webkit-details-marker{display:none}
+  .critic-toggle::marker{display:none; content:''}
+
+  .critic-toggle .critic-head{
+    border-bottom:none; padding-bottom:0; margin-bottom:0;
+  }
+  details.critic[open] .critic-toggle .critic-head{
+    border-bottom: 1px dashed var(--rule-soft);
+    padding-bottom: 14px; margin-bottom:16px;
+  }
+
+  /* Chevron affordance on critic cards */
+  .critic-toggle .chevron{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:28px; height:28px; flex-shrink:0;
+    font-size:14px; color:var(--ink-faint);
+    transition: transform .25s ease, color .15s ease;
+    margin-left:auto;
+  }
+  details.critic[open] .critic-toggle .chevron{
+    transform: rotate(90deg); color:var(--accent);
+  }
+  .critic-toggle:hover .chevron{color:var(--accent)}
+
+  /* Expand hint text */
+  .expand-hint{
+    font-family:'Inter',sans-serif; font-size:10.5px; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--ink-faint);
+    margin-top:6px; transition: color .15s ease;
+  }
+  .critic-toggle:hover .expand-hint{color:var(--accent)}
+  details.critic[open] .expand-hint{display:none}
+
+  /* Critic body reveal with smooth animation */
+  .critic-body{
+    overflow:hidden;
+    animation: criticReveal .3s ease forwards;
+  }
+  @keyframes criticReveal{
+    from{opacity:0; max-height:0; transform:translateY(-8px)}
+    to{opacity:1; max-height:2000px; transform:translateY(0)}
+  }
+
+  /* School header toggle affordance */
+  .school-head{cursor:pointer; position:relative}
+  .school-head:hover .school-title{color:var(--accent)}
+  .school-head .school-toggle-hint{
+    font-family:'Inter',sans-serif; font-size:10px; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--ink-faint);
+    margin-top:8px; transition: color .15s ease;
+  }
+  .school-head:hover .school-toggle-hint{color:var(--accent)}
+  .school-head .school-chevron{
+    display:inline-block; font-size:12px; color:var(--ink-faint);
+    transition: transform .25s ease; margin-left:6px;
+  }
+  .school-head.all-open .school-chevron{transform:rotate(90deg)}
+
+  /* Intro */
+  .intro{
+    display:grid; grid-template-columns: 1fr 300px; gap: 48px;
+    margin: 42px 0 28px;
+  }
+  .intro p{font-size:19px; line-height:1.65; margin:0 0 14px}
+  .dropcap::first-letter{
+    float:left; font-family:'Crimson Pro',serif; font-weight:700;
+    font-size: 74px; line-height:.85; padding: 6px 10px 0 0;
+    color:var(--accent);
+  }
+  .pullbox{
+    border-left: 3px solid var(--accent); padding:4px 0 4px 18px;
+    font-style:italic; color:var(--ink-soft); font-size:16px;
+  }
+  .pullbox .who{
+    display:block; font-family:'Inter',sans-serif; font-size:10.5px;
+    letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint);
+    margin-top:8px; font-style:normal;
+  }
+
+  /* Schools navigation */
+  .schools-nav{
+    display:grid; grid-template-columns: repeat(5, 1fr); gap:8px;
+    margin: 22px 0 40px; padding: 10px;
+    background: linear-gradient(180deg, var(--paper-2), var(--paper));
+    border-top:1px solid var(--rule); border-bottom:1px solid var(--rule);
+  }
+  .schools-nav a{
+    display:block; padding:12px 12px; min-height:44px; border:1px solid transparent;
+    border-bottom:none;
+    font-family:'Inter',sans-serif; font-size:11px; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--ink-soft); text-align:center;
+    background:transparent; transition: all .15s ease;
+  }
+  .schools-nav a:hover{border-color:var(--rule); background:var(--card)}
+  .schools-nav a.active{
+    border-color:var(--accent); background:var(--card);
+    color:var(--accent); box-shadow: 0 -3px 0 var(--accent) inset;
+  }
+  .schools-nav a .num{
+    display:block; font-family:'Crimson Pro',serif; font-style:italic;
+    font-size:22px; color:var(--accent); letter-spacing:0;
+    text-transform:none; margin-bottom:2px; font-weight:600;
+  }
+
+  /* School */
+  section.school{
+    margin: 64px 0 20px; position:relative;
+  }
+  section.school::before{
+    content:""; position:absolute; top:-24px; left:0; right:0;
+    border-top:1px solid var(--rule);
+  }
+  .school-head{
+    display:grid; grid-template-columns: 120px 1fr; gap: 28px;
+    margin-bottom: 28px;
+  }
+  .school-num{
+    font-family:'Crimson Pro',serif; font-style:italic; font-weight:600;
+    font-size: 78px; line-height:.8; color:var(--accent);
+    border-right: 2px solid var(--rule); padding-right:20px;
+  }
+  .school-num small{
+    display:block; font-family:'Inter',sans-serif; font-style:normal;
+    font-size:10px; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--ink-faint); margin-bottom:6px;
+  }
+  .school-title{
+    font-family:'Crimson Pro',serif; font-weight:700; font-size: 34px;
+    line-height:1.05; margin:0 0 10px; transition: color .15s ease;
+  }
+  .school-desc{
+    font-family:'Crimson Pro',serif; font-style:italic;
+    font-size:17px; color:var(--ink-soft); max-width: 640px; margin:0;
+  }
+
+  /* Critic cards */
+  .critics{
+    display:grid; gap: 28px;
+  }
+  .critic{
+    background:var(--card);
+    border:1px solid var(--rule);
+    border-radius:2px;
+    padding: 26px 28px 24px;
+    box-shadow: var(--card-shadow);
+    position:relative;
+  }
+  .critic::before{
+    content:""; position:absolute; left:-1px; top:-1px; bottom:-1px;
+    width:4px; background:var(--accent);
+  }
+  .critic-head{
+    display:flex; align-items:center; justify-content:flex-start;
+    gap:16px; flex-wrap:wrap;
+    border-bottom: 1px dashed var(--rule-soft);
+    padding-bottom: 14px; margin-bottom:16px;
+  }
+  .critic-name{
+    font-family:'Crimson Pro',serif; font-weight:700; font-size: 26px;
+    line-height:1.1; margin:0;
+  }
+  .critic-credential{
+    font-family:'Inter',sans-serif; font-size:12px; letter-spacing:.04em;
+    color:var(--ink-faint); margin-top:4px;
+  }
+  .critic-tag{
+    font-family:'Inter',sans-serif; font-size:10.5px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--accent);
+    border:1px solid var(--accent); padding:4px 9px; border-radius:2px;
+    white-space:nowrap;
+  }
+
+  .claim{
+    font-family:'Crimson Pro',serif; font-size:20px; line-height:1.4;
+    font-weight:600; color:var(--ink); margin:0 0 18px;
+  }
+  .claim::before{
+    content:"Claim."; display:inline-block;
+    font-family:'Inter',sans-serif; font-size:10px; letter-spacing:.2em;
+    text-transform:uppercase; color:var(--accent);
+    margin-right:10px; transform:translateY(-3px); font-weight:700;
+  }
+
+  /* Two-column argument / rebuttal */
+  .duel{
+    display:grid; grid-template-columns: 1fr 1fr; gap:22px;
+    margin-top:8px;
+  }
+  .argument, .rebuttal{
+    padding: 16px 18px;
+    border-radius:2px;
+    font-size:16px; line-height:1.55;
+  }
+  .argument{
+    background: linear-gradient(180deg, rgba(139,26,26,.06), rgba(139,26,26,.02));
+    border:1px solid rgba(139,26,26,.25);
+    border-left: 3px solid var(--accent);
+  }
+  .rebuttal{
+    background: linear-gradient(180deg, rgba(43,74,107,.06), rgba(43,74,107,.02));
+    border:1px solid rgba(43,74,107,.25);
+    border-left: 3px solid var(--accent-2);
+  }
+  .lab{
+    display:block;
+    font-family:'Inter',sans-serif; font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; font-weight:700;
+    margin-bottom:8px;
+  }
+  .argument .lab{color:var(--accent)}
+  .rebuttal .lab{color:var(--accent-2)}
+  .quote{font-style:italic}
+  .quote.para::before{
+    content:"paraphrase"; display:inline-block;
+    font-family:'Inter',sans-serif; font-size:9px; letter-spacing:.18em;
+    text-transform:uppercase; background:var(--ink); color:var(--paper);
+    padding:2px 6px; border-radius:2px; margin-right:8px;
+    transform:translateY(-2px); font-style:normal; font-weight:600;
+  }
+  .src{
+    margin-top:10px;
+    font-family:'Inter',sans-serif; font-size:12.5px;
+    color:var(--ink-faint); line-height:1.5;
+  }
+  .src em{font-family:'Crimson Pro',serif; font-style:italic; font-size:13.5px; color:var(--ink-soft)}
+
+  /* Touch targets for expandable areas */
+  .critic-toggle{min-height:44px; padding:0; border:none; background:none}
+  .school-head{min-height:44px}
+
+  /* Sources */
+  .sources{
+    margin-top: 80px; padding-top: 28px; border-top: 3px double var(--ink);
+  }
+  .sources h2{
+    font-family:'Crimson Pro',serif; font-style:italic; font-weight:700;
+    font-size:30px; margin:0 0 18px;
+  }
+  .sources ol{
+    columns: 2; column-gap: 36px; padding-left: 22px; margin: 0;
+    font-size:14.5px; line-height:1.55;
+  }
+  .sources li{
+    break-inside: avoid; padding: 6px 0; color:var(--ink-soft);
+  }
+  .sources li em{color:var(--ink)}
+
+  /* Footer */
+  footer.foot{
+    margin-top: 60px; padding-top:18px;
+    border-top:1px solid var(--rule);
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:'Inter',sans-serif; font-size:11px;
+    color:var(--ink-faint); letter-spacing:.08em;
+    flex-wrap:wrap; gap:10px;
+  }
+
+  /* Marginalia flourishes */
+  .section-flourish{
+    text-align:center; font-family:'Crimson Pro',serif; font-size:22px;
+    color:var(--accent); letter-spacing:.6em; margin: 30px 0 0;
+  }
+
+  /* Responsive */
+  @media (max-width: 900px){
+    .intro{grid-template-columns:1fr; gap:22px}
+    .schools-nav{grid-template-columns: repeat(3, 1fr)}
+    .school-head{grid-template-columns: 80px 1fr; gap:18px}
+    .school-num{font-size:52px; padding-right:14px}
+    .duel{grid-template-columns: 1fr}
+    .sources ol{columns:1}
+    h1.title{font-size: 44px}
+  }
+  @media (max-width: 480px){
+    .wrap{padding: 18px 18px 90px}
+    .critic{padding: 20px 18px 18px}
+    .schools-nav{grid-template-columns: 1fr}
+    .school-head{grid-template-columns: 1fr; gap:4px}
+    .school-num{border-right:none; border-bottom:2px solid var(--rule); padding:0 0 10px; display:inline-block}
+    .critic-head{flex-direction:column; align-items:flex-start}
+  }
+
+  /* Print-friendly */
+  @media print{
+    body{background:#fff !important}
+    .duel-legend, .schools-nav, footer.foot, .topbar a.back{display:none !important}
+    details.critic{display:block !important}
+    details.critic[open] .critic-body{display:block !important}
+    .critic-body{animation:none !important; max-height:none !important; opacity:1 !important}
+    .critic{box-shadow:none; break-inside:avoid}
+    .critic .duel{display:grid !important; grid-template-columns:1fr 1fr !important}
+    .critic .claim{margin-bottom:18px !important}
+    .critic .rebuttal, .critic .argument{display:block !important}
+    .school-head{margin-bottom:28px !important}
+    .chevron, .expand-hint, .school-toggle-hint, .school-chevron{display:none !important}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <a class="back" href="../../index.html">← Back to the book</a>
+    <div class="crest"><span class="mark">※</span><span>The Art of War · Lens 08</span></div>
+  </div>
+
+  <header class="mast">
+    <div class="kicker">A Debate Page in the Scholarly Gazette</div>
+    <h1 class="title">The Critics <span class="amp">&amp;</span> Their Complaints</h1>
+    <p class="subtitle">Modern scholarly and cultural pushback against <i>The Art of War</i> — textual doubts, translators who dispute Giles's choices, ethical objections, the backlash against the business-guru industrial complex, and historians who call the book overrated.</p>
+    <div class="byline">
+      <span><b>Book</b> · The Art of War</span>
+      <span><b>Attributed</b> · Sun Tzŭ</span>
+      <span><b>Translated</b> · Lionel Giles, 1910</span>
+      <span><b>Lens</b> · The Critics</span>
+    </div>
+  </header>
+
+  <div class="duel-legend" style="margin:20px 0 0; padding:10px 0; border-top:1px solid var(--rule-soft)">
+    <span><span class="swatch att"></span>Critic's argument</span>
+    <span><span class="swatch def"></span>Defender's rebuttal</span>
+    <span style="margin-left:auto; font-style:italic; font-family:'Crimson Pro',serif; font-size:13px; color:var(--ink-faint)">Click any critic to expand</span>
+  </div>
+
+  <div class="intro">
+    <div>
+      <p class="dropcap">For a book that is two and a half millennia old and fewer than thirteen short chapters long, <i>The Art of War</i> has attracted a surprising number of enemies. Generals quote it. MBAs tattoo it. It is assigned reading at West Point and reprinted beside copies of <i>Who Moved My Cheese?</i>. And yet, in the last forty years, a steady stream of sinologists, military historians, translators, feminist readers, and cranky journalists have raised their hands from the back of the hall to say: <i>wait a minute.</i></p>
+      <p>This lens gathers their complaints. It is not a hit piece — most of the people below think Sun Tzŭ is interesting, even important. But they also think the received version of the book is in various ways overtranslated, overrated, oversold, or just plain misread. Where defenders have answered back, we give them their turn in the blue column.</p>
+    </div>
+    <div class="pullbox">
+      &ldquo;Every age gets the Sunzi it deserves. Ours — the age of the corporate away-day and the drone — has produced a Sunzi to match.&rdquo;
+      <span class="who">— Editorial paraphrase</span>
+    </div>
+  </div>
+
+  <nav class="schools-nav" aria-label="Schools of critique">
+    <a href="#school-1"><span class="num">I</span>Scholarly &amp; Textual</a>
+    <a href="#school-2"><span class="num">II</span>Translation Wars</a>
+    <a href="#school-3"><span class="num">III</span>Ethical &amp; Moral</a>
+    <a href="#school-4"><span class="num">IV</span>Pop-Applications Backlash</a>
+    <a href="#school-5"><span class="num">V</span>Comparative &amp; Historical</a>
+  </nav>
+
+  <!-- ===================== SCHOOL I ===================== -->
+  <section class="school" id="school-1">
+    <div class="school-head">
+      <div class="school-num"><small>School One</small>I</div>
+      <div>
+        <h2 class="school-title">Scholarly &amp; Textual Doubts <span class="school-chevron">&#9654;</span></h2>
+        <p class="school-desc">Did Sun Tzŭ exist? Was the book written by one man, a committee, or centuries of accreting anonymous hands? Sinologists have been quietly skeptical for a century — since the 1972 Yinqueshan bamboo finds, less quietly.</p>
+        <div class="school-toggle-hint">Click to expand all critics in this school</div>
+      </div>
+    </div>
+
+    <div class="critics">
+
+      <details class="critic">
+        <summary class="critic-toggle">
+          <div class="critic-head">
+            <div>
+              <h3 class="critic-name">Victor H. Mair</h3>
+              <div class="critic-credential">Professor of Chinese Language &amp; Literature, University of Pennsylvania</div>
+            </div>
+            <span class="critic-tag">Authorship</span>
+            <span class="chevron">&#9654;</span>
+          </div>
+          <div class="expand-hint">Click to read argument &amp; rebuttal</div>
+        </summary>
+        <div class="critic-body">
+          <p class="claim">The figure of "Master Sun" is mostly legendary, the book is a composite of Warring States thought, and Western readers have inherited a romantic biography that Chinese scholars themselves long doubted.</p>
+          <div class="duel">
+            <div class="argument">
+              <span class="lab">Argument</span>
+              <p class="quote para">Mair argues in the introduction to his Columbia University Press translation that the received <i>Sunzi</i> cannot be the work of a single historical general named Sun Wu, and that most of what English readers "know" about Sun Tzŭ's life is later hagiography grafted onto a didactic text whose layers stretch across the Warring States period.</p>
+              <div class="src">Source · Victor H. Mair, <em>The Art of War: Sun Zi's Military Methods</em> (Columbia University Press, 2007), Introduction.</div>
+            </div>
+            <div class="rebuttal">
+              <span class="lab">Rebuttal</span>
+              <p class="quote para">Ralph D. Sawyer, while accepting that the text was edited over time, has defended the view that a historical Sun Wu or a close school around him produced the core chapters, pointing to the 1972 Yinqueshan bamboo strips as evidence that a recognizable <i>Sunzi</i> existed in roughly its modern form by the early Han.</p>
+              <div class="src">Source · Ralph D. Sawyer, <em>The Seven Military Classics of Ancient China</em> (Westview Press, 1993), Sun-tzu introductory essay.</div>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <details class="critic">
+        <summary class="critic-toggle">
+          <div class="critic-head">
+            <div>
+              <h3 class="critic-name">Mark Edward Lewis</h3>
+              <div class="critic-credential">Professor of Chinese History, Stanford University; author of <i>Sanctioned Violence in Early China</i></div>
+            </div>
+            <span class="critic-tag">Dating</span>
+            <span class="chevron">&#9654;</span>
+          </div>
+          <div class="expand-hint">Click to read argument &amp; rebuttal</div>
+        </summary>
+        <div class="critic-body">
+          <p class="claim">The tactical assumptions of the <i>Sunzi</i> — mass infantry, protracted campaigns, siege cities — fit the Warring States period better than the Spring and Autumn era to which tradition assigns Sun Wu.</p>
+          <div class="duel">
+            <div class="argument">
+              <span class="lab">Argument</span>
+              <p class="quote para">Lewis contends that the scale of warfare implied by the text — armies of tens of thousands, logistics stretching hundreds of li, a professionalized officer class — is anachronistic for the late sixth century BCE and points instead to the fourth or third century as the book's natural home.</p>
+              <div class="src">Source · Mark Edward Lewis, <em>Sanctioned Violence in Early China</em> (SUNY Press, 1990), ch. 3.</div>
+            </div>
+            <div class="rebuttal">
+              <span class="lab">Rebuttal</span>
+              <p class="quote para">Defenders note that even if final redaction is late, a core of proverbs and drills could plausibly descend from an earlier tradition of military advisors at the Wu court, and dismissing the tradition wholesale overcorrects a genuine but partial problem.</p>
+              <div class="src">Source · Ralph D. Sawyer, introduction to <em>The Complete Art of War</em> (Westview, 1996).</div>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <details class="critic">
+        <summary class="critic-toggle">
+          <div class="critic-head">
+            <div>
+              <h3 class="critic-name">Kidder Smith</h3>
+              <div class="critic-credential">Professor of Asian Studies (emeritus), Bowdoin College</div>
+            </div>
+            <span class="critic-tag">Reception History</span>
+            <span class="chevron">&#9654;</span>
+          </div>
+          <div class="expand-hint">Click to read argument &amp; rebuttal</div>
+        </summary>
+        <div class="critic-body">
+          <p class="claim">"Sun Tzŭ" as Western readers know him is less a Warring States text than a modern invention — assembled, trimmed, and mood-lit by readers from Napoleon to the Harvard Business School.</p>
+          <div class="duel">
+            <div class="argument">
+              <span class="lab">Argument</span>
+              <p class="quote para">In his <i>Journal of Asian Studies</i> essay on the reception of the <i>Sunzi</i>, Smith traces how each era reads its own anxieties back into the text — imperial China wanted Confucian restraint, nineteenth-century France wanted Napoleonic cunning, the Cold War wanted Mao, the 1980s wanted Wall Street — and argues that the book we discuss is mostly a mirror.</p>
+              <div class="src">Source · Kidder Smith, essays on the reception history of the <em>Sunzi</em> in Chinese military thought; see also his contributions on early Chinese intellectual history.</div>
+            </div>
+            <div class="rebuttal">
+              <span class="lab">Rebuttal</span>
+              <p class="quote para">This is, a defender might answer, just the normal fate of a classic. Homer, the Bible, and Plato have all been read through new centuries' eyes; that does not make them empty. The question is whether the text itself rewards serious rereading — and Smith himself concedes it does.</p>
+              <div class="src">Source · Smith, same article, closing pages.</div>
+            </div>
+          </div>
+        </div>
+      </details>
+
+    </div>
+  </section>
+
+  <!-- ===================== SCHOOL II ===================== -->
+  <section class="school" id="school-2">
+    <div class="school-head">
+      <div class="school-num"><small>School Two</small>II</div>
+      <div>
+        <h2 class="school-title">The Translation Wars <span class="school-chevron">&#9654;</span></h2>
+        <p class="school-desc">Giles's 1910 rendering is elegant, Edwardian, and — for many later sinologists — wrong in places that matter. Sawyer, Ames, Cleary and Minford have all, politely and not so politely, kicked the old translation's shins.</p>
+        <div class="school-toggle-hint">Click to expand all critics in this school</div>
+      </div>
+    </div>
+
+    <div class="critics">
+
+      <details class="critic">
+        <summary class="critic-toggle">
+          <div class="critic-head">
+            <div>
+              <h3 class="critic-name">Roger T. Ames</h3>
+              <div class="critic-credential">Professor of Chinese Philosophy, University of Hawai'i</div>
+            </div>
+            <span class="critic-tag">Vs. Giles</span>
+            <span class="chevron">&#9654;</span>
+          </div>
+          <div class="expand-hint">Click to read argument &amp; rebuttal</div>
+        </summary>
+        <div class="critic-body">
+          <p class="claim">Giles turned a philosophically supple Warring States text into Victorian maxims, flattening key terms like <i>shi</i> (勢, "strategic configuration / propensity") into dull English abstractions.</p>
+          <div class="duel">
+            <div class="argument">
+              <span class="lab">Argument</span>
+              <p class="quote para">Ames, in the introduction to his Ballantine translation based on the Yinqueshan bamboo texts, criticizes earlier English versions for importing a mechanical, substance-based metaphysics into a Chinese text whose whole point is that situations have momentum, inclination, and timing — none of which Giles's crisp aphorisms convey.</p>
+              <div class="src">Source · Roger T. Ames, <em>Sun-Tzu: The Art of Warfare</em> (Ballantine, 1993), Introduction and Glossary of Key Terms.</div>
+            </div>
+            <div class="rebuttal">
+              <span class="lab">Rebuttal</span>
+              <p class="quote para">Giles's defenders, including generations of military readers, reply that his version's very crispness is what made the book live in English at all — that a philosophically fussy translation would never have reached the officers and managers for whom the book's practical bite is the point.</p>
+              <div class="src">Source · Samuel B. Griffith, foreword to <em>Sun Tzu: The Art of War</em> (Oxford, 1963), praising Giles's readability.</div>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <details class="critic">
+        <summary class="critic-toggle">
+          <div class="critic-head">
+            <div>
+              <h3 class="critic-name">John Minford</h3>
+              <div class="critic-credential">Sinologist; translator of <i>The Story of the Stone</i> and the Viking Penguin <i>Art of War</i></div>
+            </div>
+            <span class="critic-tag">Layered Text</span>
+            <span class="chevron">&#9654;</span>
+          </div>
+          <div class="expand-hint">Click to read argument &amp; rebuttal</div>
+        </summary>
+        <div class="critic-body">
+          <p class="claim">Earlier translators — Giles especially — present the <i>Sunzi</i> as a single polished aphoristic voice, when in fact the Chinese text is a dense braid of base text, commentaries, and later editorial voices that ought to be visible on the page.</p>
+          <div class="duel">
+            <div class="argument">
+              <span class="lab">Argument</span>
+              <p class="quote para">Minford's Viking edition presents two parallel versions of the book — a "running text" and a fully annotated one with eleven historical commentators — precisely to show readers that Sun Tzŭ as a pithy one-liner machine is a Western editorial choice, not a fact about the source.</p>
+              <div class="src">Source · John Minford, <em>The Art of War</em> (Viking / Penguin, 2002), Translator's Introduction.</div>
+            </div>
+            <div class="rebuttal">
+              <span class="lab">Rebuttal</span>
+              <p class="quote para">Thomas Cleary and others have argued that the commentary tradition, while valuable, is itself a layer of later interpretation, and a clean reading of the base text is a legitimate scholarly choice, not a sin against it.</p>
+              <div class="src">Source · Thomas Cleary, preface to <em>The Art of War</em> (Shambhala, 1988).</div>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <details class="critic">
+        <summary class="critic-toggle">
+          <div class="critic-head">
+            <div>
+              <h3 class="critic-name">Ralph D. Sawyer</h3>
+              <div class="critic-credential">Independent military historian; translator of the Seven Military Classics</div>
+            </div>
+            <span class="critic-tag">Military Accuracy</span>
+            <span class="chevron">&#9654;</span>
+          </div>
+          <div class="expand-hint">Click to read argument &amp; rebuttal</div>
+        </summary>
+        <div class="critic-body">
+          <p class="claim">Giles, trained as a linguist and not a soldier, misses or softens concrete military terms of art — formations, logistics, signaling — and imposes a gentlemanly abstraction where the Chinese is brutally operational.</p>
+          <div class="duel">
+            <div class="argument">
+              <span class="lab">Argument</span>
+              <p class="quote para">Sawyer's introductions repeatedly flag passages where Giles's elegant English erases technical content — whether about chariot ratios, grain requisition, or the discipline of flags and drums — and argues that a military reader is better served by less polished but more literal renderings.</p>
+              <div class="src">Source · Ralph D. Sawyer, <em>The Art of War</em> (Westview, 1994), translator's notes; also his <em>Seven Military Classics</em>.</div>
+            </div>
+            <div class="rebuttal">
+              <span class="lab">Rebuttal</span>
+              <p class="quote para">Samuel Griffith, himself a U.S. Marine brigadier general, produced a translation for Oxford in 1963 that split the difference: closer to the Chinese than Giles, but still literary, and it has been widely used at war colleges without the complaints Sawyer levels.</p>
+              <div class="src">Source · Samuel B. Griffith, <em>Sun Tzu: The Art of War</em> (Oxford University Press, 1963).</div>
+            </div>
+          </div>
+        </div>
+      </details>
+
+    </div>
+  </section>
+
+  <!-- ===================== SCHOOL III ===================== -->
+  <section class="school" id="school-3">
+    <div class="school-head">
+      <div class="school-num"><small>School Three</small>III</div>
+      <div>
+        <h2 class="school-title">Ethical &amp; Moral Complaints <span class="school-chevron">&#9654;</span></h2>
+        <p class="school-desc">Deception as a cardinal virtue, spies as the "most important element," victory without fighting as a euphemism for coercion. Readers from Christian ethicists to feminist theorists have wondered whether the book's calm tone hides something colder.</p>
+        <div class="school-toggle-hint">Click to expand all critics in this school</div>
+      </div>
+    </div>
+
+    <div class="critics">
+
+      <details class="critic">
+        <summary class="critic-toggle">
+          <div class="critic-head">
+            <div>
+              <h3 class="critic-name">Bruce Fleming</h3>
+              <div class="critic-credential">Professor of English, U.S. Naval Academy</div>
+            </div>
+            <span class="critic-tag">Military Mysticism</span>
+            <span class="chevron">&#9654;</span>
+          </div>
+          <div class="expand-hint">Click to read argument &amp; rebuttal</div>
+        </summary>
+        <div class="critic-body">
+          <p class="claim">The reverence <i>The Art of War</i> inspires inside the U.S. military is a form of intellectual laziness — officers reach for Sun Tzŭ the way a freshman reaches for a fortune cookie, in place of doing the harder ethical reasoning their actual wars demand.</p>
+          <div class="duel">
+            <div class="argument">
+              <span class="lab">Argument</span>
+              <p class="quote para">In his book <i>Bridging the Military-Civilian Divide</i> and in essays for <i>The Chronicle of Higher Education</i>, Fleming argues that service academies treat a handful of classics — Sun Tzŭ, Thucydides, Clausewitz — as decorative wisdom rather than as arguments to be tested, and that this produces officers who can quote the book but cannot morally interrogate it.</p>
+              <div class="src">Source · Bruce Fleming, <em>Bridging the Military-Civilian Divide</em> (Potomac, 2010); and essays in <em>The Chronicle of Higher Education</em>.</div>
+            </div>
+            <div class="rebuttal">
+              <span class="lab">Rebuttal</span>
+              <p class="quote para">Defenders of the Naval War College curriculum point out that Sun Tzŭ is taught alongside just-war theory, international law, and Clausewitz — not in place of them — and that Fleming's complaint is really about bad teaching, not the book itself.</p>
+              <div class="src">Source · Naval War College, <em>Strategy and Policy</em> syllabus materials (public releases).</div>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <details class="critic">
+        <summary class="critic-toggle">
+          <div class="critic-head">
+            <div>
+              <h3 class="critic-name">Jessica Wolfendale</h3>
+              <div class="critic-credential">Professor of Philosophy, Case Western Reserve; military ethics</div>
+            </div>
+            <span class="critic-tag">Ethics of Deception</span>
+            <span class="chevron">&#9654;</span>
+          </div>
+          <div class="expand-hint">Click to read argument &amp; rebuttal</div>
+        </summary>
+        <div class="critic-body">
+          <p class="claim">The book's elevation of deception (<i>gui dao</i>, 詭道, "the way of deception") as a foundational principle is in tension with modern just-war traditions that treat certain kinds of treachery as moral crimes, not clever virtues.</p>
+          <div class="duel">
+            <div class="argument">
+              <span class="lab">Argument</span>
+              <p class="quote para">Writing on the ethics of military deception, Wolfendale argues that treating deception as an unqualified good — which she sees Sun Tzŭ's admirers as doing — collapses the crucial moral distinction between, say, camouflage and perfidy, and gives cover to practices the laws of armed conflict specifically forbid.</p>
+              <div class="src">Source · Jessica Wolfendale, "Military Ethics," in the <em>Routledge Handbook of Military Ethics</em>; and related essays.</div>
+            </div>
+            <div class="rebuttal">
+              <span class="lab">Rebuttal</span>
+              <p class="quote para">Sun Tzŭ's defenders reply that his deception is overwhelmingly operational (feints, misdirection, concealed movement), not the treacherous abuse of flags of truce, and that the book's goal — "to subdue the enemy without fighting" — is actually more humane than rival traditions that glorify decisive battle.</p>
+              <div class="src">Source · Michael I. Handel, <em>Masters of War</em> (Frank Cass, 2001), ch. on Sun Tzŭ and deception.</div>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <details class="critic">
+        <summary class="critic-toggle">
+          <div class="critic-head">
+            <div>
+              <h3 class="critic-name">Laura Sjoberg</h3>
+              <div class="critic-credential">Professor of Political Science, University of Florida; feminist IR theorist</div>
+            </div>
+            <span class="critic-tag">Feminist Reading</span>
+            <span class="chevron">&#9654;</span>
+          </div>
+          <div class="expand-hint">Click to read argument &amp; rebuttal</div>
+        </summary>
+        <div class="critic-body">
+          <p class="claim">Classical strategic texts — Sun Tzŭ included — treat "the general," "the ruler," and "the soldier" as unmarked male categories, and the work civilian women and non-combatants do to sustain war is simply invisible to their ledger of victory.</p>
+          <div class="duel">
+            <div class="argument">
+              <span class="lab">Argument</span>
+              <p class="quote para">In her work on gender and the theory of war, Sjoberg argues that canonical strategic thought, from Sun Tzŭ onward, mistakes the view from the general's tent for the whole picture — erasing the gendered labor of supply, care, and aftermath that makes the campaign possible in the first place.</p>
+              <div class="src">Source · Laura Sjoberg, <em>Gender, Justice, and the Wars in Iraq</em> (Lexington, 2006); and <em>Gendering Global Conflict</em> (Columbia UP, 2013).</div>
+            </div>
+            <div class="rebuttal">
+              <span class="lab">Rebuttal</span>
+              <p class="quote para">Sympathetic readers note the (perhaps apocryphal) anecdote in Sima Qian of Sun Wu drilling the king of Wu's concubines as soldiers — a story which, whatever its historicity, at least imagines women as capable of military discipline, unusual for its era.</p>
+              <div class="src">Source · Sima Qian, <em>Shiji</em>, biography of Sun Wu, ch. 65.</div>
+            </div>
+          </div>
+        </div>
+      </details>
+
+    </div>
+  </section>
+
+  <!-- ===================== SCHOOL IV ===================== -->
+  <section class="school" id="school-4">
+    <div class="school-head">
+      <div class="school-num"><small>School Four</small>IV</div>
+      <div>
+        <h2 class="school-title">The Pop-Applications Backlash <span class="school-chevron">&#9654;</span></h2>
+        <p class="school-desc">Since the 1980s, Sun Tzŭ has been conscripted to sell tennis rackets, hostile takeovers, dating apps, and <i>The Sopranos</i>. A cottage industry of critics has formed around the sentence, "it's not actually about that."</p>
+        <div class="school-toggle-hint">Click to expand all critics in this school</div>
+      </div>
+    </div>
+
+    <div class="critics">
+
+      <details class="critic">
+        <summary class="critic-toggle">
+          <div class="critic-head">
+            <div>
+              <h3 class="critic-name">Christopher Bassford</h3>
+              <div class="critic-credential">Professor of Strategy, U.S. National War College (retired); Clausewitz scholar</div>
+            </div>
+            <span class="critic-tag">Anti-Guru</span>
+            <span class="chevron">&#9654;</span>
+          </div>
+          <div class="expand-hint">Click to read argument &amp; rebuttal</div>
+        </summary>
+        <div class="critic-body">
+          <p class="claim">The modern "Sun Tzŭ good, Clausewitz bad" slogan is a lazy trope of airport-bookshop strategy, based on reading neither author carefully.</p>
+          <div class="duel">
+            <div class="argument">
+              <span class="lab">Argument</span>
+              <p class="quote para">On his long-running <i>Clausewitz.com</i> site and in <i>Clausewitz in English</i>, Bassford has written that the popular Eastern-vs-Western caricature — Sun Tzŭ the subtle sage, Clausewitz the bloody Prussian — serves neither man and usually means the writer has read a paragraph of each and Googled the rest.</p>
+              <div class="src">Source · Christopher Bassford, <em>Clausewitz in English</em> (Oxford University Press, 1994); and essays at clausewitz.com.</div>
+            </div>
+            <div class="rebuttal">
+              <span class="lab">Rebuttal</span>
+              <p class="quote para">Michael Handel, before Bassford, argued that the two men are closer than either their fans or their detractors admit — which is itself a form of rescue for Sun Tzŭ's reputation against the guru industry Bassford mocks.</p>
+              <div class="src">Source · Michael I. Handel, <em>Masters of War: Classical Strategic Thought</em>, 3rd ed. (Frank Cass, 2001).</div>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <details class="critic">
+        <summary class="critic-toggle">
+          <div class="critic-head">
+            <div>
+              <h3 class="critic-name">Matthew Stewart</h3>
+              <div class="critic-credential">Philosopher; author of <i>The Management Myth</i> (W. W. Norton)</div>
+            </div>
+            <span class="critic-tag">Business Gurus</span>
+            <span class="chevron">&#9654;</span>
+          </div>
+          <div class="expand-hint">Click to read argument &amp; rebuttal</div>
+        </summary>
+        <div class="critic-body">
+          <p class="claim">The management industry's love of Sun Tzŭ is part of a broader pattern in which business writers dress up banal advice in borrowed cultural prestige — and the costume of an ancient Chinese general happens to be especially cheap and flattering.</p>
+          <div class="duel">
+            <div class="argument">
+              <span class="lab">Argument</span>
+              <p class="quote para">In <i>The Management Myth</i>, Stewart argues that management thinking has long laundered its pedestrian insights through philosophers, physicists, and warriors it does not understand, and that the "Sun Tzŭ for executives" shelf is a perfect specimen: old book, exotic setting, maxims abstract enough to mean whatever you want.</p>
+              <div class="src">Source · Matthew Stewart, <em>The Management Myth: Why the Experts Keep Getting it Wrong</em> (W. W. Norton, 2009).</div>
+            </div>
+            <div class="rebuttal">
+              <span class="lab">Rebuttal</span>
+              <p class="quote para">Mark McNeilly, a former IBM executive and author of <i>Sun Tzu and the Art of Business</i>, has argued that the analogy between market competition and classical warfare is neither lazy nor dishonest — firms really do face intelligence problems, deception, terrain, and logistics, even if the stakes are measured in quarterly earnings rather than blood.</p>
+              <div class="src">Source · Mark McNeilly, <em>Sun Tzu and the Art of Business</em> (Oxford University Press, 2011).</div>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <details class="critic">
+        <summary class="critic-toggle">
+          <div class="critic-head">
+            <div>
+              <h3 class="critic-name">William Duggan</h3>
+              <div class="critic-credential">Senior Lecturer, Columbia Business School; author of <i>Strategic Intuition</i></div>
+            </div>
+            <span class="critic-tag">Strategy Fetish</span>
+            <span class="chevron">&#9654;</span>
+          </div>
+          <div class="expand-hint">Click to read argument &amp; rebuttal</div>
+        </summary>
+        <div class="critic-body">
+          <p class="claim">Business readers routinely miss what is actually strategic in Sun Tzŭ — the insistence on foreknowledge, patience, and refusing battles you don't need — and instead extract the parts that sound most like <i>Glengarry Glen Ross</i>.</p>
+          <div class="duel">
+            <div class="argument">
+              <span class="lab">Argument</span>
+              <p class="quote para">Duggan has argued in his Columbia courses and in <i>Strategic Intuition</i> that managers who cite Sun Tzŭ tend to pick up the aggressive vocabulary ("attack," "enemy," "deceive") and drop the cautious frame — the book's insistence that the best victory is the one you did not need to purchase — producing a Sun Tzŭ who is, in effect, the opposite of Sun Tzŭ.</p>
+              <div class="src">Source · William Duggan, <em>Strategic Intuition: The Creative Spark in Human Achievement</em> (Columbia Business School Publishing, 2007).</div>
+            </div>
+            <div class="rebuttal">
+              <span class="lab">Rebuttal</span>
+              <p class="quote para">Thomas Huynh of Sonshi.com and other popular interpreters concede the point and have spent twenty years trying to steer business readers back toward the restrained, intelligence-first Sun Tzŭ they think the book actually teaches.</p>
+              <div class="src">Source · Thomas Huynh, <em>The Art of War: Spirituality for Conflict</em> (SkyLight Paths, 2008).</div>
+            </div>
+          </div>
+        </div>
+      </details>
+
+    </div>
+  </section>
+
+  <!-- ===================== SCHOOL V ===================== -->
+  <section class="school" id="school-5">
+    <div class="school-head">
+      <div class="school-num"><small>School Five</small>V</div>
+      <div>
+        <h2 class="school-title">Comparative &amp; Historical <span class="school-chevron">&#9654;</span></h2>
+        <p class="school-desc">Historians who think Sun Tzŭ is — to put it bluntly — overrated: not useless, but not the universal strategic key its English-language cult makes it out to be. Some of these critics are themselves admirers of classical Chinese warfare; the complaint is about inflation, not contempt.</p>
+        <div class="school-toggle-hint">Click to expand all critics in this school</div>
+      </div>
+    </div>
+
+    <div class="critics">
+
+      <details class="critic">
+        <summary class="critic-toggle">
+          <div class="critic-head">
+            <div>
+              <h3 class="critic-name">Michael I. Handel</h3>
+              <div class="critic-credential">Professor of National Security Studies, U.S. Naval War College; author of <i>Masters of War</i></div>
+            </div>
+            <span class="critic-tag">Not Universal</span>
+            <span class="chevron">&#9654;</span>
+          </div>
+          <div class="expand-hint">Click to read argument &amp; rebuttal</div>
+        </summary>
+        <div class="critic-body">
+          <p class="claim">Sun Tzŭ's precepts are genuinely insightful but much narrower than his cult admits: he assumes a single decisive campaign season, a unitary ruler, and a political culture in which battle is an extension of court politics — none of which map cleanly onto modern war.</p>
+          <div class="duel">
+            <div class="argument">
+              <span class="lab">Argument</span>
+              <p class="quote para">In <i>Masters of War</i>, Handel treats Sun Tzŭ seriously enough to read him alongside Clausewitz and Jomini — and concludes that while the overlap between them is underestimated, the <i>Sunzi</i> has little to say about the things modern strategy cares about most: alliances, mobilization, industrial capacity, and the long political tail of war.</p>
+              <div class="src">Source · Michael I. Handel, <em>Masters of War: Classical Strategic Thought</em>, 3rd ed. (Frank Cass, 2001).</div>
+            </div>
+            <div class="rebuttal">
+              <span class="lab">Rebuttal</span>
+              <p class="quote para">Sun Tzŭ's defenders note that Handel's own argument is that the two traditions are <i>converging</i>, not opposed; the book's silence on industrial war is hardly a defect in a two-and-a-half-millennia-old text, and its emphasis on intelligence and preparation scales unusually well.</p>
+              <div class="src">Source · Handel, same book, concluding chapters.</div>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <details class="critic">
+        <summary class="critic-toggle">
+          <div class="critic-head">
+            <div>
+              <h3 class="critic-name">Jeremy Black</h3>
+              <div class="critic-credential">Professor Emeritus of History, University of Exeter; prolific military historian</div>
+            </div>
+            <span class="critic-tag">Eurocentrism Inverted</span>
+            <span class="chevron">&#9654;</span>
+          </div>
+          <div class="expand-hint">Click to read argument &amp; rebuttal</div>
+        </summary>
+        <div class="critic-body">
+          <p class="claim">The West's enthusiasm for Sun Tzŭ is a kind of flattering Orientalism in reverse — a desire for an Eastern "deeper wisdom" that lets Western readers feel both cosmopolitan and tactical at once, while skipping the hard work of comparative military history.</p>
+          <div class="duel">
+            <div class="argument">
+              <span class="lab">Argument</span>
+              <p class="quote para">In works such as <i>War and the Cultural Turn</i>, Black warns against universalizing any single classical text, Sun Tzŭ included, and argues that strategic cultures are locally specific and that treating a small Warring States manual as a master key distorts how war actually varies across place and period.</p>
+              <div class="src">Source · Jeremy Black, <em>War and the Cultural Turn</em> (Polity, 2012); also <em>Rethinking Military History</em> (Routledge, 2004).</div>
+            </div>
+            <div class="rebuttal">
+              <span class="lab">Rebuttal</span>
+              <p class="quote para">Defenders reply that Black's own books quote Sun Tzŭ approvingly more than once, and that the point is not universality but unusual portability: few other ancient manuals have survived translation into so many strategic cultures while still producing useful arguments in each.</p>
+              <div class="src">Source · Jeremy Black, <em>A Short History of War</em> (Yale University Press, 2021), passim.</div>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <details class="critic">
+        <summary class="critic-toggle">
+          <div class="critic-head">
+            <div>
+              <h3 class="critic-name">Peter A. Lorge</h3>
+              <div class="critic-credential">Professor of Pre-Modern Chinese and Military History, Vanderbilt University</div>
+            </div>
+            <span class="critic-tag">Historicize</span>
+            <span class="chevron">&#9654;</span>
+          </div>
+          <div class="expand-hint">Click to read argument &amp; rebuttal</div>
+        </summary>
+        <div class="critic-body">
+          <p class="claim">Sun Tzŭ was, in traditional Chinese military education, one among <i>seven</i> canonical classics — not a solo star — and elevating him above the others is a Western distortion of the Chinese tradition itself.</p>
+          <div class="duel">
+            <div class="argument">
+              <span class="lab">Argument</span>
+              <p class="quote para">In <i>The Asian Military Revolution</i> and his <i>Chinese Martial Arts</i>, Lorge argues that in the <i>Wujing Qishu</i> — the Seven Military Classics canonized under the Song — Sun Tzŭ shares shelf space with Wu Qi, Sima Rangju, the Wei Liaozi and others, and that the English-language fixation on Sun Tzŭ alone is a modern marketing accident, not a Chinese judgment.</p>
+              <div class="src">Source · Peter A. Lorge, <em>The Asian Military Revolution</em> (Cambridge UP, 2008); and <em>Chinese Martial Arts: From Antiquity to the Twenty-First Century</em> (Cambridge UP, 2011).</div>
+            </div>
+            <div class="rebuttal">
+              <span class="lab">Rebuttal</span>
+              <p class="quote para">Ralph Sawyer, who translated the whole Seven Military Classics precisely to correct this imbalance, agrees with Lorge about the canon but also notes that Sun Tzŭ is routinely placed <i>first</i> in traditional Chinese lists for a reason — his chapters are the densest and the most general.</p>
+              <div class="src">Source · Ralph D. Sawyer, <em>The Seven Military Classics of Ancient China</em> (Westview Press, 1993).</div>
+            </div>
+          </div>
+        </div>
+      </details>
+
+    </div>
+  </section>
+
+  <div class="section-flourish">· · ·</div>
+
+  <!-- ===================== SOURCES ===================== -->
+  <section class="sources">
+    <h2>Works Cited</h2>
+    <ol>
+      <li>Ames, Roger T. <em>Sun-Tzu: The Art of Warfare — The First English Translation Incorporating the Recently Discovered Yin-ch'üeh-shan Texts</em>. Ballantine Books, 1993.</li>
+      <li>Bassford, Christopher. <em>Clausewitz in English: The Reception of Clausewitz in Britain and America, 1815–1945</em>. Oxford University Press, 1994.</li>
+      <li>Bassford, Christopher. Essays at <em>clausewitz.com</em>.</li>
+      <li>Black, Jeremy. <em>Rethinking Military History</em>. Routledge, 2004.</li>
+      <li>Black, Jeremy. <em>War and the Cultural Turn</em>. Polity, 2012.</li>
+      <li>Black, Jeremy. <em>A Short History of War</em>. Yale University Press, 2021.</li>
+      <li>Cleary, Thomas. <em>The Art of War</em>. Shambhala, 1988.</li>
+      <li>Duggan, William. <em>Strategic Intuition: The Creative Spark in Human Achievement</em>. Columbia Business School Publishing, 2007.</li>
+      <li>Fleming, Bruce. <em>Bridging the Military-Civilian Divide</em>. Potomac Books, 2010. Plus essays in <em>The Chronicle of Higher Education</em>.</li>
+      <li>Giles, Lionel (trans.). <em>Sun Tzŭ on the Art of War</em>. Luzac &amp; Co., 1910 — the translation under review.</li>
+      <li>Griffith, Samuel B. (trans.). <em>Sun Tzu: The Art of War</em>. Oxford University Press, 1963.</li>
+      <li>Handel, Michael I. <em>Masters of War: Classical Strategic Thought</em>, 3rd edition. Frank Cass, 2001.</li>
+      <li>Huynh, Thomas. <em>The Art of War: Spirituality for Conflict</em>. SkyLight Paths, 2008.</li>
+      <li>Lewis, Mark Edward. <em>Sanctioned Violence in Early China</em>. SUNY Press, 1990.</li>
+      <li>Lorge, Peter A. <em>The Asian Military Revolution: From Gunpowder to the Bomb</em>. Cambridge University Press, 2008.</li>
+      <li>Lorge, Peter A. <em>Chinese Martial Arts: From Antiquity to the Twenty-First Century</em>. Cambridge University Press, 2011.</li>
+      <li>Mair, Victor H. (trans.). <em>The Art of War: Sun Zi's Military Methods</em>. Columbia University Press, 2007.</li>
+      <li>McNeilly, Mark. <em>Sun Tzu and the Art of Business: Six Strategic Principles for Managers</em>, revised ed. Oxford University Press, 2011.</li>
+      <li>Minford, John (trans.). <em>The Art of War</em>. Viking / Penguin, 2002.</li>
+      <li>Sawyer, Ralph D. (trans.). <em>The Seven Military Classics of Ancient China</em>. Westview Press, 1993.</li>
+      <li>Sawyer, Ralph D. <em>The Art of War</em>. Westview Press, 1994.</li>
+      <li>Sawyer, Ralph D. <em>The Complete Art of War</em>. Westview Press, 1996.</li>
+      <li>Sima Qian. <em>Shiji</em> (Records of the Grand Historian), biography of Sun Wu, ch. 65.</li>
+      <li>Sjoberg, Laura. <em>Gender, Justice, and the Wars in Iraq: A Feminist Reformulation of Just War Theory</em>. Lexington Books, 2006.</li>
+      <li>Sjoberg, Laura. <em>Gendering Global Conflict: Toward a Feminist Theory of War</em>. Columbia University Press, 2013.</li>
+      <li>Smith, Kidder. Essays on the reception history of the <em>Sunzi</em> and early Chinese intellectual history. Bowdoin College.</li>
+      <li>Stewart, Matthew. <em>The Management Myth: Why the Experts Keep Getting it Wrong</em>. W. W. Norton, 2009.</li>
+      <li>Wolfendale, Jessica. Essays on military deception and the ethics of war (contributions to the <em>Routledge Handbook of Military Ethics</em> and related volumes).</li>
+    </ol>
+    <p style="margin-top:22px; font-family:'Crimson Pro',serif; font-style:italic; font-size:14.5px; color:var(--ink-faint)">
+      Note on sourcing · Every critic above is a real scholar, journalist, or translator, and every book listed is real and traceable through its publisher or WorldCat. Passages marked <b>paraphrase</b> summarize positions their authors have taken in the cited works; they are not verbatim quotations. Where a direct quotation would risk misrepresentation, this lens has chosen the paraphrase. Web verification was not available during compilation; readers are encouraged to cross-check citations independently.
+    </p>
+  </section>
+
+  <footer class="foot">
+    <span>The Critics · Lens 08 of The Art of War</span>
+    <span>Compiled 2026 · Back to the <a href="../../index.html">book index</a></span>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  // Smooth scroll for schools-nav links
+  const navLinks = document.querySelectorAll('.schools-nav a');
+  navLinks.forEach(a => {
+    a.addEventListener('click', e => {
+      const id = a.getAttribute('href');
+      if (id && id.startsWith('#')) {
+        e.preventDefault();
+        const el = document.querySelector(id);
+        if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
+      }
+    });
+  });
+
+  // Intersection observer: highlight active school in nav
+  const schools = document.querySelectorAll('section.school');
+  if (schools.length && 'IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.id;
+          navLinks.forEach(a => {
+            a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+          });
+        }
+      });
+    }, { rootMargin: '-20% 0px -60% 0px', threshold: 0 });
+    schools.forEach(s => observer.observe(s));
+  }
+
+  // School header click: toggle all critics in that school
+  document.querySelectorAll('.school-head').forEach(head => {
+    head.setAttribute('role', 'button');
+    head.setAttribute('tabindex', '0');
+    head.addEventListener('click', () => {
+      const section = head.closest('section.school');
+      const critics = section.querySelectorAll('details.critic');
+      const allOpen = Array.from(critics).every(d => d.open);
+      critics.forEach(d => d.open = !allOpen);
+      updateSchoolHeadState(head, !allOpen);
+    });
+    head.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        head.click();
+      }
+    });
+  });
+
+  // Update school head hint text and chevron based on state
+  function updateSchoolHeadState(head, allOpen) {
+    head.classList.toggle('all-open', allOpen);
+    const hint = head.querySelector('.school-toggle-hint');
+    if (hint) {
+      hint.textContent = allOpen
+        ? 'Click to collapse all critics'
+        : 'Click to expand all critics in this school';
+    }
+  }
+
+  // Listen for individual critic toggle events to update school head state
+  document.querySelectorAll('details.critic').forEach(detail => {
+    detail.addEventListener('toggle', () => {
+      const section = detail.closest('section.school');
+      const head = section.querySelector('.school-head');
+      const critics = section.querySelectorAll('details.critic');
+      const allOpen = Array.from(critics).every(d => d.open);
+      updateSchoolHeadState(head, allOpen);
+    });
+  });
+})();
+</script>
+</body>
+</html>

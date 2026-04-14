@@ -1,0 +1,1356 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>Aphorism Anatomy — The Art of War</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=EB+Garamond:ital,wght@0,400;0,500;0,700;1,400&family=Ma+Shan+Zheng&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink:        #1b1410;
+    --ink-soft:   #3a2b22;
+    --ink-faint:  #6c5446;
+    --paper:      #f6ecd8;
+    --paper-warm: #f1e2c4;
+    --paper-deep: #e8d5ae;
+    --crimson:    #9a1f1f;
+    --crimson-deep:#6a1212;
+    --seal:       #b11f1f;
+    --gold:       #a0772a;
+    --gold-soft:  #cfa35c;
+    --rule:       #8a6f4d;
+    --shadow:     0 24px 56px -28px rgba(30,18,9,.55),
+                  0 2px 4px rgba(30,18,9,.15);
+    --shadow-lift: 0 36px 80px -24px rgba(30,18,9,.65),
+                   0 4px 10px rgba(30,18,9,.22);
+    --serif:      "Cormorant Garamond", "EB Garamond", Georgia, serif;
+    --body:       "EB Garamond", Georgia, serif;
+    --han:        "Ma Shan Zheng", "Cormorant Garamond", serif;
+    --mono:       "JetBrains Mono", ui-monospace, monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--body);
+    color: var(--ink);
+    background:
+      radial-gradient(ellipse at 20% 0%, #fbf3df 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 10%, #f3e2bf 0%, transparent 55%),
+      radial-gradient(ellipse at 50% 100%, #e9d4a8 0%, transparent 70%),
+      linear-gradient(180deg, #f6ecd8 0%, #ecd9b1 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    line-height: 1.55;
+    font-size: 18px;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* paper grain */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: .35;
+    mix-blend-mode: multiply;
+    background-image:
+      radial-gradient(circle at 12% 18%, rgba(120,80,40,.12) 0 1px, transparent 2px),
+      radial-gradient(circle at 70% 40%, rgba(120,80,40,.08) 0 1px, transparent 2px),
+      radial-gradient(circle at 33% 75%, rgba(120,80,40,.10) 0 1px, transparent 2px),
+      radial-gradient(circle at 88% 85%, rgba(120,80,40,.06) 0 1px, transparent 2px);
+    background-size: 220px 220px, 180px 180px, 260px 260px, 200px 200px;
+  }
+
+  /* ---------- TOP BAR ---------- */
+  .topbar {
+    position: relative;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.1rem 2rem;
+    border-bottom: 1px solid rgba(138,111,77,.4);
+    background: linear-gradient(180deg, rgba(246,236,216,.9), rgba(246,236,216,.55));
+    backdrop-filter: blur(4px);
+  }
+  .topbar a.back {
+    font-family: var(--serif);
+    font-size: 1rem;
+    letter-spacing: .04em;
+    color: var(--ink-soft);
+    text-decoration: none;
+    padding: .45rem .9rem;
+    border: 1px solid rgba(138,111,77,.45);
+    border-radius: 2px;
+    background: rgba(255,255,255,.25);
+    transition: all .2s ease;
+  }
+  .topbar a.back:hover {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+  .topbar .crumbs {
+    font-family: var(--serif);
+    font-size: .9rem;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .topbar .crumbs em {
+    font-style: italic;
+    color: var(--crimson-deep);
+  }
+
+  /* ---------- HEADER ---------- */
+  header.masthead {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 4.2rem 1.5rem 2.4rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  header.masthead .kicker {
+    font-family: var(--serif);
+    letter-spacing: .35em;
+    text-transform: uppercase;
+    font-size: .78rem;
+    color: var(--ink-faint);
+    margin-bottom: 1rem;
+  }
+  header.masthead h1 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-style: italic;
+    font-size: clamp(2.6rem, 6vw, 4.6rem);
+    margin: 0 0 .5rem;
+    color: var(--ink);
+    letter-spacing: -.01em;
+    line-height: 1;
+  }
+  header.masthead .han-title {
+    font-family: var(--han);
+    font-size: clamp(2.2rem, 5vw, 3.6rem);
+    color: var(--crimson-deep);
+    margin: .4rem 0 1.2rem;
+    letter-spacing: .2em;
+  }
+  header.masthead p.lede {
+    font-family: var(--body);
+    font-style: italic;
+    font-size: 1.12rem;
+    max-width: 680px;
+    margin: 0 auto;
+    color: var(--ink-soft);
+    line-height: 1.6;
+  }
+  header.masthead .ornament {
+    margin: 1.6rem auto 0;
+    width: 160px;
+    height: 10px;
+    background:
+      linear-gradient(90deg, transparent, var(--rule) 15%, var(--rule) 85%, transparent),
+      radial-gradient(circle, var(--crimson) 3px, transparent 4px) center/10px 10px no-repeat;
+    position: relative;
+  }
+  header.masthead .ornament::before,
+  header.masthead .ornament::after {
+    content: "";
+    position: absolute;
+    top: 4px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--gold);
+  }
+  header.masthead .ornament::before { left: 25%; }
+  header.masthead .ornament::after  { right: 25%; }
+
+  /* ---------- CONTROLS ---------- */
+  .controls {
+    position: sticky;
+    top: 0;
+    z-index: 4;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 1.2rem 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: .8rem 2rem;
+    align-items: center;
+    background: linear-gradient(180deg, rgba(246,236,216,.96) 0%, rgba(246,236,216,.85) 80%, transparent 100%);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border-bottom: 1px solid rgba(138,111,77,.25);
+  }
+  .controls .group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .45rem .6rem;
+  }
+  .controls .label {
+    font-family: var(--serif);
+    font-size: .72rem;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-right: .4rem;
+    white-space: nowrap;
+  }
+  .chip {
+    font-family: var(--serif);
+    font-size: .95rem;
+    color: var(--ink-soft);
+    background: transparent;
+    border: 1px solid rgba(138,111,77,.45);
+    padding: .35rem .85rem;
+    border-radius: 100px;
+    cursor: pointer;
+    letter-spacing: .02em;
+    transition: all .18s ease;
+    white-space: nowrap;
+  }
+  .chip:hover {
+    background: rgba(138,111,77,.12);
+    border-color: var(--ink-soft);
+    color: var(--ink);
+  }
+  .chip.active {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+  .count-readout {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: .95rem;
+    color: var(--ink-faint);
+    text-align: right;
+    min-width: 120px;
+    margin-left: auto;
+  }
+  .count-readout strong {
+    color: var(--crimson-deep);
+    font-weight: 700;
+    font-style: normal;
+  }
+  .search-box {
+    font-family: var(--body);
+    font-size: .95rem;
+    color: var(--ink);
+    background: rgba(255,255,255,.35);
+    border: 1px solid rgba(138,111,77,.45);
+    padding: .4rem .75rem;
+    border-radius: 2px;
+    width: 100%;
+    max-width: 260px;
+    transition: border-color .2s, background .2s;
+  }
+  .search-box::placeholder {
+    color: var(--ink-faint);
+    font-style: italic;
+  }
+  .search-box:focus {
+    outline: none;
+    border-color: var(--crimson);
+    background: rgba(255,255,255,.55);
+  }
+
+  /* ---------- GALLERY ---------- */
+  main {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 6rem;
+    position: relative;
+    z-index: 1;
+  }
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.7rem;
+  }
+
+  /* ---------- CARD (expand-in-place) ---------- */
+  .card {
+    position: relative;
+    cursor: pointer;
+  }
+  .card.expanded {
+    grid-column: 1 / -1;
+  }
+  .card-inner {
+    position: relative;
+    width: 100%;
+    border-radius: 3px;
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse at 30% 10%, rgba(255,252,240,.9), transparent 70%),
+      linear-gradient(175deg, #fbf3df 0%, #eed8ab 100%);
+    border: 1px solid rgba(138,111,77,.45);
+    box-shadow: var(--shadow);
+    transition: box-shadow .3s ease, transform .3s ease;
+  }
+  .card:not(.expanded):hover .card-inner {
+    box-shadow: var(--shadow-lift);
+    transform: translateY(-2px);
+  }
+  .card.expanded .card-inner {
+    box-shadow: var(--shadow-lift);
+    border-color: rgba(138,111,77,.6);
+  }
+  .face-front {
+    position: relative;
+    padding: 1.8rem 1.7rem 1.6rem;
+    display: flex;
+    flex-direction: column;
+    z-index: 2;
+    min-height: 280px;
+  }
+  .face-front::before {
+    content: "";
+    position: absolute;
+    inset: 10px;
+    border: 1px solid rgba(138,111,77,.35);
+    pointer-events: none;
+    border-radius: 1px;
+  }
+  .face-front::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse at 50% 40%, transparent 55%, rgba(80,50,20,.15) 100%);
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 1rem;
+    gap: .8rem;
+    position: relative;
+    z-index: 2;
+  }
+  .chapter-ref {
+    font-family: var(--serif);
+    font-size: .72rem;
+    letter-spacing: .28em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .chapter-ref strong {
+    color: var(--crimson-deep);
+    font-weight: 700;
+  }
+  .theme-tag {
+    font-family: var(--serif);
+    font-size: .7rem;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid rgba(160,119,42,.45);
+    padding: .15rem .6rem;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+
+  .aphorism {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-style: italic;
+    font-size: clamp(1.35rem, 2.1vw, 1.7rem);
+    line-height: 1.22;
+    color: var(--ink);
+    flex: 1;
+    display: flex;
+    align-items: center;
+    text-align: left;
+    letter-spacing: -.005em;
+    position: relative;
+    z-index: 2;
+    hyphens: auto;
+  }
+  .aphorism::before {
+    content: "“";
+    font-size: 3.4rem;
+    line-height: 0;
+    vertical-align: -0.4em;
+    margin-right: .15em;
+    color: var(--crimson);
+    font-style: normal;
+    font-weight: 600;
+    opacity: .65;
+  }
+  .aphorism::after {
+    content: "”";
+    font-size: 2.6rem;
+    line-height: 0;
+    vertical-align: -0.55em;
+    margin-left: .1em;
+    color: var(--crimson);
+    font-style: normal;
+    font-weight: 600;
+    opacity: .55;
+  }
+
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 1.1rem;
+    padding-top: .9rem;
+    border-top: 1px solid rgba(138,111,77,.35);
+    position: relative;
+    z-index: 2;
+  }
+  .fame-bar {
+    display: flex;
+    align-items: center;
+    gap: .35rem;
+  }
+  .fame-bar .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgba(138,111,77,.3);
+  }
+  .fame-bar .dot.lit {
+    background: var(--crimson);
+    box-shadow: 0 0 0 1px rgba(154,31,31,.3);
+  }
+  .fame-label {
+    font-family: var(--serif);
+    font-size: .7rem;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-left: .4rem;
+  }
+  .expand-hint {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: .82rem;
+    color: var(--ink-faint);
+    letter-spacing: .03em;
+    transition: opacity .2s;
+  }
+  .expand-hint::before {
+    content: "▾ ";
+    font-style: normal;
+    color: var(--crimson);
+    font-size: .7rem;
+  }
+  .card.expanded .expand-hint {
+    opacity: 0;
+  }
+
+  /* Seal decoration */
+  .seal {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    width: 44px;
+    height: 44px;
+    border: 2px solid var(--seal);
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--han);
+    font-size: 1.4rem;
+    color: var(--seal);
+    background: rgba(255,248,230,.4);
+    transform: rotate(-4deg);
+    opacity: .88;
+    z-index: 3;
+    letter-spacing: 0;
+    line-height: 1;
+    box-shadow: 0 0 0 3px rgba(255,248,230,.5);
+  }
+
+  /* ---------- DETAIL PANELS (expand below front) ---------- */
+  .detail-drawer {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows .55s cubic-bezier(.22,.8,.2,1);
+  }
+  .card.expanded .detail-drawer {
+    grid-template-rows: 1fr;
+  }
+  .detail-drawer-inner {
+    overflow: hidden;
+  }
+  .detail-content {
+    padding: 0 1.7rem 1.8rem;
+  }
+  .detail-separator {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.3rem;
+    padding-top: .4rem;
+  }
+  .detail-separator::before,
+  .detail-separator::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: rgba(138,111,77,.4);
+  }
+  .detail-separator .close-btn {
+    font-family: var(--serif);
+    font-size: .75rem;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    background: none;
+    border: 1px solid rgba(138,111,77,.45);
+    color: var(--ink-faint);
+    cursor: pointer;
+    padding: .35rem .9rem;
+    border-radius: 2px;
+    transition: all .2s ease;
+    white-space: nowrap;
+  }
+  .detail-separator .close-btn:hover {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+
+  .panels {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  .panel {
+    border: 1px solid rgba(138,111,77,.35);
+    background: rgba(255,250,235,.5);
+    padding: 1.1rem 1.2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    border-radius: 2px;
+  }
+  .panel h4 {
+    font-family: var(--serif);
+    font-size: .78rem;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--crimson-deep);
+    margin: 0 0 .6rem;
+    padding-bottom: .4rem;
+    border-bottom: 1px solid rgba(138,111,77,.25);
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    font-weight: 700;
+  }
+  .panel h4 .glyph {
+    font-family: var(--han);
+    font-size: 1.1rem;
+    color: var(--crimson);
+    font-weight: normal;
+  }
+  .panel .body {
+    font-family: var(--body);
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--ink-soft);
+  }
+  .panel .body em { color: var(--ink); font-style: italic; }
+  .panel .body i.none {
+    color: var(--ink-faint);
+    font-style: italic;
+    opacity: .7;
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer {
+    text-align: center;
+    padding: 2.5rem 1.5rem 3rem;
+    max-width: 820px;
+    margin: 0 auto;
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--ink-faint);
+    font-size: .95rem;
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid rgba(138,111,77,.3);
+  }
+  footer strong { color: var(--crimson-deep); font-style: normal; }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width: 860px) {
+    .controls {
+      gap: .6rem;
+      padding: 1rem;
+    }
+    .search-box { max-width: 100%; }
+    .count-readout { text-align: left; }
+    .gallery { grid-template-columns: 1fr; gap: 1.2rem; }
+    header.masthead { padding: 2.8rem 1rem 1.8rem; }
+    .topbar { padding: .9rem 1rem; }
+    .panels { grid-template-columns: 1fr; }
+    .detail-content { padding: 0 1.2rem 1.4rem; }
+  }
+  @media (max-width: 480px) {
+    body { font-size: 17px; }
+    .chip { font-size: .88rem; padding: .3rem .7rem; }
+    .label { font-size: .65rem; }
+    .aphorism { font-size: 1.22rem; }
+    .face-front { padding: 1.4rem 1.25rem 1.1rem; }
+    .detail-content { padding: 0 1rem 1.2rem; }
+    .panel { padding: .9rem 1rem .85rem; }
+  }
+
+  /* keyboard focus */
+  .card:focus-visible {
+    outline: none;
+  }
+  .card:focus-visible .card-inner {
+    box-shadow: var(--shadow-lift), 0 0 0 3px rgba(154,31,31,.4);
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .card-inner { transition: none; }
+    .detail-drawer { transition: none; }
+    .card { animation: none; }
+  }
+
+  /* Fade-in on load */
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .card {
+    animation: rise .7s cubic-bezier(.22,.8,.2,1) both;
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="back" href="../../index.html">← Back to The Art of War</a>
+  <div class="crumbs">Lens · <em>Aphorism Anatomy</em></div>
+</div>
+
+<header class="masthead">
+  <div class="kicker">A lens on Sun Tzŭ · Giles, 1910</div>
+  <h1>Aphorism Anatomy</h1>
+  <div class="han-title">兵法</div>
+  <p class="lede">
+    Sun Tzŭ wrote in a language so compressed that a single line could outlive an empire.
+    Here are the most quoted of those lines — dissected into their context, Giles'
+    literal gloss, the disputes between commentators, and the historical incidents
+    that once gave each its force.
+  </p>
+  <div class="ornament"></div>
+</header>
+
+<section class="controls" aria-label="Filter and sort controls">
+  <div class="group" role="group" aria-label="Sort by">
+    <span class="label">Sort</span>
+    <button class="chip sort-chip active" data-sort="fame">Fame</button>
+    <button class="chip sort-chip" data-sort="chapter">Chapter</button>
+    <button class="chip sort-chip" data-sort="theme">Theme</button>
+  </div>
+  <div class="group" role="group" aria-label="Filter by theme">
+    <span class="label">Theme</span>
+    <button class="chip theme-chip active" data-theme="all">All</button>
+    <button class="chip theme-chip" data-theme="Deception">Deception</button>
+    <button class="chip theme-chip" data-theme="Knowledge">Knowledge</button>
+    <button class="chip theme-chip" data-theme="Speed">Speed</button>
+    <button class="chip theme-chip" data-theme="Terrain">Terrain</button>
+    <button class="chip theme-chip" data-theme="Morale">Morale</button>
+    <button class="chip theme-chip" data-theme="Strategy">Strategy</button>
+  </div>
+  <div class="group">
+    <span class="label">Search</span>
+    <input type="text" class="search-box" id="searchBox" placeholder="e.g. deception, water, fire..." aria-label="Search aphorisms" />
+  </div>
+  <div class="count-readout"><strong id="countShown">0</strong> of <strong id="countTotal">0</strong> maxims</div>
+</section>
+
+<main>
+  <div class="gallery" id="gallery"></div>
+</main>
+
+<footer>
+  The quoted lines, contextual paragraphs, commentator disputes and historical echoes are all
+  drawn verbatim from <strong>Lionel Giles'</strong> 1910 translation of Sun Tzŭ's <em>Art of War</em>
+  (Project Gutenberg ebook #132). Names of commentators — Ts'ao Kung, Tu Mu, Chang Yu,
+  Mei Yao-ch'en, Li Ch'uan, Chia Lin, Ho Shih, Wang Hsi — are those Giles cites throughout the text.
+</footer>
+
+<script>
+/* =======================================================================
+   APHORISMS — all quotations verbatim from Giles 1910
+   Context, disputes, and historical echoes paraphrase Giles' own notes.
+   ======================================================================= */
+const APHORISMS = [
+  {
+    id: "deception",
+    text: "All warfare is based on deception.",
+    chapter: "I",
+    chapterName: "Laying Plans",
+    verse: "§ 18",
+    theme: "Deception",
+    fame: 5,
+    seal: "詐",
+    context:
+      "After urging the general to match his plans to circumstance, Sun Tzŭ pivots and states the foundational axiom of the entire treatise: <em>All warfare is based on deception.</em> He then elaborates: “Hence, when able to attack, we must seem unable; when using our forces, we must seem inactive; when we are near, we must make the enemy believe we are far away; when far away, we must make him believe we are near. Hold out baits to entice the enemy. Feign disorder, and crush him.”",
+    literal:
+      "Giles calls this “pithy and profound” and takes it as the key to the whole remainder of Chapter I — every maxim about seeming-unable, holding out baits, and feigning disorder flows from this single statement. The Chinese word rendered “deception” covers the whole range of feint, lure, ruse and concealment, not mere lying.",
+    dispute:
+      "Giles notes that all commentators except <em>Chang Yu</em> read the following clause as “when he is in disorder, crush him,” but Giles considers it more natural to keep Sun Tzŭ in the register of deception throughout — i.e. <em>feign</em> disorder to draw the enemy into a trap, rather than merely seize his real disorder.",
+    echo:
+      "Col. Henderson observes that Wellington, great in so many military qualities, was especially distinguished by “the extraordinary skill with which he concealed his movements and deceived both friend and foe.” Giles chooses him as the European embodiment of the maxim.",
+  },
+  {
+    id: "knowself",
+    text: "If you know the enemy and know yourself, you need not fear the result of a hundred battles.",
+    chapter: "III",
+    chapterName: "Attack by Stratagem",
+    verse: "§ 18",
+    theme: "Knowledge",
+    fame: 5,
+    seal: "知",
+    context:
+      "Closing out a chapter on bloodless victory, Sun Tzŭ lays down a three-step scale of self-knowledge: “If you know the enemy and know yourself, you need not fear the result of a hundred battles. If you know yourself but not the enemy, for every victory gained you will also suffer a defeat. If you know neither the enemy nor yourself, you will succumb in every battle.”",
+    literal:
+      "The force of the line lies in its tripartite structure, which Giles preserves. “To know” is not passive information but an active capacity — the ability to forecast an opponent's reach and one's own strength under stress. Giles calls the whole passage Sun Tzŭ's epitome of the “root-principle of war.”",
+    dispute:
+      "<em>Chang Yu</em> glosses the line in operational terms: “Knowing the enemy enables you to take the offensive, knowing yourself enables you to stand on the defensive.” He adds: “Attack is the secret of defence; defence is the planning of an attack.” Giles calls it hard to find a better summary.",
+    echo:
+      "<em>Li Ch'uan</em> cites Fu Chien, prince of Ch'in, who in 383 A.D. marched with a vast army against the Chin Emperor. Warned not to despise an enemy who commanded men like Hsieh An and Huan Ch'ung, he boasted: “I have the population of eight provinces at my back… why, they could dam up the Yangtsze itself by merely throwing their whips into the stream.” He was disastrously routed at the Fei River.",
+  },
+  {
+    id: "subdue",
+    text: "Supreme excellence consists in breaking the enemy's resistance without fighting.",
+    chapter: "III",
+    chapterName: "Attack by Stratagem",
+    verse: "§ 2",
+    theme: "Strategy",
+    fame: 5,
+    seal: "全",
+    context:
+      "Sun Tzŭ opens the chapter with his ladder of perfection: “In the practical art of war, the best thing of all is to take the enemy's country whole and intact; to shatter and destroy it is not so good…” and then: “Hence to fight and conquer in all your battles is not supreme excellence; supreme excellence consists in breaking the enemy's resistance without fighting.” Two verses later: “the skilful leader subdues the enemy's troops without any fighting.”",
+    literal:
+      "The Chinese idiom runs: <em>not-fight and subdue the enemy's soldiers — this is the best of the best</em>. Giles emphasizes the absolute nature of the formula: fighting even well is second-rate, because every stroke of a sword is already failure of the higher art. The Chinese for “subdue” carries a note of yielding submission rather than violent overthrow.",
+    dispute:
+      "Giles himself comments: “Here again, no modern strategist but will approve the words of the old Chinese general.” The commentators are unusually united on this one — no one argues, they only illustrate.",
+    echo:
+      "Giles' chosen European parallel: “Moltke's greatest triumph, the capitulation of the huge French army at Sedan, was won practically without bloodshed.” The Prussian field marshal is offered as the modern embodiment of Sun Tzŭ's ideal.",
+  },
+  {
+    id: "rapidity",
+    text: "Rapidity is the essence of war.",
+    chapter: "XI",
+    chapterName: "The Nine Situations",
+    verse: "§ 19",
+    theme: "Speed",
+    fame: 5,
+    seal: "速",
+    context:
+      "Sun Tzŭ has just said that if you can seize something your opponent holds dear, he will be amenable to your will. He then gives the whole chapter's operational summary: “Rapidity is the essence of war: take advantage of the enemy's unreadiness, make your way by unexpected routes, and attack unguarded spots.”",
+    literal:
+      "<em>Tu Mu</em> calls this “a summary of leading principles in warfare” and adds: “These are the profoundest truths of military science, and the chief business of the general.” The word Giles renders “essence” has the connotation of what is valuable, sovereign, decisive — rapidity is the one thing that cannot be compensated for by anything else.",
+    dispute:
+      "The commentators do not dispute the principle, only illustrate it. The maxim is so central that in Chapter II Sun Tzŭ had already said: “though we have heard of stupid haste in war, cleverness has never been seen associated with long delays.”",
+    echo:
+      "<em>Ho Shih</em> tells of Ssu-ma I in 227 A.D., who covered 1,200 <em>li</em> in eight days by forced marches to crush the rebellion of Meng Ta before the traitor had time to fortify himself. Meng Ta had assumed it would take Ssu-ma I a month just to send word to the Emperor. His last letter read: “Though only eight days have passed since I threw off my allegiance, an army is already at the city-gates. What miraculous rapidity is this!” A fortnight later his head was off.",
+  },
+  {
+    id: "unexpected",
+    text: "Attack him where he is unprepared, appear where you are not expected.",
+    chapter: "I",
+    chapterName: "Laying Plans",
+    verse: "§ 24",
+    theme: "Deception",
+    fame: 4,
+    seal: "奇",
+    context:
+      "The climactic line of Sun Tzŭ's opening catalogue of deceptions. Just before it he writes: “If he is taking his ease, give him no rest. If his forces are united, separate them.” Then: “Attack him where he is unprepared, appear where you are not expected. These military devices, leading to victory, must not be divulged beforehand.”",
+    literal:
+      "Literally <em>attack without preparation, emerge out of unexpectedness</em>. Chapter VI echoes it: “Appear at points which the enemy must hasten to defend; march swiftly to places where you are not expected.” Giles treats these twin formulations as versions of a single doctrine: the point of attack must never be the point the enemy is watching.",
+    dispute:
+      "<em>Ts'ao Kung</em> renders the spirit very terse: “Emerge from the void — like a bolt from the blue — strike at vulnerable points, shun places that are defended, attack in unexpected quarters.” No commentator contests the phrasing; disagreements begin only over how literally “unexpected” can be engineered against a wary foe.",
+    echo:
+      "<em>Wang Hsi</em> glosses “undefended places” as those where the general is weak in capacity, the soldiers in spirit, the walls unfinished, the relief tardy, or the defenders at odds with themselves. Giles, typically, lets Chang Yu's corresponding image stand for the positive: “He who is skilled in attack flashes forth from the topmost heights of heaven, making it impossible for the enemy to guard against him.”",
+  },
+  {
+    id: "desperate",
+    text: "Place your army in deadly peril, and it will survive; plunge it into desperate straits, and it will come off in safety.",
+    chapter: "XI",
+    chapterName: "The Nine Situations",
+    verse: "§ 58",
+    theme: "Morale",
+    fame: 5,
+    seal: "死",
+    context:
+      "After the famous advice that soldiers on desperate ground will fight because they have no choice, Sun Tzŭ gives the line in its bluntest form: “Place your army in deadly peril, and it will survive; plunge it into desperate straits, and it will come off in safety.” The surrounding verses add: “For it is precisely when a force has fallen into harm's way that is capable of striking a blow for victory.”",
+    literal:
+      "The Chinese original pairs two nearly identical phrases — <em>throw them into death-ground and they live; sink them into perish-land and they are preserved</em>. Giles preserves the paradoxical balance. “Danger has a bracing effect,” is his own footnote.",
+    dispute:
+      "<em>Chang Yu</em>, citing Wei Liao Tzŭ, warns that the principle must be used with care: “a desperado and a man who sets some value on his life do not meet on even terms.” <em>Chia Lin</em> puts it blunter: “if you fight with all your might, there is a chance of life; whereas death is certain if you cling to your corner.”",
+    echo:
+      "Giles devotes nearly a page to Han Hsin's battle of 204 B.C. against the army of Chao. Han Hsin drew up his troops with a river at their backs — violating every textbook — and when asked afterward how he had dared, he quoted this very line of Sun Tzŭ. “Had I taken the usual course, I should never have been able to bring my colleague round. If I had not placed my troops in a position where they were obliged to fight for their lives… there would have been a general débandade.”",
+  },
+  {
+    id: "bait",
+    text: "Hold out baits to entice the enemy. Feign disorder, and crush him.",
+    chapter: "I",
+    chapterName: "Laying Plans",
+    verse: "§ 20",
+    theme: "Deception",
+    fame: 4,
+    seal: "餌",
+    context:
+      "Immediately after declaring that all warfare is based on deception, Sun Tzŭ lists the operational corollaries. “Hold out baits to entice the enemy. Feign disorder, and crush him. If he is secure at all points, be prepared for him. If he is in superior strength, evade him. If your opponent is of choleric temper, seek to irritate him. Pretend to be weak, that he may grow arrogant.”",
+    literal:
+      "“Bait” is the same word Giles uses later in Chapter VII: “Do not swallow a bait offered by the enemy.” It means any visible advantage dangled to provoke a costly grab. Feigning disorder — letting your own line waver on purpose — is the more sophisticated form of the same trick.",
+    dispute:
+      "This is one of Giles' rare dissents from the commentary tradition. “All commentators, except Chang Yu, say, ‘When he is in disorder, crush him.’ It is more natural,” Giles argues, “to suppose that Sun Tzŭ is still illustrating the uses of deception in war” — i.e. the disorder is feigned, not observed.",
+    echo:
+      "<em>Wang Tzŭ</em>, quoted by Tu Yu: the good tactician “plays with his adversary as a cat plays with a mouse, first feigning weakness and immobility, and then suddenly pouncing upon him.” See also the long historical note on Sun Pin's 341 B.C. trick, where he lit ever-fewer campfires each night to convince P'ang Chuan his army was bleeding away — and ambushed the pursuer at a marked tree.",
+  },
+  {
+    id: "water",
+    text: "So in war, the way is to avoid what is strong and to strike at what is weak.",
+    chapter: "VI",
+    chapterName: "Weak Points and Strong",
+    verse: "§ 30",
+    theme: "Strategy",
+    fame: 4,
+    seal: "水",
+    context:
+      "Sun Tzŭ's great water-simile: “Military tactics are like unto water; for water in its natural course runs away from high places and hastens downwards. So in war, the way is to avoid what is strong and to strike at what is weak. Water shapes its course according to the nature of the ground over which it flows; the soldier works out his victory in relation to the foe whom he is facing. Therefore, just as water retains no constant shape, so in warfare there are no constant conditions.”",
+    literal:
+      "The Chinese word for “form” runs through the whole chapter: the army that has no visible form cannot be struck. Giles explains the extended simile as “taking the line of least resistance.” Water is offered as the image of pure adaptability — formless, but capable of any form.",
+    dispute:
+      "Commentators like <em>Wang Hsi</em> dwell on the final corollary — “the five elements are not always equally predominant; the four seasons make way for each other in turn” — and Giles notes their disagreement with Sun Tzŭ's analogy: in his view the regularity of the phenomena Sun Tzŭ cites is “by no means paralleled in war,” where the variation is more radical.",
+    echo:
+      "No single anecdote, but Giles connects the maxim back to IV § 7: “he who is skilled in attack flashes forth from the topmost heights of heaven” — another fluid, gravity-driven image of force seeking the path of least resistance.",
+  },
+  {
+    id: "nomistakes",
+    text: "He wins his battles by making no mistakes.",
+    chapter: "IV",
+    chapterName: "Tactical Dispositions",
+    verse: "§ 13",
+    theme: "Strategy",
+    fame: 3,
+    seal: "勝",
+    context:
+      "Sun Tzŭ is describing the kind of victor who wins without spectacle: “Hence his victories bring him neither reputation for wisdom nor credit for courage… He wins his battles by making no mistakes. Making no mistakes is what establishes the certainty of victory, for it means conquering an enemy that is already defeated.”",
+    literal:
+      "Giles notes that the literal Chinese says something closer to “he wins where victory is easy.” The clever fighter is “one who, conquering, excels in easy conquering.” The whole section is an attack on the romantic view of battle: the best general is the one no one writes songs about, because nothing dramatic ever happens on his watch.",
+    dispute:
+      "<em>Mei Yao-ch'en</em>: “He who only sees the obvious, wins his battles with difficulty; he who looks below the surface of things, wins with ease.” <em>Ch'en Hao</em>: “He plans no superfluous marches, he devises no futile attacks.” <em>Chang Yu</em> sharpens: the brute-strength winner is also liable to be defeated, while the one who discerns unmanifest conditions will never blunder.",
+    echo:
+      "<em>Tu Mu</em>'s explanation serves as the historical echo: “Inasmuch as his victories are gained over circumstances that have not come to light, the world at large knows nothing of them, and he wins no reputation for wisdom; inasmuch as the hostile state submits before there has been any bloodshed, he receives no credit for courage.”",
+  },
+  {
+    id: "calculations",
+    text: "Now the general who wins a battle makes many calculations in his temple ere the battle is fought.",
+    chapter: "I",
+    chapterName: "Laying Plans",
+    verse: "§ 26",
+    theme: "Knowledge",
+    fame: 3,
+    seal: "算",
+    context:
+      "The closing line of Chapter I: “Now the general who wins a battle makes many calculations in his temple ere the battle is fought. The general who loses a battle makes but few calculations beforehand. Thus do many calculations lead to victory, and few calculations to defeat: how much more no calculation at all! It is by attention to this point that I can foresee who is likely to win or lose.”",
+    literal:
+      "Ts'ao Kung, in his very first note on the book, defines this chapter's title as referring to “the deliberations in the temple selected by the general for his temporary use, or as we should say, in his tent.” <em>Chang Yu</em> tells us that in ancient times a temple was literally set apart for a general about to take the field, in order that he might there elaborate his plan of campaign.",
+    dispute:
+      "No real dispute among commentators here — only an elaboration of the ritual setting. Giles treats the passage as a literal description of Chinese practice, not a metaphor: the “calculations” were acts of deliberation performed in a consecrated space, which is why the chapter is called <em>Laying Plans</em> (in Chinese, <em>temple deliberations</em>).",
+    echo:
+      "Giles ties the maxim to Lord Uxbridge's famous exchange with Wellington on the eve of Waterloo: Uxbridge came to learn the Duke's plans, because, as he explained, he might suddenly find himself Commander-in-Chief. Wellington asked: “Who will attack the first tomorrow — I or Bonaparte?” “Bonaparte,” replied Uxbridge. “Well — Bonaparte has not given me any idea of his projects; and as my plans will depend upon his, how can you expect me to tell you what mine are?”",
+  },
+  {
+    id: "spirit",
+    text: "A whole army may be robbed of its spirit; a commander-in-chief may be robbed of his presence of mind.",
+    chapter: "VII",
+    chapterName: "Manœuvering",
+    verse: "§ 27",
+    theme: "Morale",
+    fame: 3,
+    seal: "氣",
+    context:
+      "The opening of Sun Tzŭ's great discourse on the timing of attacks: “A whole army may be robbed of its spirit; a commander-in-chief may be robbed of his presence of mind. Now a soldier's spirit is keenest in the morning; by noonday it has begun to flag; and in the evening, his mind is bent only on returning to camp. A clever general, therefore, avoids an army when its spirit is keen, but attacks it when it is sluggish and inclined to return. This is the art of studying moods.”",
+    literal:
+      "The Chinese word for “spirit” is <em>ch'i</em> — morale, breath, animating force. Wu Tzŭ, says Giles, puts <em>ch'i</em> first among the “four important influences” in war: “The value of a whole army — a mighty host of a million men — is dependent on one man alone: such is the influence of spirit!”",
+    dispute:
+      "<em>Chang Yu</em> explains: “The spirit of the enemy's soldiers will be keenest when they have newly arrived on the scene, and it is therefore our cue not to fight at once, but to wait until their ardor and enthusiasm have worn off, and then strike.” On the second clause <em>Li Ching</em> remarks: “Attacking does not merely consist in assaulting walled cities or striking at an army in battle array; it must include the art of assailing the enemy's mental equilibrium.”",
+    echo:
+      "<em>Li Ch'uan</em>'s classic anecdote is Ts'ao Kuei at the battle of Ch'ang-cho (684 B.C.). Ts'ao Kuei made Duke Chuang of Lu wait until the enemy's drums had beaten three times before giving the order to attack: “the first roll of the drum tends to create this spirit, but with the second it is already on the wane, and after the third it is gone altogether. I attacked when their spirit was gone and ours was at its height. Hence our victory.”",
+  },
+  {
+    id: "swift",
+    text: "Let your rapidity be that of the wind, your compactness that of the forest.",
+    chapter: "VII",
+    chapterName: "Manœuvering",
+    verse: "§ 17–19",
+    theme: "Speed",
+    fame: 4,
+    seal: "風",
+    context:
+      "Sun Tzŭ's tetralogy of elemental similes: “Let your rapidity be that of the wind, your compactness that of the forest. In raiding and plundering be like fire, in immovability like a mountain. Let your plans be dark and impenetrable as night, and when you move, fall like a thunderbolt.”",
+    literal:
+      "<em>Mei Yao-ch'en</em> catches the extra nuance of the wind simile: wind is doubly appropriate “because it is not only swift, but invisible and leaves no tracks.” The four elements — wind, forest, fire, mountain — are sometimes cited as the <em>Fūrinkazan</em> banner later flown by the Japanese general Takeda Shingen.",
+    dispute:
+      "<em>Meng Shih</em> reads “your compactness that of the forest” more narrowly: “when slowly marching, order and ranks must be preserved,” for protection against surprise attacks. Giles notes that natural forests do not actually grow in rows — but do have the quality of density, which is the sense he prefers.",
+    echo:
+      "<em>Tu Yu</em> quotes a proverbial saying of T'ai Kung that stands behind “fall like a thunderbolt”: “You cannot shut your ears to the thunder or your eyes to the lightning — so rapid are they. Likewise, an attack should be made so quickly that it cannot be parried.”",
+  },
+  {
+    id: "foreknowledge",
+    text: "What enables the wise sovereign and the good general to strike and conquer, and achieve things beyond the reach of ordinary men, is foreknowledge.",
+    chapter: "XIII",
+    chapterName: "The Use of Spies",
+    verse: "§ 4",
+    theme: "Knowledge",
+    fame: 4,
+    seal: "先",
+    context:
+      "Sun Tzŭ has just lamented the ruinous cost of war in blood and silver, and condemned as inhumane any ruler who would grudge the small outlay needed to learn the enemy's condition. “Thus, what enables the wise sovereign and the good general to strike and conquer, and achieve things beyond the reach of ordinary men, is <em>foreknowledge</em>. Now this foreknowledge cannot be elicited from spirits; it cannot be obtained inductively from experience, nor by any deductive calculation.”",
+    literal:
+      "Giles glosses foreknowledge as “knowledge of the enemy's dispositions, and what he means to do.” <em>Tu Mu</em>'s note: knowledge of the enemy “cannot be gained by reasoning from other analogous cases.” <em>Li Ch'uan</em>: quantities like length, distance, magnitude “are susceptible of exact mathematical determination; human actions cannot be so calculated.”",
+    dispute:
+      "<em>Mei Yao-ch'en</em> sharpens the triplet into a small philosophical creed: “Knowledge of the spirit-world is to be obtained by divination; information in natural science may be sought by inductive reasoning; the laws of the universe can be verified by mathematical calculation: but the dispositions of an enemy are ascertainable through spies and spies alone.”",
+    echo:
+      "Giles' European parallel is Cromwell, “one of the greatest and most practical of all cavalry leaders,” who kept officers styled ‘scout masters’ whose entire business was to collect intelligence on the enemy “through scouts and spies, etc., and much of his success in war was traceable to the previous knowledge of the enemy's moves thus gained.”",
+  },
+  {
+    id: "fresh",
+    text: "Whoever is first in the field and awaits the coming of the enemy, will be fresh for the fight.",
+    chapter: "VI",
+    chapterName: "Weak Points and Strong",
+    verse: "§ 1",
+    theme: "Speed",
+    fame: 3,
+    seal: "逸",
+    context:
+      "The opening verse of the chapter on Weak Points and Strong: “Whoever is first in the field and awaits the coming of the enemy, will be fresh for the fight; whoever is second in the field and has to hasten to battle, will arrive exhausted. Therefore the clever combatant imposes his will on the enemy, but does not allow the enemy's will to be imposed on him.”",
+    literal:
+      "Giles connects this to the later maxim in the same chapter: “the clever combatant imposes his will on the enemy.” He cites Col. Henderson's epitome: “One mark of a great soldier is that he fights on his own terms or fights not at all.”",
+    dispute:
+      "Commentators treat this as uncontroversial doctrine, but its tension with Chapter VII — where Sun Tzŭ praises the general who <em>takes a circuitous route</em> and still arrives first — is one of the book's productive contradictions. Giles preserves both without forced reconciliation.",
+    echo:
+      "The paired maxim in VII § 3 — “the difficulty of tactical manœuvering consists in turning the devious into the direct, and misfortune into gain” — is illustrated by Ts'ao Kung with Hannibal's and Napoleon's passages across the Alps. The first-in-the-field principle rewards whoever arrives rested, however circuitous the route.",
+  },
+  {
+    id: "crossbow",
+    text: "Energy may be likened to the bending of a crossbow; decision, to the releasing of the trigger.",
+    chapter: "V",
+    chapterName: "Energy",
+    verse: "§ 15",
+    theme: "Strategy",
+    fame: 3,
+    seal: "弩",
+    context:
+      "Following the famous falcon simile — “The quality of decision is like the well-timed swoop of a falcon which enables it to strike and destroy its victim” — Sun Tzŭ compacts the whole teaching of Chapter V into a single mechanical image: “Energy may be likened to the bending of a crossbow; decision, to the releasing of the trigger.”",
+    literal:
+      "Giles, drily: “None of the commentators seem to grasp the real point of the simile of energy and the force stored up in the bent cross-bow until released by the finger on the trigger.” The image separates potential from actuation: the whole labour of generalship is to amass tension and then pick the moment to let it go.",
+    dispute:
+      "<em>Wang Hsi</em>'s note links the image to the psychology of the decisive moment: “This is just how the ‘psychological moment’ should be seized in war.” The commentators argue over how far the bow-simile extends — does it imply reserves, or merely timing?",
+    echo:
+      "Giles' own editorial illustration is Nelson at Trafalgar: when the <em>Victory</em> went into action “at hardly more than drifting pace, she was for several minutes exposed to a storm of shot and shell before replying with a single gun. Nelson coolly waited until he was within close range, when the broadside he brought to bear worked fearful havoc on the enemy's nearest ships.” The trigger was not pulled until point-blank.",
+  },
+  {
+    id: "shape",
+    text: "He who can modify his tactics in relation to his opponent and thereby succeed in winning may be called a heaven-born captain.",
+    chapter: "VI",
+    chapterName: "Weak Points and Strong",
+    verse: "§ 33",
+    theme: "Strategy",
+    fame: 3,
+    seal: "變",
+    context:
+      "The capstone of the water-simile: “Water shapes its course according to the nature of the ground over which it flows; the soldier works out his victory in relation to the foe whom he is facing. Therefore, just as water retains no constant shape, so in warfare there are no constant conditions. He who can modify his tactics in relation to his opponent and thereby succeed in winning, may be called a heaven-born captain.”",
+    literal:
+      "The phrase Giles renders “heaven-born captain” is the Chinese expression for a genius, literally “a god-general.” The repetition in Chapter VI — <em>no constant shape… no constant conditions</em> — is Sun Tzŭ's strongest statement that victory cannot be codified in rules applied uniformly.",
+    dispute:
+      "In the very next chapter Sun Tzŭ's editor, Ts'ao Kung, adds a further note that tactics must never be repeated: “Do not repeat the tactics which have gained you one victory, but let your methods be regulated by the infinite variety of circumstances.” <em>Wang Hsi</em>: “There is but one root-principle underlying victory, but the tactics which lead up to it are infinite in number.”",
+    echo:
+      "Col. Henderson's European parallel, cited by Giles: “The rules of strategy are few and simple. They may be learned in a week. They may be taught by familiar illustrations or a dozen diagrams. But such knowledge will no more teach a man to lead an army like Napoleon than a knowledge of grammar will teach him to write like Gibbon.”",
+  },
+  {
+    id: "shuaijan",
+    text: "Strike at its head, and you will be attacked by its tail; strike at its tail, and you will be attacked by its head.",
+    chapter: "XI",
+    chapterName: "The Nine Situations",
+    verse: "§ 29",
+    theme: "Morale",
+    fame: 3,
+    seal: "蛇",
+    context:
+      "“The skilful tactician may be likened to the <em>shuai-jan</em>. Now the shuai-jan is a snake that is found in the Ch'ang mountains. Strike at its head, and you will be attacked by its tail; strike at its tail, and you will be attacked by its head; strike at its middle, and you will be attacked by head and tail both.”",
+    literal:
+      "<em>Shuai-jan</em> means “suddenly” or “rapidly” — the snake was presumably so named from its speed. Giles notes that through this passage the term has come to be used in Chinese for “military manœuvers.” Asked whether an army can be made to imitate the snake, Sun Tzŭ says yes, and offers his boat-in-a-storm illustration as proof.",
+    dispute:
+      "Sun Tzŭ himself gives the counterexample: “the men of Wu and the men of Yüeh are enemies; yet if they are crossing a river in the same boat and are caught by a storm, they will come to each other's assistance just as the left hand helps the right.” The unity is enforced by common peril, not mere fellow-feeling.",
+    echo:
+      "Giles frames the whole passage as Sun Tzŭ's argument against mechanical devices: “it is not enough to put one's trust in the tethering of horses, and the burying of chariot wheels in the ground.” He ties this to the Athenian hero Sophanes, who carried an anchor with him at Plataea to fasten himself physically to one spot.",
+  },
+  {
+    id: "children",
+    text: "Regard your soldiers as your children, and they will follow you into the deepest valleys.",
+    chapter: "X",
+    chapterName: "Terrain",
+    verse: "§ 25",
+    theme: "Morale",
+    fame: 3,
+    seal: "愛",
+    context:
+      "After defining the six calamities that arise from the general's faults, Sun Tzŭ turns to the affections: “Regard your soldiers as your children, and they will follow you into the deepest valleys; look on them as your own beloved sons, and they will stand by you even unto death. If, however, you are indulgent, but unable to make your authority felt; kind-hearted, but unable to enforce your commands… then your soldiers must be likened to spoilt children; they are useless for any practical purpose.”",
+    literal:
+      "Giles translates the passage conservatively. The Chinese for “beloved sons” is literally “cherished infants” — a metaphor of direct parental care, not formal patronage. It pairs the maxim with a deliberate warning: love without discipline is not love.",
+    dispute:
+      "<em>Li Ching</em>: if you could make your soldiers afraid of you, they would not be afraid of the enemy. Sun Tzŭ is balancing the two — the general is to be both feared and loved, and the second is useless without the first.",
+    echo:
+      "<em>Tu Mu</em>'s portrait of the general Wu Ch'i: “He wore the same clothes and ate the same food as the meanest of his soldiers… One of his soldiers was suffering from an abscess, and Wu Ch'i himself sucked out the virus. The soldier's mother, hearing this, began wailing and lamenting. ‘Many years ago, Lord Wu performed a similar service for my husband, who never left him afterwards, and finally met his death at the hands of the enemy. And now that he has done the same for my son, he too will fall fighting I know not where.’”",
+  },
+  {
+    id: "moment",
+    text: "The victorious strategist only seeks battle after the victory has been won.",
+    chapter: "IV",
+    chapterName: "Tactical Dispositions",
+    verse: "§ 15",
+    theme: "Strategy",
+    fame: 4,
+    seal: "定",
+    context:
+      "After separating winners who win easily from those who win spectacularly, Sun Tzŭ delivers the line that most clearly inverts Western assumptions about generalship: “Thus it is that in war the victorious strategist only seeks battle after the victory has been won, whereas he who is destined to defeat first fights and afterwards looks for victory.”",
+    literal:
+      "The Chinese compresses <em>win first, then fight</em> against <em>fight first, then look for victory</em>. Giles' key is that “victory” here is not an outcome achieved in battle, but a state of preponderance already established beforehand — through dispositions, preparation, deception — so that battle becomes merely a ritual confirmation.",
+    dispute:
+      "<em>Ho Shih</em> spells out the paradox: “In warfare, first lay plans which will ensure victory, and then lead your army to battle; if you will not begin with stratagem but rely on brute strength alone, victory will no longer be assured.” Commentators are united here — the dispute is only over how early “first” actually begins.",
+    echo:
+      "Earlier in the chapter Sun Tzŭ has said: “To see victory only when it is within the ken of the common herd is not the acme of excellence. Neither is it the acme of excellence if you fight and conquer and the whole Empire says, ‘Well done!’” — Giles quoting Browning: the true excellence touches things “the world's coarse thumb and finger fail to plumb.”",
+  },
+  {
+    id: "waste",
+    text: "There is no instance of a country having benefited from prolonged warfare.",
+    chapter: "II",
+    chapterName: "Waging War",
+    verse: "§ 6",
+    theme: "Strategy",
+    fame: 3,
+    seal: "久",
+    context:
+      "After calculating the ruinous daily cost of an army in the field — “a thousand ounces of silver per day” for a force of 100,000 — Sun Tzŭ delivers his verdict: “There is no instance of a country having benefited from prolonged warfare. It is only one who is thoroughly acquainted with the evils of war that can thoroughly understand the profitable way of carrying it on.”",
+    literal:
+      "Giles notes the apparent severity of the formulation — Sun Tzŭ does not qualify. Only someone who has seen the disastrous effects of a long war can realise the supreme importance of rapidity in bringing it to a close. The maxim lies behind the entire doctrine of speed in Chapter XI.",
+    dispute:
+      "<em>Ts'ao Kung</em>'s famous note on the whole chapter: “He who wishes to fight must first count the cost,” which prepares us for the discovery that the subject of the chapter is “not what we might expect from the title, but is primarily a consideration of ways and means.”",
+    echo:
+      "Giles himself draws the classical example from Fabius Cunctator, who deliberately measured the endurance of Rome against that of Hannibal's isolated army. Giles notes it is “quite a moot question” whether his tactics would have proved successful: “Their reversal it is true, led to Cannae; but this only establishes a negative presumption in their favour.”",
+  },
+  {
+    id: "undefended",
+    text: "You can be sure of succeeding in your attacks if you only attack places which are undefended.",
+    chapter: "VI",
+    chapterName: "Weak Points and Strong",
+    verse: "§ 7",
+    theme: "Strategy",
+    fame: 3,
+    seal: "虛",
+    context:
+      "“Appear at points which the enemy must hasten to defend; march swiftly to places where you are not expected. An army may march great distances without distress, if it marches through country where the enemy is not. You can be sure of succeeding in your attacks if you only attack places which are undefended. You can ensure the safety of your defence if you only hold positions that cannot be attacked.”",
+    literal:
+      "Giles calls the pair of formulas in § 8 — “that general is skilful in attack whose opponent does not know what to defend; and he is skilful in defence whose opponent does not know what to attack” — “an aphorism which puts the whole art of war in a nutshell.” The present line is the operational form.",
+    dispute:
+      "<em>Tu Mu, Ch'en Hao, Mei Yao-ch'en</em> read the second clause as: to make your defence quite safe, you must defend even those places that are not likely to be attacked. <em>Chang Yu</em> disagrees: the places you will hold are precisely those the enemy cannot attack, because your dispositions are hidden.",
+    echo:
+      "Giles makes this the central passage for his doctrine of invisibility — it ties directly to § 9: “O divine art of subtlety and secrecy! Through you we learn to be invisible, through you inaudible; and hence we can hold the enemy's fate in our hands.”",
+  },
+  {
+    id: "heaven",
+    text: "The general who is skilled in defence hides in the most secret recesses of the earth; he who is skilled in attack flashes forth from the topmost heights of heaven.",
+    chapter: "IV",
+    chapterName: "Tactical Dispositions",
+    verse: "§ 7",
+    theme: "Terrain",
+    fame: 3,
+    seal: "天",
+    context:
+      "One of the most pictorial lines in the book: “The general who is skilled in defence hides in the most secret recesses of the earth; he who is skilled in attack flashes forth from the topmost heights of heaven. Thus on the one hand we have ability to protect ourselves; on the other, a victory that is complete.”",
+    literal:
+      "Giles notes that the Chinese “hides under the ninth earth” is a metaphor for the utmost secrecy and concealment — the “ninth earth” being the deepest imaginable layer. The attacker's image, correspondingly, is that he falls on his adversary like a thunderbolt, against which there is no time to prepare.",
+    dispute:
+      "Giles observes that <em>this is the opinion of most of the commentators</em> — that “topmost heights of heaven” implies speed-of-lightning descent rather than mere elevation. Chapter VI § 7 then applies the figure operationally: the skilful attacker falls on the undefended places that he himself has made it impossible for the enemy to guard.",
+    echo:
+      "Giles links this image to the general doctrine that the army which shows form is always vulnerable: “In making tactical dispositions, the highest pitch you can attain is to conceal them; conceal your dispositions, and you will be safe from the prying of the subtlest spies, from the machinations of the wisest brains.”",
+  },
+  {
+    id: "ground",
+    text: "The natural formation of the country is the soldier's best ally.",
+    chapter: "X",
+    chapterName: "Terrain",
+    verse: "§ 21",
+    theme: "Terrain",
+    fame: 2,
+    seal: "地",
+    context:
+      "The hinge of the chapter: after enumerating the six kinds of ground and the six calamities, Sun Tzŭ says: “The natural formation of the country is the soldier's best ally; but a power of estimating the adversary, of controlling the forces of victory, and of shrewdly calculating difficulties, dangers and distances, constitutes the test of a great general.”",
+    literal:
+      "<em>Ch'en Hao</em>: “The advantages of weather and season are not equal to those connected with ground.” Giles reads this as a hierarchy of factors: in the end the terrain outranks even the calendar.",
+    dispute:
+      "The second half of the verse is a standing rebuke to the idea that terrain alone is enough: ground is the ally, but shrewd calculation is the test. Col. Henderson, quoted in a related note, complains that the study of ground is often overlooked, and “by no means sufficient importance is attached to the selection of positions.”",
+    echo:
+      "The maxim is echoed at the chapter's close: “If you know the enemy and know yourself, your victory will not stand in doubt; if you know Heaven and know Earth, you may make your victory complete.” Giles treats this as Sun Tzŭ's deliberate doubling of the Chapter III formula — adding the two great impersonal factors to the two personal ones.",
+  },
+  {
+    id: "bury",
+    text: "He burns his boats and breaks his cooking-pots.",
+    chapter: "XI",
+    chapterName: "The Nine Situations",
+    verse: "§ 39",
+    theme: "Morale",
+    fame: 3,
+    seal: "焚",
+    context:
+      "The general who has carried his army into desperate ground must now commit them: “At the critical moment, the leader of an army acts like one who has climbed up a height and then kicks away the ladder behind him. He carries his men deep into hostile territory before he shows his hand. He burns his boats and breaks his cooking-pots; like a shepherd driving a flock of sheep, he drives his men this way and that, and none knows whither he is going.”",
+    literal:
+      "Giles explains the Chinese phrase as <em>releasing the spring</em> (cf. V § 15, the crossbow simile) — that is, taking some decisive step which makes it impossible for the army to return. Both the ladder and the boats images are figurative; the cooking-pots are literal.",
+    dispute:
+      "<em>Ch'en Hao</em>, followed by <em>Chia Lin</em>, reads the passage less well as “puts forth every artifice at his command.” Giles prefers the stricter reading of irrevocable commitment. <em>Tu Mu</em>'s gloss: the army is only cognizant of orders to advance or retreat; it is ignorant of the ulterior ends.",
+    echo:
+      "Giles' own historical anchor: “Like Hsiang Yu, who sunk his ships after crossing a river.” Hsiang Yu — the tragic rival of the Han founder — is the proverbial Chinese parallel to the Roman-era European idiom of burning one's boats.",
+  },
+  {
+    id: "maiden",
+    text: "At first, then, exhibit the coyness of a maiden, until the enemy gives you an opening; afterwards emulate the rapidity of a running hare.",
+    chapter: "XI",
+    chapterName: "The Nine Situations",
+    verse: "§ 68",
+    theme: "Deception",
+    fame: 3,
+    seal: "閨",
+    context:
+      "The very last maxim of Chapter XI, and the most playful in tone: “At first, then, exhibit the coyness of a maiden, until the enemy gives you an opening; afterwards emulate the rapidity of a running hare, and it will be too late for the enemy to oppose you.”",
+    literal:
+      "Giles comments that the hare-image is chosen for speed, not temperament: “As the hare is noted for its extreme timidity, the comparison hardly appears felicitous. But of course Sun Tzŭ was thinking only of its speed.” The maiden-image carries both modesty and reserve — the pretence of harmlessness which draws the enemy into range.",
+    dispute:
+      "Some commentators have taken the hare clause to mean “you must flee from the enemy as quickly as an escaping hare,” but Giles (with Tu Mu) rejects this: the comparison is about the suddenness of the final strike, not a counsel of retreat.",
+    echo:
+      "The maxim is the closing formula of the whole doctrine of <em>death-ground</em>: it is the moment when all the previous concealment, the burning of boats, the forced marches, the refusal to disclose plans — all of it — is released in a single blow. Giles treats the placement as deliberate: Chapter XI's last word is an image of explosive speed after long feigned meekness.",
+  },
+];
+
+/* ------------------------------------------------------------------ */
+/*  Theme → chapter ordering helpers                                   */
+/* ------------------------------------------------------------------ */
+const CH_ORDER = ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII"];
+const chIdx = (ch) => CH_ORDER.indexOf(ch);
+
+const gallery = document.getElementById("gallery");
+const countShownEl = document.getElementById("countShown");
+const countTotalEl = document.getElementById("countTotal");
+countTotalEl.textContent = APHORISMS.length;
+
+let currentSort  = "fame";
+let currentTheme = "all";
+let currentSearch = "";
+
+/* ------------------------------------------------------------------ */
+/*  Rendering                                                          */
+/* ------------------------------------------------------------------ */
+function renderCards() {
+  // copy array so sorts are stable between renders
+  let list = APHORISMS.slice();
+
+  // filter by theme
+  if (currentTheme !== "all") {
+    list = list.filter(a => a.theme === currentTheme);
+  }
+  // filter by search
+  if (currentSearch) {
+    const q = currentSearch.toLowerCase();
+    list = list.filter(a =>
+      a.text.toLowerCase().includes(q) ||
+      a.chapterName.toLowerCase().includes(q) ||
+      a.theme.toLowerCase().includes(q) ||
+      a.id.toLowerCase().includes(q)
+    );
+  }
+
+  // sort
+  if (currentSort === "fame") {
+    list.sort((a,b) => b.fame - a.fame || chIdx(a.chapter) - chIdx(b.chapter));
+  } else if (currentSort === "chapter") {
+    list.sort((a,b) => chIdx(a.chapter) - chIdx(b.chapter) || b.fame - a.fame);
+  } else if (currentSort === "theme") {
+    list.sort((a,b) => a.theme.localeCompare(b.theme) || b.fame - a.fame);
+  }
+
+  // Render
+  gallery.innerHTML = "";
+  list.forEach((a, i) => {
+    gallery.appendChild(buildCard(a, i));
+  });
+
+  countShownEl.textContent = list.length;
+}
+
+function buildFameDots(fame) {
+  let html = '<div class="fame-bar" aria-label="Fame level ' + fame + ' of 5">';
+  for (let i = 1; i <= 5; i++) {
+    html += '<span class="dot' + (i <= fame ? " lit" : "") + '"></span>';
+  }
+  html += '<span class="fame-label">Fame</span></div>';
+  return html;
+}
+
+function buildCard(a, idx) {
+  const el = document.createElement("article");
+  el.className = "card";
+  el.setAttribute("tabindex", "0");
+  el.setAttribute("role", "button");
+  el.setAttribute("aria-expanded", "false");
+  el.setAttribute("aria-label",
+    `Aphorism: ${a.text} From chapter ${a.chapter} ${a.chapterName}. Activate to expand commentary.`
+  );
+  el.style.animationDelay = (idx * 50) + "ms";
+
+  el.innerHTML = `
+    <div class="card-inner">
+      <div class="face-front">
+        <div class="seal" aria-hidden="true">${a.seal}</div>
+        <div class="card-header">
+          <div class="chapter-ref"><strong>Ch. ${a.chapter}</strong> · ${a.chapterName} · ${a.verse}</div>
+          <div class="theme-tag">${a.theme}</div>
+        </div>
+        <p class="aphorism">${a.text}</p>
+        <div class="card-footer">
+          ${buildFameDots(a.fame)}
+          <span class="expand-hint">details</span>
+        </div>
+      </div>
+      <div class="detail-drawer">
+        <div class="detail-drawer-inner">
+          <div class="detail-content">
+            <div class="detail-separator">
+              <button class="close-btn" type="button" aria-label="Collapse commentary">collapse</button>
+            </div>
+            <div class="panels">
+              <div class="panel">
+                <h4><span class="glyph">境</span>Context</h4>
+                <div class="body">${a.context}</div>
+              </div>
+              <div class="panel">
+                <h4><span class="glyph">釋</span>Literal Gloss</h4>
+                <div class="body">${a.literal || '<i class="none">Giles offers no separate literal note.</i>'}</div>
+              </div>
+              <div class="panel">
+                <h4><span class="glyph">論</span>Commentator Dispute</h4>
+                <div class="body">${a.dispute || '<i class="none">Commentators are united here.</i>'}</div>
+              </div>
+              <div class="panel">
+                <h4><span class="glyph">史</span>Historical Echo</h4>
+                <div class="body">${a.echo || '<i class="none">Giles provides no anecdote on this line.</i>'}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // expand/collapse behaviour
+  const toggle = (e) => {
+    // Do not trigger from interactions inside the detail panels
+    if (e && e.target && e.target.closest && e.target.closest('.panels')) {
+      return;
+    }
+    const isExpanded = el.classList.contains("expanded");
+    if (!isExpanded) {
+      // Collapse any other expanded card first
+      document.querySelectorAll(".card.expanded").forEach(other => {
+        if (other !== el) {
+          other.classList.remove("expanded");
+          other.setAttribute("aria-expanded", "false");
+        }
+      });
+    }
+    el.classList.toggle("expanded");
+    el.setAttribute("aria-expanded", el.classList.contains("expanded") ? "true" : "false");
+    // Scroll into view when expanding
+    if (el.classList.contains("expanded")) {
+      setTimeout(() => {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
+    }
+  };
+
+  el.addEventListener("click", (e) => {
+    // If clicked the explicit close button, collapse
+    if (e.target.closest(".close-btn")) {
+      e.stopPropagation();
+      el.classList.remove("expanded");
+      el.setAttribute("aria-expanded", "false");
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+    toggle(e);
+  });
+
+  el.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      toggle(e);
+    } else if (e.key === "Escape" && el.classList.contains("expanded")) {
+      el.classList.remove("expanded");
+      el.setAttribute("aria-expanded", "false");
+    }
+  });
+
+  return el;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Controls                                                            */
+/* ------------------------------------------------------------------ */
+document.querySelectorAll(".sort-chip").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".sort-chip").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentSort = btn.dataset.sort;
+    renderCards();
+  });
+});
+
+document.querySelectorAll(".theme-chip").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".theme-chip").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentTheme = btn.dataset.theme;
+    renderCards();
+  });
+});
+
+document.getElementById("searchBox").addEventListener("input", (e) => {
+  currentSearch = e.target.value.trim();
+  renderCards();
+});
+
+// First render
+renderCards();
+</script>
+</body>
+</html>
