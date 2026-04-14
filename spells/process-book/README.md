@@ -39,12 +39,7 @@ pick which ones to build. Lenses are built in parallel for speed.
 
 ## Examples of generated lenses
 
-- **Narrative Structure** — chronological reading with chapter-by-chapter zoom
-- **Character Constellation** — force graph of character relationships
-- **Emotional Landscape** — sentiment arc with drillable peaks and valleys
-- **Geographic Journey** — map-based exploration of locations in the text
-- **Thematic Architecture** — hierarchical view of interwoven themes
-- **Philosophical Arguments** — tree of claims, evidence, and counterpoints
+- [Art of war](https://anvaka.github.io/spell-book/spells/process-book/examples/art-of-war/index.html)
 
 ## Install
 
