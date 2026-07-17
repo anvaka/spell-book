@@ -11,6 +11,7 @@ repository is a self-contained prompt that you can install into your LLM assista
 | Spell | Description |
 |-------|-------------|
 | [process-book](spells/process-book/) | Transform a book into a multi-lens interactive exploration |
+| [nominal-panel](spells/nominal-panel/) | Ideate with isolated, decorrelated agents; pool, rank, and explain the best ideas |
 
 ## Installation
 
